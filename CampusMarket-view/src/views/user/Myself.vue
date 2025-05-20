@@ -46,6 +46,7 @@ export default {
     methods: {
         loginout() {
             sessionStorage.setItem('token', null);
+            sessionStorage.setItem('userInfo', null);
             this.$router.push('/login');
         },
         condition(tag) {

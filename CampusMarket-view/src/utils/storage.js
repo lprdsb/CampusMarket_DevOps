@@ -1,6 +1,16 @@
 const TOKEN_KEY = "token"
 const USER_INFO = "userInfo";
 const SEARCH_KEY = "searchKey";
+const PRODUCT_INFO = "productInfo";
+//获取商品信息
+export function getProductInfo() {
+    const jsonProduct = sessionStorage.getItem(PRODUCT_INFO);
+    return JSON.parse(jsonProduct);
+}
+//存储商品信息
+export function setProductInfo(info) {
+    sessionStorage.setItem(PRODUCT_INFO, JSON.stringify(info));
+}
 //获取搜索关键词
 export function getSearchKey() {
     return sessionStorage.getItem(SEARCH_KEY);
