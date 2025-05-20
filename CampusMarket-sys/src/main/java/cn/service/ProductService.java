@@ -5,6 +5,7 @@ import cn.pojo.dto.query.extend.ProductQueryDto;
 import cn.pojo.dto.update.OrdersDTO;
 import cn.pojo.entity.Orders;
 import cn.pojo.entity.Product;
+import cn.pojo.vo.ChartVO;
 import cn.pojo.vo.ProductVO;
 
 import java.util.List;
@@ -27,5 +28,7 @@ public interface ProductService {
     Result<String> placeAnOrder(Integer ordersId);
 
     Result<String> refund(Integer ordersId);
+
+    Result<List<ChartVO>> queryProductInfo(ProductQueryDto productQueryDto);
 
 }

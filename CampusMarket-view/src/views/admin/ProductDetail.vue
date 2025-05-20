@@ -428,6 +428,7 @@ export default {
 .detail-container {
     display: flex;
     justify-content: left;
+    justify-content: center;
 
     .cover {
         display: flex;

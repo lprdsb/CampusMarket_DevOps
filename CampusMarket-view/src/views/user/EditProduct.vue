@@ -96,6 +96,7 @@ export default {
                     url: coverEntity
                 }
             })
+
         },
         /**
          * 修改商品信息

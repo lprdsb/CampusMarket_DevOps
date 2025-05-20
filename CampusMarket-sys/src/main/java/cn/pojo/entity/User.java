@@ -63,6 +63,12 @@ public class User {
     private Boolean isWord;
 
     /**
+     * 上一次登录时间
+     */
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime lastLoginTime;
+
+    /**
      * 用户注册时间
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

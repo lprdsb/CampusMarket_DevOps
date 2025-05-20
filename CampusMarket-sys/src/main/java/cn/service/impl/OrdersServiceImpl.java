@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -88,6 +89,9 @@ public class OrdersServiceImpl implements OrdersService {
     public Result<List<OrdersVO>> queryOrdersList(OrdersQueryDto ordersQueryDto) {
         List<Integer> productIds = productMapper.queryProductIds(LocalThreadHolder.getUserId());
         ordersQueryDto.setProductIds(productIds);
+        if (productIds.isEmpty()) {
+            return ApiResult.success(new ArrayList<>());
+        }
         List<OrdersVO> ordersVOList = ordersMapper.queryByProductIds(ordersQueryDto);
         return ApiResult.success(ordersVOList);
     }

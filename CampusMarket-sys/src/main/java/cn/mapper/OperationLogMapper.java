@@ -39,7 +39,7 @@ public interface OperationLogMapper {
     /**
      * 批量删除操作日志信息
      *
-     * @param ids 主键ID集合
+     * @param ids 用户ID集合
      */
     void batchDelete(@Param(value = "ids") List<Integer> ids);
 

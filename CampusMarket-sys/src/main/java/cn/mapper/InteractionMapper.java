@@ -28,6 +28,14 @@ public interface InteractionMapper {
     List<Interaction> query(InteractionQueryDto interactionQueryDto);
 
     /**
+     * 查询商品指标数据
+     *
+     * @param ids 商品ID列表
+     * @return List<Interaction>
+     */
+    List<Interaction> queryByProductIds(@Param(value = "ids") List<Integer> ids);
+
+    /**
      * 查询满足分页查询的记录总数
      *
      * @param interactionQueryDto 分页查询参数

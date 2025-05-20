@@ -68,7 +68,7 @@ export default {
         },
         tooltip: {
           trigger: 'axis',
-          formatter: '{b}{c}',
+          formatter: '{b}：{c}',
         },
         legend: {
           data: ['']

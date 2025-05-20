@@ -3,18 +3,20 @@
         <div class="nav-category">
             <div class="left">
                 <span :style="{
-                    color: categorySelectedItem.name === isUseCategory.name ? 'rgb(248,248,248)' : '',
-                    backgroundColor: categorySelectedItem.name === isUseCategory.name ? 'rgb(255,209,80)' : ''
+                    color: categorySelectedItem.name === isUseCategory.name ? 'rgb(51, 51, 51)' : '',
+                    backgroundColor: categorySelectedItem.name === isUseCategory.name ? 'rgb(254, 223, 70)' : ''
                 }" @click="categorySelected(isUseCategory)" :key="index"
                     v-for="(isUseCategory, index) in isUseCategoryList">
                     {{ isUseCategory.name }}
                 </span>
             </div>
+        </div>
+        <div class="nav-category">
             <div class="right">
                 <span class="bargain">
                     <span :style="{
-                        color: bargainSelectedItem.name === bargain.name ? 'rgb(248,248,248)' : '',
-                        backgroundColor: bargainSelectedItem.name === bargain.name ? 'rgb(255, 209, 80)' : ''
+                        color: bargainSelectedItem.name === bargain.name ? 'rgb(51,51,51)' : '',
+                        backgroundColor: bargainSelectedItem.name === bargain.name ? 'rgb(254, 223, 70)' : ''
                     }" @click="bargainSelected(bargain)" v-for="(bargain, index) in bargainStatus" :key="index">{{
                         bargain.name }}</span>
                 </span>
@@ -160,7 +162,7 @@ export default {
 .cover {
     img {
         width: 100%;
-        height: 240px;
+        height: 160px;
         border-radius: 10px;
     }
 }
@@ -250,6 +252,7 @@ export default {
 }
 
 .nav-category {
+    margin-block: 10px;
     display: flex;
     justify-content: space-between;
 
@@ -261,9 +264,10 @@ export default {
         span {
             display: inline-block;
             background-color: rgb(246, 246, 246);
-            padding: 6px 22px;
+            padding: 6px 12px;
             cursor: pointer;
             border-radius: 15px;
+            font-size: 12px;
         }
 
         span:hover {

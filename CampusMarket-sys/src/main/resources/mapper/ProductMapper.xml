@@ -2,83 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.mapper.ProductMapper">
 
-  <insert id="save">
-    INSERT INTO product (name, detail, cover_list, old_level, category_id, user_id, inventory, price, is_bargain,
-    create_time)
-    VALUES (#{name}, #{detail}, #{coverList}, #{oldLevel}, #{categoryId}, #{userId}, #{inventory}, #{price},
-    #{isBargain}, #{createTime})
-  </insert>
+    <insert id="save">
+        INSERT INTO product (name, detail, cover_list, old_level, category_id, user_id, inventory, price, is_bargain,
+                             create_time)
+        VALUES (#{name}, #{detail}, #{coverList}, #{oldLevel}, #{categoryId}, #{userId}, #{inventory}, #{price},
+                #{isBargain}, #{createTime})
+    </insert>
 
-  <update id="update">
-    UPDATE product
-    <set>
-      <if test="name != null and name != ''">
-        name = #{name},
-      </if>
-      <if test="detail != null and detail != ''">
-        detail = #{detail},
-      </if>
-      <if test="coverList != null and coverList != ''">
-        cover_list = #{coverList},
-      </if>
-      <if test="oldLevel != null">
-        old_level = #{oldLevel},
-      </if>
-      <if test="categoryId != null">
-        category_id = #{categoryId},
-      </if>
-      <if test="inventory != null">
-        inventory = #{inventory},
-      </if>
-      <if test="price != null">
-        price = #{price},
-      </if>
-      <if test="isBargain != null">
-        is_bargain = #{isBargain},
-      </if>
-    </set>
-    WHERE id = #{id}
-  </update>
+    <update id="update">
+        UPDATE product
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="detail != null and detail != ''">
+                detail = #{detail},
+            </if>
+            <if test="coverList != null and coverList != ''">
+                cover_list = #{coverList},
+            </if>
+            <if test="oldLevel != null">
+                old_level = #{oldLevel},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId},
+            </if>
+            <if test="inventory != null">
+                inventory = #{inventory},
+            </if>
+            <if test="price != null">
+                price = #{price},
+            </if>
+            <if test="isBargain != null">
+                is_bargain = #{isBargain},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
 
-  <delete id="batchDelete" parameterType="list">
-    DELETE FROM product WHERE id IN
-    <foreach collection="ids" item="id" open="(" separator="," close=")">
-      #{id}
-    </foreach>
-  </delete>
+    <delete id="batchDelete" parameterType="list">
+        DELETE FROM product WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
 
-  <!--分页查询信息-->
-  <select id="query" resultMap="BaseResultMap">
+    <!--分页查询信息-->
+    <select id="query" resultMap="BaseResultMap">
 
-    SELECT p.*,
-    u.user_name,
-    u.user_avatar,
-    c.name AS category_name,
-    (SELECT COUNT(i1.id) FROM interaction i1 WHERE i1.product_id = p.id AND type = 3) AS like_number,
-    (SELECT COUNT(i2.id) FROM interaction i2 WHERE i2.product_id = p.id AND type = 1) AS save_number,
-    (SELECT COUNT(i3.id) FROM interaction i3 WHERE i3.product_id = p.id AND type = 2) AS view_number
-    FROM product p
-    LEFT JOIN user u ON u.id = p.user_id
-    LEFT JOIN category c On c.id = p.category_id
-    <where>
-      <if test="id != null">
-        AND p.id = #{id}
-      </if>
-      <if test="name != null and name != ''">
-        AND p.name LIKE concat('%',#{name},'%')
-      </if>
-      <if test="categoryId != null">
-        AND p.category_id = #{categoryId}
-      </if>
-      <if test="userId != null">
-        AND p.user_id = #{userId}
-      </if>
-      <if test="isBargain != null">
-        AND p.is_bargain = #{isBargain}
-      </if>
-      <if test="startTime != null and endTime != null">
-        AND p.create_time BETWEEN #{startTime} AND #{endTime}
-      </if>
+        SELECT p.*,
+        u.user_name,
+        u.user_avatar,
+        c.name AS category_name,
+        (SELECT COUNT(i1.id) FROM interaction i1 WHERE i1.product_id = p.id AND type = 3) AS like_number,
+        (SELECT COUNT(i2.id) FROM interaction i2 WHERE i2.product_id = p.id AND type = 1) AS save_number,
+        (SELECT COUNT(i3.id) FROM interaction i3 WHERE i3.product_id = p.id AND type = 2) AS view_number
+        FROM product p
+        LEFT JOIN user u ON u.id = p.user_id
+        LEFT JOIN category c On c.id = p.category_id
+        <where>
+            <if test="id != null">
+                AND p.id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                AND p.name LIKE concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                AND p.category_id = #{categoryId}
+            </if>
+            <if test="userId != null">
+                AND p.user_id = #{userId}
+            </if>
+            <if test="isBargain != null">
+                AND p.is_bargain = #{isBargain}
+            </if>
+            <if test="startTime != null and endTime != null">
+                AND p.create_time BETWEEN #{startTime} AND #{endTime}
+            </if>
         </where>
         ORDER BY p.id DESC
         <if test="current != null and size != null">

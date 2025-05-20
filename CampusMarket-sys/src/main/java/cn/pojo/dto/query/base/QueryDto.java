@@ -5,7 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 /**
- * 查询参数接收实体类基类，含有四项基础参数，使用时可以拓展
+ * 查询参数接收实体类基类，含有五项基础参数，使用时可以拓展
  */
 @Data
 @AllArgsConstructor

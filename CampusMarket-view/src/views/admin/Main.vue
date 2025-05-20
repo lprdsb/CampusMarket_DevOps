@@ -13,7 +13,7 @@
         </div>
         <div class="right">
             <h2>最新上架商品</h2>
-            <el-col :span="8" v-for="(product, index) in productList" :key="index">
+            <el-col :span="24" v-for="(product, index) in productList" :key="index">
                 <div class="item-product">
                     <div class="cover">
                         <img :src="coverListParse(product)" alt="" srcset="">
@@ -98,7 +98,7 @@ export default {
         },
         fetchProductList() {
             const productQueryDto = {
-                size: 6,
+                size: 3,
                 current: 1
             }
             this.$axios.post('/product/query', productQueryDto).then(res => {
