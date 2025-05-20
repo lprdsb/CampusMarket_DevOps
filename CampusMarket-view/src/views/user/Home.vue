@@ -60,12 +60,13 @@
                 <div style="padding: 0 40px;">
                     <div class="title1">
                         <span class="title">{{ userInfo.userName }}</span>
-                        <!-- <span class="poin">商品被浏览138</span>
-                        <span class="poin">商品被收藏290</span> -->
+                        <span  class="poin" v-for="(info,index) in productInfoList" :key="index">
+                            {{info.name}}·{{ info.count }}
+                        </span>
                     </div>
-                    <!-- <div class="save">
-                        收藏商品： 1
-                    </div> -->
+                    <div class="date">
+                        上一次登录时间： {{ userInfo.lastLoginTime }}
+                    </div>
                     <div class="date">
                         注册于： {{ userInfo.createTime }}
                     </div>
@@ -94,6 +95,7 @@ export default {
             loginStatus: false, // 默认未登录
             userInfo: {},
             searchPath: '/search',
+            productInfoList: []
         };
     },
     created() {
@@ -101,6 +103,17 @@ export default {
         this.handleRouteSelect('/product')
     },
     methods: {
+        queryProductInfo() {
+            this.$axios.post(`/product/queryProductInfo`, {}).then(res => {
+                const { data } = res;
+                if (data.code === 200) {
+                    this.productInfoList = data.data;
+                }
+                this.loginStatus = data.code === 200;
+            }).catch(error => {
+                console.log("商品指标查询异常：", error);
+            });
+        },
         // 跳转登录页
         loginOperation() {
             this.$router.push('/login');
@@ -134,6 +147,7 @@ export default {
                     // 存储用户信息
                     setUserInfo(data.data);
                     this.userInfo = data.data;
+                    this.queryProductInfo();
                 }
                 this.loginStatus = data.code === 200;
             }).catch(error => {

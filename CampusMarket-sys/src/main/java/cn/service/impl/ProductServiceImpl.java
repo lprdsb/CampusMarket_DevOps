@@ -74,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     public Result<List<ProductVO>> query(ProductQueryDto productQueryDto) {
+        productQueryDto.setUserId(LocalThreadHolder.getUserId());
         int totalCount = productMapper.queryCount(productQueryDto);
         List<ProductVO> productVOList = productMapper.query(productQueryDto);
         return ApiResult.success(productVOList, totalCount);

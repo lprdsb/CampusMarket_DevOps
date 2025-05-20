@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div v-if="userInfo !== null">
-                <Evaluations contentType="PRODUCT" :contentId="product.id"/>
+                <Evaluations contentType="PRODUCT" :contentId="product.id" />
             </div>
         </div>
         <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="35%">
@@ -195,6 +195,17 @@ export default {
             this.buyNumber = 1;
         },
         buyProduct() {
+            const userInfo = getUserInfo();
+            if (userInfo === null) { // 没登录不用记录
+                this.$notify({
+                    duration: 1000,
+                    title: '未登录',
+                    message: '登录后才可操作',
+                    type: 'info'
+                });
+                this.$router.push('/login');
+                return;
+            }
             this.dialogProductOperaion = true;
         },
         likeProduct() {
@@ -214,6 +225,7 @@ export default {
                         message: data.msg,
                         type: 'info'
                     });
+                    this.$router.push('/login');
                 }
             }).catch(error => {
                 console.log("商品---想要---异常：", error);
@@ -223,7 +235,7 @@ export default {
             // 判断用户是否已经登录
             const userInfo = getUserInfo();
             if (userInfo === null) { // 没登录不用查
-                console.log("用户没登录");
+                console.log("用户未登录");
                 return;
             }
             const interactionQueryDto = {
@@ -245,6 +257,17 @@ export default {
          * 收藏操作 （收藏跟取消收藏是一组对立的操作）
          */
         saveOperation() {
+            const userInfo = getUserInfo();
+            if (userInfo === null) { // 没登录不用记录
+                this.$notify({
+                    duration: 1000,
+                    title: '未登录',
+                    message: '登录后才可操作',
+                    type: 'info'
+                });
+                this.$router.push('/login');
+                return;
+            }
             this.$axios.post(`/interaction/saveOperation/${this.product.id}`).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
@@ -335,6 +358,7 @@ export default {
     font-size: 14px;
     color: #999;
 }
+
 .info {
     width: 500px;
 

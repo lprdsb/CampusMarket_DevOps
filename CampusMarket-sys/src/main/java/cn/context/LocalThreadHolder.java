@@ -34,7 +34,7 @@ public class LocalThreadHolder {
      */
     public static Integer getUserId() {
         Map<String, Integer> map = USER_HOLDER.get();
-        return map != null ? map.get("userId") : 16;
+        return map != null ? map.get("userId") : null;
     }
 
     /**
@@ -45,7 +45,7 @@ public class LocalThreadHolder {
      */
     public static Integer getRoleId() {
         Map<String, Integer> map = USER_HOLDER.get();
-        return map != null ? map.get("userRole") : 2;
+        return map != null ? map.get("userRole") : null;
     }
 
     /**

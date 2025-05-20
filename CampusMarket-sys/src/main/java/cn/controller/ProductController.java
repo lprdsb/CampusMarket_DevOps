@@ -115,7 +115,6 @@ public class ProductController {
     @PostMapping(value = "/queryUser")
     @ResponseBody
     public Result<List<ProductVO>> queryUser(@RequestBody ProductQueryDto productQueryDto) {
-        productQueryDto.setUserId(LocalThreadHolder.getUserId());
         return productService.query(productQueryDto);
     }
 

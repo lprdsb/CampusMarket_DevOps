@@ -8,7 +8,7 @@
                 </div>
             </div>
             <div  style="width: 800px;">
-                <LineChart @on-selected="onSelected" tag="商品上架情况" :values="values" :date="dates" height="400px" />
+                <LineChart @on-selected="onSelected" tag="商品上架情况" :values="values" :date="dates" height="600px" />
             </div>
         </div>
         <div class="right">
@@ -55,7 +55,7 @@ export default {
     methods: {
         route(product) {
             // 跳转商品详情
-            this.$router.push('/product-detail?productId=' + product.id);
+            this.$router.push('/product-detail1?productId=' + product.id);
         },
         /**
         * 商品封面图处理
