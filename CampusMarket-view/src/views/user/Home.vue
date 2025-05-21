@@ -11,6 +11,7 @@
                         <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
                         <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
                         <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
+                      <span v-if="loginStatus" @click="handleRouteSelect('/chatTable')">聊天</span>
                     </div>
                 </div>
                 <div

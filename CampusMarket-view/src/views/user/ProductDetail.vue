@@ -49,6 +49,7 @@
             <div class="operation">
                 <div class="left">
                     <span @click="likeProduct"><i class="el-icon-sell" style="margin-right: 5px;"></i>我想要</span>
+                  <el-button type="primary" icon="el-icon-chat-dot-round" @click="goToChat">和买家聊天</el-button>
                     <span @click="buyProduct">立即购买</span>
                 </div>
                 <div class="right">
@@ -231,6 +232,13 @@ export default {
                 console.log("商品---想要---异常：", error);
             })
         },
+      goToChat() {
+        // 假设聊天页面的路由路径是 '/chat'
+        this.$router.push({ path: '/chat', query: { SellerId: this.product.userId } });
+
+        // 或者直接跳转到指定买家的聊天窗口（带参数）
+        // this.$router.push({ path: '/chat', query: { buyerId: '123' } });
+      },
         querySaveStatus() {
             // 判断用户是否已经登录
             const userInfo = getUserInfo();
