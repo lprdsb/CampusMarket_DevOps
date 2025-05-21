@@ -96,6 +96,7 @@ export default {
 }
 
 .info {
+    cursor: pointer;
     display: flex;
     justify-content: left;
     align-items: center;

@@ -29,8 +29,8 @@
                     </el-tooltip>
                 </p>
                 <div>
-                    <span v-if="!userInfo.isLogin" style="font-size: 14px;color: rgb(27, 156, 53);"><i
-                            style="margin-right: 6px;" class="el-icon-circle-check"></i>正常</span>
+                    <span v-if="!userInfo.isLogin" style="font-size: 14px;color: rgb(27, 156, 53);">
+                        <i style="margin-right: 6px;" class="el-icon-circle-check"></i>正常</span>
                     <span v-else
                         style="font-size: 14px;color: rgb(230, 63, 49);text-decoration: underline;text-decoration-style: dashed;">
                         <i style="margin-right: 6px;" class="el-icon-warning-outline"></i>已被封禁</span>

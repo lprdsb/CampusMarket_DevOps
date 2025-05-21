@@ -25,8 +25,11 @@
                 <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
                 <span>{{ product.categoryName }}</span>
                 <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt="" srcset="">
-                <span>{{ product.userName }}</span>
+                <div @click="handleRouteSelect(`/space?userId=` + product.userId)" class="owner">
+                    <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt=""
+                        srcset="">
+                    <span>{{ product.userName }}</span>
+                </div>
                 <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
             </div>
             <div class="decimal">
@@ -57,7 +60,7 @@
                 </div>
             </div>
             <div v-if="userInfo !== null">
-                <Evaluations contentType="PRODUCT" :contentId="product.id" />
+                <Evaluations contentType="PRODUCT" :contentId="productId" />
             </div>
         </div>
         <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="35%">
@@ -130,6 +133,7 @@ export default {
     created() {
         this.getParam();
         this.viewOperation();
+        // console.log("asdasd" + this.productId);
     },
     beforeDestroy() {
         this.clearBanner(); // 清除定时器
@@ -151,6 +155,12 @@ export default {
             }).catch(error => {
                 console.log("浏览记录异常：", error);
             })
+        },
+        handleRouteSelect(path) {
+            // console.log(path);
+            if (this.$router.currentRoute.fullPath !== path) {
+                this.$router.push(path);
+            }
         },
         /**
          * 商品下单
@@ -435,6 +445,10 @@ export default {
             font-size: 32px;
             font-weight: 800;
             color: rgb(255, 68, 0);
+        }
+
+        .owner {
+            cursor: pointer;
         }
 
         .bargain {

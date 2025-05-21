@@ -2,6 +2,7 @@ package cn.controller;
 
 import cn.aop.Log;
 import cn.aop.Pager;
+import cn.aop.Protector;
 import cn.context.LocalThreadHolder;
 import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.ProductQueryDto;
@@ -9,6 +10,7 @@ import cn.pojo.dto.update.OrdersDTO;
 import cn.pojo.entity.Product;
 import cn.pojo.vo.ChartVO;
 import cn.pojo.vo.ProductVO;
+import cn.pojo.vo.UserVO;
 import cn.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -136,4 +138,11 @@ public class ProductController {
         return productService.query(productQueryDto);
     }
 
+    @GetMapping(value = "/getById/{id}")
+    @ResponseBody
+    public Result<List<ProductVO>> getById(@PathVariable Integer id) {
+        ProductQueryDto productQueryDto = new ProductQueryDto();
+        productQueryDto.setUserId(id);
+        return productService.query(productQueryDto);
+    }
 }

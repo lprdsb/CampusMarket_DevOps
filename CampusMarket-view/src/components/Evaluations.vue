@@ -22,16 +22,18 @@
             </el-row>
         </el-row>
         <el-row style="margin: 5px 0px;">
-            <el-row v-for="(comment, index) in commentList " :key="index" style="padding: 10px 0;">
+            <el-row v-for="(comment, index) in commentList" :key="index" style="padding: 10px 0;">
                 <el-row>
-                    <el-col :span="2">
-                        <el-avatar size="large" :src="comment.userAvatar"></el-avatar>
-                    </el-col>
-                    <el-col :span="22">
-                        <span style="height: 40px;line-height: 40px;font-size: 16px;color: #515767;">{{
-                            comment.userName }}</span>
-                        <span v-if="comment.userId == userId" class="my-body-tag">我自己</span>
-                    </el-col>
+                    <div @click="handleRouteSelect(`/space?userId=` + comment.userId)" style="cursor: pointer">
+                        <el-col :span="2">
+                            <el-avatar size="large" :src="comment.userAvatar"></el-avatar>
+                        </el-col>
+                        <el-col :span="22">
+                            <span style="height: 40px;line-height: 40px;font-size: 16px;color: #515767;">{{
+                                comment.userName }}</span>
+                            <span v-if="comment.userId == userId" class="my-body-tag">我自己</span>
+                        </el-col>
+                    </div>
                 </el-row>
                 <el-row style="padding: 8px 0;">
                     <el-col :span="22" :offset="2">
@@ -59,7 +61,7 @@
                             style="cursor: pointer;margin-left: 15px;font-size: 14px;color: #8A919F;user-select: none;">
                             <i class="el-icon-discount" v-if="!comment.upvoteFlag">点赞</i>
                             <i class="el-icon-discount" v-else style="color: #1E80FF;">&nbsp;{{ comment.upvoteCount
-                                }}</i>
+                            }}</i>
                         </span>
                     </el-col>
                 </el-row>
@@ -80,14 +82,17 @@
                     </el-col>
                 </el-row>
                 <!-- 子级评论 -->
-                <el-row v-for="(commentChild, index) in comment.commentChildVOS " :key="index"
+                <el-row v-for="(commentChild, index) in comment.commentChildVOS" :key="index"
                     style="padding: 10px 15px;font-size: 16px;">
                     <el-row>
                         <el-col :span="22" :offset="2">
                             <el-row style="display: flex; align-items: center; flex-wrap: wrap;">
-                                <el-avatar size="small" :src="commentChild.userAvatar"
-                                    style="margin-right: 5px;"></el-avatar>
-                                <span style="color: #515767; padding: 0 5px;">{{ commentChild.userName }}</span>
+                                <div @click="handleRouteSelect(`/space?userId=` + commentChild.userId)"
+                                    style="cursor: pointer">
+                                    <el-avatar size="small" :src="commentChild.userAvatar"
+                                        style="margin-right: 5px;"></el-avatar>
+                                    <span style="color: #515767; padding: 0 5px;">{{ commentChild.userName }}</span>
+                                </div>
                                 <span v-if="commentChild.userId == userId" class="my-body-tag">我自己</span>
                                 <span v-if="commentChild.replierName != null"
                                     style="margin:0 15px;color: #1c1c1c;user-select: none;font-size: 12px;">
@@ -207,8 +212,8 @@ export default {
         };
     },
     watch: {
-        contentId(newVal,oldVal){
-            if(newVal !== oldVal){
+        contentId(newVal, oldVal) {
+            if (newVal !== oldVal) {
                 this.loadCommentList();
             }
         },
@@ -224,6 +229,12 @@ export default {
         this.loadCommentList();
     },
     methods: {
+        handleRouteSelect(path) {
+            // console.log(path);
+            if (this.$router.currentRoute.fullPath !== path) {
+                this.$router.push(path);
+            }
+        },
         getUserInfo() {
             const userInfo = sessionStorage.getItem("userInfo");
             this.userData = JSON.parse(userInfo);
@@ -382,7 +393,7 @@ export default {
                     setTimeout(() => {
                         this.loadCommentList()
                     }, 1100)
-                }else{
+                } else {
                     this.$swal.fire({
                         title: '评论异常',
                         text: res.data.msg,
@@ -437,7 +448,7 @@ export default {
                         // 重新加载评论列表
                         this.loadCommentList();
                     }, 1300)
-                }else{
+                } else {
                     this.$swal.fire({
                         title: '评论异常',
                         text: res.data.msg,
@@ -478,7 +489,7 @@ export default {
                         // 重新加载评论列表
                         this.loadCommentList();
                     }, 1300)
-                }else{
+                } else {
                     this.$swal.fire({
                         title: '评论异常',
                         text: res.data.msg,

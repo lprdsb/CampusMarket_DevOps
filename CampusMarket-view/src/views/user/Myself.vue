@@ -12,12 +12,6 @@
                 {{ tagItem }}
             </span>
         </div>
-        <div v-if="tagSelected === '个人主页'">
-            <SelfView />
-        </div>
-        <div v-if="tagSelected === '关注列表'">
-            <Star />
-        </div>
         <div v-if="tagSelected === '修改资料'">
             <Self />
         </div>
@@ -37,15 +31,13 @@
 <script>
 import ResetPwd from '@/views/user/ResetPwd'
 import Self from '@/views/user/Self'
-import SelfView from '@/views/user/SelfView'
-import Star from '@/views/user/Star'
 export default {
-    components: { ResetPwd, Self, SelfView, Star },
+    components: { ResetPwd, Self },
     data() {
         return {
-            tags: ['个人主页', '关注列表', '修改资料', '修改密码', '退出登录'],
+            tags: ['修改资料', '修改密码', '退出登录'],
             tagSelected: '',
-            defaultPath: '个人主页',
+            defaultPath: '修改资料',
         };
     },
     created() {

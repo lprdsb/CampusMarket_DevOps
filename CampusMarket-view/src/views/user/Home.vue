@@ -10,6 +10,7 @@
                         <span @click="handleRouteSelect('/product')">商品</span>
                         <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
                         <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
+                        <span v-if="loginStatus" @click="handleRouteSelect('/star')">我的关注</span>
                         <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
                     </div>
                 </div>
@@ -49,7 +50,8 @@
                         登录&nbsp;|&nbsp;注册
                     </div>
                     <div v-else>
-                        <img @click="handleRouteSelect('/myself')" class="avatar" :src="userInfo.userAvatar">
+                        <img @click="handleRouteSelect('/space?userId=' + userInfo.id)" class="avatar"
+                            :src="userInfo.userAvatar">
                     </div>
                 </div>
             </div>
@@ -60,8 +62,8 @@
                 <div style="padding: 0 40px;">
                     <div class="title1">
                         <span class="title">{{ userInfo.userName }}</span>
-                        <span  class="poin" v-for="(info,index) in productInfoList" :key="index">
-                            {{info.name}}·{{ info.count }}
+                        <span class="poin" v-for="(info, index) in productInfoList" :key="index">
+                            {{ info.name }}·{{ info.count }}
                         </span>
                     </div>
                     <div class="date">
@@ -160,7 +162,6 @@ export default {
 <style scoped lang="scss">
 .avatar {
     border: 3px solid rgb(51, 51, 51);
-    width: 30px;
     width: 30px;
     border-radius: 50%;
 }
