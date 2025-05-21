@@ -26,7 +26,7 @@ const routes = [
       { path: "/interactionManage", name: '互动管理', icon: 'el-icon-connection', component: () => import(`@/views/admin/Interaction.vue`), meta: { requireAuth: true } },
       { path: "/operationLogManage", name: '日志管理', icon: 'el-icon-connection', component: () => import(`@/views/admin/OperationLog.vue`), meta: { requireAuth: true } },
       { path: "/evaluations", name: '评论管理', icon: 'el-icon-chat-dot-round', component: () => import(`@/views/admin/Evaluations.vue`), meta: { requireAuth: true } },
-      { name: '商品详情',show: false, path: "/product-detail1", component: () => import(`@/views/admin/ProductDetail.vue`), meta: { requireAuth: true } },
+      { name: '商品详情', show: false, path: "/product-detail1", component: () => import(`@/views/admin/ProductDetail.vue`), meta: { requireAuth: true } },
     ]
   },
   {
@@ -45,6 +45,7 @@ const routes = [
       { name: '发布商品', path: "/post-product", component: () => import(`@/views/user/PostProduct.vue`), meta: { requireAuth: true } },
       { name: '编辑商品', path: "/edit-product", component: () => import(`@/views/user/EditProduct.vue`), meta: { requireAuth: true } },
       { name: '商品详情', path: "/product-detail", component: () => import(`@/views/user/ProductDetail.vue`), meta: { requireAuth: true } },
+      { name: '用户页面', path: "/space", component: () => import(`@/views/user/Space.vue`), meta: { requireAuth: true } },
     ]
   }
 ];
