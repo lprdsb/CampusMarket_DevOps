@@ -234,7 +234,7 @@ export default {
         },
       goToChat() {
         // 假设聊天页面的路由路径是 '/chat'
-        this.$router.push({ path: '/chat', query: { SellerId: this.product.userId } });
+        this.$router.push({ path: '/chat', query: { ReceiverId: this.product.userId } });
 
         // 或者直接跳转到指定买家的聊天窗口（带参数）
         // this.$router.push({ path: '/chat', query: { buyerId: '123' } });

@@ -72,12 +72,13 @@ export default {
   methods: {
     fetchSellerInfo() {
       // 从路由参数获取卖家ID
-      const sellerId = this.$route.query.sellerId;
-      /*if (!sellerId) {
+      const sellerId = this.$route.query.SellerId||'';
+
+      if (!sellerId) {
         this.$message.error('缺少卖家信息');
         this.$router.back();
         return;
-      }*/
+      }
 
       // 这里应该是API调用获取卖家信息
       // 模拟数据

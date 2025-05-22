@@ -1,5 +1,6 @@
 package cn.controller;
 
+import cn.context.LocalThreadHolder;
 import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.ChatterQueryDto;
 import cn.pojo.entity.Chatter;
@@ -39,6 +40,8 @@ public class ChatterController {
     @PostMapping(value = "/query")
     @ResponseBody
     public Result<List<ChatterVO>> query(@RequestBody ChatterQueryDto chatterQueryDto){
+        if (chatterQueryDto.getSenderId()==-1)
+            chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
         return chatterService.query(chatterQueryDto);
     }
 
@@ -48,9 +51,9 @@ public class ChatterController {
      * @param id 用户ID
      * @return Result<UserVO>
      */
-    @PostMapping(value = "/getById/{id}")
+    @GetMapping(value = "/getById/{id}")
     @ResponseBody
-    public Result<UserVO> getById(@PathVariable Integer id){
+    public Result<UserVO> getById(@PathVariable Integer id) {
         return userService.getById(id);
     }
 }
