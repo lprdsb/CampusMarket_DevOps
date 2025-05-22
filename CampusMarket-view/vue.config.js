@@ -4,6 +4,7 @@ module.exports = {
     parallel: false,
     publicPath: './',
     devServer: {
+        disableHostCheck: true,
         host: "localhost",
         port: 21091,
         https: false,
@@ -14,6 +15,7 @@ module.exports = {
                 pathRewrite: { '^/api': '' }, // 将 '/api' 前缀重写为空字符串，以便后端服务接收到正确的路径
             },
         },
+
         overlay: {
             warning: false,
             errors: false
