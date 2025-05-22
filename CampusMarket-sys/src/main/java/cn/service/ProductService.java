@@ -31,4 +31,5 @@ public interface ProductService {
 
     Result<List<ChartVO>> queryProductInfo(ProductQueryDto productQueryDto);
 
+    Result<List<Product>> getRecommendedProducts(Integer userId);
 }

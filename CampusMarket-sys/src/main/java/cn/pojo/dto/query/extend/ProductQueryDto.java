@@ -26,4 +26,16 @@ public class ProductQueryDto extends QueryDto {
      * 是否支持砍价
      */
     private Boolean isBargain;
+    /**
+     * 价格区间
+     */
+    private Integer priceMin;
+    /**
+     * 价格区间
+     */
+    private Integer priceMax;
+    /**
+     * 推荐条目
+     */
+    private Integer recommendLimit;
 }

@@ -24,6 +24,13 @@
                     v-model="searchTime" type="daterange" range-separator="至" start-placeholder="发布开始"
                     end-placeholder="发布结束">
                 </el-date-picker>
+                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMin" 
+                    placeholder="最低价" @change="val => handlePriceChange('priceMin', val)">
+                </el-input>
+                <span style="margin-right: 5px;">-</span>
+                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMax" 
+                    placeholder="最高价" @change="val => handlePriceChange('priceMax', val)">
+                </el-input>
                 <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
                     v-model="productQueryDto.categoryId" placeholder="商品类别">
                     <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
@@ -37,9 +44,12 @@
             </el-row>
             <el-row v-else>
                 <el-col @click.native="route(product)" :span="6" v-for="(product, index) in productList" :key="index">
-                    <div class="item-product">
+                    <div class="item-product" style="position: relative;">
                         <div class="cover">
                             <img :src="coverListParse(product)" alt="" srcset="" >
+                            <div v-if="product.isRecommended" class="recommend-tag" style="position: absolute; right: 10px; top: 10px;">
+                                猜你喜欢
+                            </div>
                         </div>
                         <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
                             <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
@@ -70,8 +80,12 @@ export default {
             categoryList: [], // 存储的商品类别数组
             isUseCategoryList: [], // 存储的启用的类别数组
             categorySelectedItem: {},
-            productQueryDto: {}, // 商品查询条件类
+            productQueryDto: {
+                priceMin: null,
+                priceMax: null
+            }, // 商品查询条件类
             productList: [],// 存储后端返回的商品数据列表
+            recommendedProducts: [], // 新增推荐列表
             bargainSelectedItem: {},
             searchTime: [],
             bargainStatus: [{ isBargain: null, name: '全部' }, { isBargain: true, name: '支持砍价' }, { isBargain: false, name: '不支持砍价' }]
@@ -116,18 +130,52 @@ export default {
                 startTime = `${startDate.split('T')[0]}T00:00:00`;
                 endTime = `${endDate.split('T')[0]}T23:59:59`;
             }
-            // this.productQueryDto.current = this.currentPage;
-            // this.productQueryDto.size = this.pageSize;
-            this.productQueryDto.startTime = startTime;
-            this.productQueryDto.endTime = endTime;
-            this.$axios.post('/product/query', this.productQueryDto).then(res => {
+            const processedQuery = {
+                ...this.productQueryDto,
+                priceMin: this.productQueryDto.priceMin !== null 
+                ? Number(this.productQueryDto.priceMin) 
+                : null,
+                priceMax: this.productQueryDto.priceMax !== null 
+                ? Number(this.productQueryDto.priceMax) 
+                : null,
+                startTime,
+                endTime,
+                // current: this.currentPage,  // 保留分页参数
+                // size: this.pageSize
+            };
+            this.$axios.post('/product/query', processedQuery).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.productList = data.data;
                 }
+                this.$axios.get('/product/recommend?limit=1').then(recommendRes => {
+                    const { data } = recommendRes;
+                    if (data.code === 200) {
+                        this.recommendedProducts = data.data;
+                    }
+                    this.mergeProducts();
+                }).catch(error => {
+                    console.log("推荐商品查询异常：", error);
+                });
             }).catch(error => {
                 console.log("商品查询异常：", error);
-            })
+            });
+        },
+        mergeProducts() {
+            const recommendedIds = new Set(
+                this.recommendedProducts.map(p => p.id)
+            );
+
+            const mergedList = this.productList.map(product => {
+                return{
+                    ...product,
+                    isRecommended: recommendedIds.has(product.id)
+                }
+            });
+            // 按推荐状态分组并优先排列推荐商品
+            const recommended = mergedList.filter(p => p.isRecommended);
+            const nonRecommended = mergedList.filter(p => !p.isRecommended);
+            this.productList = [...recommended, ...nonRecommended];
         },
         /**
          * 商品类别选中事件
@@ -155,6 +203,15 @@ export default {
                 console.log("商品类别查询异常：", error);
             })
         },
+        handlePriceChange(field, value) {
+            if (value === '' || isNaN(value)) {
+                this.productQueryDto[field] = null
+            } else {
+                const numValue = Number(value)
+                this.productQueryDto[field] = numValue >= 0 ? numValue : null
+            }
+            this.fetchFreshData()
+        }
     }
 };
 </script>
@@ -274,5 +331,16 @@ export default {
             background-color: rgb(242, 242, 242);
         }
     }
+}
+
+.recommend-tag {
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 230, 15, 0.9);
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 1;
 }
 </style>
