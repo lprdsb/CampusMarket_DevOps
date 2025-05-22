@@ -109,20 +109,33 @@ export default {
       if (!receiverId) return;
 
       this.loading = true;
-      //try {
+      try {
         const chatterQueryDto = {
           senderId: -1,  // 当前用户ID
           receiverId: receiverId,  // 接收者ID
         };
         const response = await this.$axios.post('/chat/queryUser',chatterQueryDto);
-
+        console.log('Response:', response);
+        console.log('Response Data:', response.data);
         // 将消息处理成 'chatter' 对象
-        this.chatters = response.data.map(chatter => ({
-          sender: chatter.senderId === this.$store.state.user.id ? 'me' : 'receiver', // 修改接收者为 'receiver'
-          content: chatter.content,
-          createTime: new Date(chatter.createTime)
-        }));
-
+        if (response.data.data && Array.isArray(response.data.data)) {
+          this.chatters = response.data.data.map(chatter => {
+            // 格式化时间 (根据数据格式)
+            const formattedTime = new Date(chatter.createTime.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', 'T'));
+            const sender = chatter.senderId == receiverId ? 'receiver' : 'me';
+            console.log(chatter.senderId);
+            console.log(receiverId);
+            console.log(chatter.content);
+            console.log(sender);
+            return {
+              sender: sender,  // 判断发送者
+              content: chatter.content,
+              createTime: formattedTime,  // 格式化时间
+            };
+          });
+        }
+        this.chatters.sort((a, b) => a.createTime - b.createTime);
+        console.log('Chat history:', this.chatters);
         if (this.chatters.length === 0) {
           this.chatters.push({
             sender: 'receiver',
@@ -130,23 +143,22 @@ export default {
             createTime: new Date(Date.now() - 3600000)
           });
         }
-      //}
-      /*catch (error)
+      }
+      catch (error)
       {
         console.error('加载聊天记录失败:', error);
-        this.$message.error('加载聊天记录失败');
       }
       finally
       {
         this.loading = false;
-      }*/
+      }
     },
 
     // 定时拉取最新的聊天记录
     startChatPolling() {
       this.chatInterval = setInterval(() => {
         this.loadChatHistory();
-      }, 1000);  // 每1秒钟请求一次最新的聊天记录
+      }, 500);  // 每1秒钟请求一次最新的聊天记录
     },
 
     // 发送消息
@@ -167,9 +179,9 @@ export default {
           isRead:1
         });
         const newMessage = {
-          sender: '我',
+          sender: 'me',
           content: this.inputMessage,
-          receiver:'对方'
+          receiver:'receiver'
         };
         this.chatters.push(newMessage);
         this.inputMessage = '';  // 清空输入框
@@ -268,7 +280,7 @@ export default {
 
 .message-content {
   max-width: 70%;
-  padding: 10px 15px;
+  padding: 5px 8px;
   border-radius: 18px;
   position: relative;
 }
