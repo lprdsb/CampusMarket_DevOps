@@ -4,14 +4,13 @@ import cn.mapper.ChatterMapper;
 import cn.pojo.api.ApiResult;
 import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.ChatterQueryDto;
-import cn.pojo.dto.query.extend.MessageQueryDto;
 import cn.pojo.entity.Chatter;
 import cn.pojo.vo.ChatterVO;
-import cn.pojo.vo.MessageVO;
 import cn.service.ChatterService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,8 +26,28 @@ public class ChatterServiceImpl implements ChatterService {
 
     @Override
     public Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto){
-        chatterMapper.query(chatterQueryDto);
-        List<ChatterVO>  chatterVOList = chatterMapper.query(chatterQueryDto);
-        return ApiResult.success(chatterVOList);
+        // 第一次查询：原始参数
+        List<ChatterVO> firstList = chatterMapper.query(chatterQueryDto);
+
+        // 保存原始参数，避免后续污染
+        Integer originalSenderId = chatterQueryDto.getSenderId();
+        Integer originalReceiverId = chatterQueryDto.getReceiverId();
+
+        // 交换 senderId 和 receiverId
+        chatterQueryDto.setSenderId(originalReceiverId);
+        chatterQueryDto.setReceiverId(originalSenderId);
+
+        // 第二次查询：交换后的参数
+        List<ChatterVO> secondList = chatterMapper.query(chatterQueryDto);
+
+        // 合并两次结果
+        List<ChatterVO> combinedList = new ArrayList<>(firstList);
+        combinedList.addAll(secondList);
+
+        // 恢复原始参数
+        chatterQueryDto.setSenderId(originalSenderId);
+        chatterQueryDto.setReceiverId(originalReceiverId);
+
+        return ApiResult.success(combinedList);
     }
 }

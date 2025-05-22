@@ -4,8 +4,9 @@ import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.ChatterQueryDto;
 import cn.pojo.entity.Chatter;
 import cn.pojo.vo.ChatterVO;
-import cn.pojo.vo.MessageVO;
+import cn.pojo.vo.UserVO;
 import cn.service.ChatterService;
+import cn.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,10 +18,12 @@ public class ChatterController {
     @Resource
     private ChatterService chatterService;
 
+    @Resource
+    private UserService userService;
     /**
      * 发送信息的保存
-     * @param chatter
-     * @return
+     * @param chatter 聊天信息
+     * @return 保存成功与否
      */
     @PostMapping(value = "/send")
     @ResponseBody
@@ -30,8 +33,8 @@ public class ChatterController {
 
     /**
      * 查询与这个用户的聊天信息
-     * @param chatterQueryDto
-     * @return
+     * @param chatterQueryDto 聊天传递的信息
+     * @return 单向的聊天记录
      */
     @PostMapping(value = "/query")
     @ResponseBody
@@ -39,5 +42,15 @@ public class ChatterController {
         return chatterService.query(chatterQueryDto);
     }
 
-
+    /**
+     * 通过ID查询用户信息
+     *
+     * @param id 用户ID
+     * @return Result<UserVO>
+     */
+    @PostMapping(value = "/getById/{id}")
+    @ResponseBody
+    public Result<UserVO> getById(@PathVariable Integer id){
+        return userService.getById(id);
+    }
 }

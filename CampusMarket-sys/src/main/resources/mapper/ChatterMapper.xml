@@ -48,11 +48,11 @@
         <where>
             <!-- 发送方过滤 -->
             <if test="senderId != null">
-                AND sender.sender_id = #{senderId}
+                AND sender.id = #{senderId}
             </if>
             <!-- 接收方过滤 -->
             <if test="receiverId != null">
-                AND receiver.receiver_id = #{receiverId}
+                AND receiver.id = #{receiverId}
             </if>
         </where>
         ORDER BY c.create_time DESC
