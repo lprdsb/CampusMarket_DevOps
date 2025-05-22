@@ -35,13 +35,12 @@ public class ChatterController {
     /**
      * 查询与这个用户的聊天信息
      * @param chatterQueryDto 聊天传递的信息
-     * @return 单向的聊天记录
+     * @return 双向的聊天记录
      */
-    @PostMapping(value = "/query")
+    @PostMapping(value = "/queryUser")
     @ResponseBody
     public Result<List<ChatterVO>> query(@RequestBody ChatterQueryDto chatterQueryDto){
-        if (chatterQueryDto.getSenderId()==-1)
-            chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
+        chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
         return chatterService.query(chatterQueryDto);
     }
 

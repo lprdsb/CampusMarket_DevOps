@@ -114,7 +114,7 @@ export default {
           senderId: -1,  // 当前用户ID
           receiverId: receiverId,  // 接收者ID
         };
-        const response = await this.$axios.post('/chat/query',chatterQueryDto);
+        const response = await this.$axios.post('/chat/queryUser',chatterQueryDto);
 
         // 将消息处理成 'chatter' 对象
         this.chatters = response.data.map(chatter => ({
