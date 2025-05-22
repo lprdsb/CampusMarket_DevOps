@@ -5,13 +5,13 @@
         </el-row>
         <el-row v-else>
             <el-col :span="6" v-for="(product, index) in productList" :key="index">
-                <div class="item-product">
+                <div class="item-product" @click="route(product)" >
                     <div class="cover">
                         <img :src="coverListParse(product)" alt="" srcset="">
                     </div>
                     <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
                         <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
-                        <span class="title" @click="route(product)">
+                        <span class="title">
                             {{ product.name }}
                         </span>
                     </div>
@@ -41,7 +41,7 @@ export default {
         };
     },
     created() {
-        console.log(this.userId);
+        // console.log(this.userId);
         this.fetchProduct();
     },
     methods: {

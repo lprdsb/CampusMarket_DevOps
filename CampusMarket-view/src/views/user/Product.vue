@@ -39,7 +39,7 @@
                 <el-col @click.native="route(product)" :span="6" v-for="(product, index) in productList" :key="index">
                     <div class="item-product">
                         <div class="cover">
-                            <img :src="coverListParse(product)" alt="" srcset="">
+                            <img :src="coverListParse(product)" alt="" srcset="" >
                         </div>
                         <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
                             <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
@@ -162,7 +162,7 @@ export default {
 .cover {
     img {
         width: 100%;
-        height: 160px;
+        height: 350px;
         border-radius: 10px;
     }
 }

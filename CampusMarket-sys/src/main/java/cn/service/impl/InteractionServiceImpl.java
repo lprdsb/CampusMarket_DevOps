@@ -9,12 +9,16 @@ import cn.pojo.api.ApiResult;
 import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.InteractionQueryDto;
 import cn.pojo.dto.query.extend.ProductQueryDto;
+import cn.pojo.dto.query.extend.StarQueryDto;
 import cn.pojo.em.InteractionEnum;
 import cn.pojo.entity.Interaction;
 import cn.pojo.entity.Message;
 import cn.pojo.entity.User;
 import cn.pojo.vo.ProductVO;
+import cn.pojo.vo.StarVo;
 import cn.service.InteractionService;
+import cn.service.StarService;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,6 +42,9 @@ public class InteractionServiceImpl implements InteractionService {
     private MessageMapper messageMapper;
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private StarService starService;
 
     /**
      * "我想要"操作
@@ -82,6 +89,39 @@ public class InteractionServiceImpl implements InteractionService {
         // 设置上互动信息
         Interaction interaction = createInteraction(productId, InteractionEnum.LOVE.getType());
         interactionMapper.save(interaction);
+        return ApiResult.success("卖家已感受到你的热情，快下单吧!");
+    }
+
+    @Override
+    public Result<String> newProduct(Integer productId) {
+        // 用户不能重复去"想要"商品
+        ProductQueryDto productQueryDto = new ProductQueryDto();
+        productQueryDto.setId(productId);
+        List<ProductVO> productVOS = productMapper.query(productQueryDto);
+        // 如果商品信息不存在，直接返回
+        if (productVOS.isEmpty()) {
+            return ApiResult.error("商品信息查询异常");
+        }
+        ProductVO productVO = productVOS.get(0);
+
+        Integer userId = LocalThreadHolder.getUserId();
+
+        StarQueryDto starQueryDto = new StarQueryDto();
+        starQueryDto.setUser2Id(userId);
+        List<StarVo> starList = starService.getStarVos(starQueryDto);
+        List<Integer> starIds = starList.stream()
+                .map(StarVo::getUser1Id).collect(Collectors.toList());
+
+        // 查询用户信息
+        for (Integer id : starIds) {
+            Message message = new Message();
+            message.setUserId(id);
+            // 消息设置为未读
+            message.setIsRead(false);
+            message.setCreateTime(LocalDateTime.now());
+            message.setContent("你关注的用户【" + productVO.getUserName() + "】发布了新商品【" + productVO.getName() + "】，快去看看吧!");
+            messageMapper.save(message);
+        }
         return ApiResult.success("卖家已感受到你的热情，快下单吧!");
     }
 

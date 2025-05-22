@@ -2,6 +2,8 @@ package cn.mapper;
 
 import cn.pojo.dto.query.extend.UserQueryDto;
 import cn.pojo.entity.User;
+import cn.pojo.vo.UserVO;
+
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -58,4 +60,5 @@ public interface UserMapper {
      */
     User getByActive(User user);
 
+    List<UserVO> queryUserList(@Param(value = "ids") List<Integer> ids);
 }

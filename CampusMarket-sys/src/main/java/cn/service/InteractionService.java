@@ -30,4 +30,6 @@ public interface InteractionService {
 
     Result<String> batchDeleteInteraction();
 
+    public Result<String> newProduct(Integer productId);
+
 }

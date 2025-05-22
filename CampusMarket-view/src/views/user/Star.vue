@@ -1,25 +1,17 @@
 <template>
-    <div class="container1">
-        <!-- 头像 -->
-        <!-- <div class="info">
-            <img :src="userInfo.userAvatar" alt="" srcset="">
-            <span>{{ userInfo.userName }}</span>
-        </div> -->
-        <el-row :span="20" style="height: 50px;">
-            <el-col @click.native="route()">
-                <div class="info">
-                    <img :src="userInfo.userAvatar" alt="" srcset="">
-                    <span>{{ userInfo.userName }}</span>
-                </div>
-            </el-col>
-        </el-row>
-        <!-- <br>
-        <el-row :span="20" style="height: 50px;">
-            <div class="info">
-                <img :src="userInfo.userAvatar" alt="" srcset="">
-                <span>{{ userInfo.userName }}</span>
-            </div>
-        </el-row> -->
+    <div class="star-container">
+        <h2 class="title">我关注的用户</h2>
+    <div v-if="userList.length === 0" class="empty">
+      暂无关注用户~
+    </div>
+    <el-row gutter="20">
+      <el-col :span="24" v-for="(id, index) in userList" :key="index">
+        <div class="user-card" @click="route('/space?userId=' + id.id)">
+            <img :src="id.userAvatar" alt="" srcset="">
+          <div class="user-name">{{ id.userName }}</div>
+        </div>
+      </el-col>
+    </el-row>
     </div>
 </template>
 <script>
@@ -29,18 +21,32 @@ export default {
         return {
             userInfo: {},
             userAvatar: '',
+            userList: [],
         }
     },
+
     created() {
         this.auth();
     },
     methods: {
 
-        route() {
-            // 跳转商品详情
+        route(path) {
+            // 跳转关注列表
             // console.log(this.userInfo.id);
-            this.$router.push('/space?userId=' + this.userInfo.id);
+            this.$router.push(path);
         },
+        
+        fetchStar() {
+            this.$axios.post('/star/queryByUser1/' + this.userInfo.id, {}).then(res => {
+                const { data } = res; // 解构
+                if (data.code === 200) {
+                    this.userList = data.data;
+                }
+            }).catch(error => {
+                console.log("关注异常：", error);
+            })
+        },
+
         // 提交个人信息修改
         async postInfo() {
             const { userName, userEmail } = this.userInfo;
@@ -76,41 +82,77 @@ export default {
             }
         },
         // Token 检验 ,取得用户信息
-        async auth() {
-            const { data } = await this.$axios.get('/user/auth');
-            if (data.code !== 200) { // Token校验异常
-                this.$router.push('/');
-            } else {
-                this.userInfo = data.data;
-                this.userAvatar = data.data.userAvatar;
-            }
+        auth() {
+            
+            this.$axios.get('/user/auth').then(res => {
+                const { data } = res;
+                if (data.code === 200) {
+                    this.userInfo = data.data;
+                    this.userAvatar = data.data.userAvatar;
+                    this.fetchStar();
+                }
+            }).catch(error => {
+                this.$notify.error({
+                    title: '查询异常',
+                    message: error
+                });
+            });
         },
     }
 };
 </script>
 <style scoped lang="scss">
-.container {
-    width: 500px;
-    margin: 0 auto;
-    padding: 0;
-}
 
-.info {
-    cursor: pointer;
+.star-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+  }
+
+  .empty {
+    text-align: center;
+    font-size: 16px;
+    color: #aaa;
+    margin-top: 20px;
+  }
+
+  .user-card {
     display: flex;
-    justify-content: left;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
 
     img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 2px solid #f2f2f2;
+      object-fit: cover;
     }
 
-    span {
-        font-size: 20px;
-        color: #999;
+    .user-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
     }
+  }
 }
 </style>

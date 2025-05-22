@@ -15,6 +15,8 @@ import cn.pojo.entity.Product;
 import cn.pojo.vo.ChartVO;
 import cn.pojo.vo.ProductVO;
 import cn.service.ProductService;
+import cn.service.InteractionService;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -36,6 +38,9 @@ public class ProductServiceImpl implements ProductService {
     @Resource
     private InteractionMapper interactionMapper;
 
+    @Resource
+    private InteractionService interactionService;
+
     /**
      * 新增
      *
@@ -47,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
         product.setUserId(LocalThreadHolder.getUserId());
         product.setCreateTime(LocalDateTime.now());
         productMapper.save(product);
+        interactionService.newProduct(product.getId());
         return ApiResult.success("商品新增成功");
     }
 

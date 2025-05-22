@@ -9,13 +9,10 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class starQueryDto extends QueryDto {
+public class StarQueryDto extends QueryDto {
     /**
      * 用户ID
      */
     private Integer user1Id;
-    /**
-     * 商品ID
-     */
     private Integer user2Id;
 }
