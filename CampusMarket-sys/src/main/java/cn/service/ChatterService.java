@@ -2,10 +2,8 @@ package cn.service;
 
 import cn.pojo.api.Result;
 import cn.pojo.dto.query.extend.ChatterQueryDto;
-import cn.pojo.dto.query.extend.MessageQueryDto;
 import cn.pojo.entity.Chatter;
 import cn.pojo.vo.ChatterVO;
-import cn.pojo.vo.MessageVO;
 
 import java.util.List;
 
@@ -16,4 +14,6 @@ public interface ChatterService {
     Result<String> save(Chatter chatter);
 
     Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto);
+
+    Result<List<ChatterVO>> queryTable(ChatterQueryDto chatterQueryDto);
 }

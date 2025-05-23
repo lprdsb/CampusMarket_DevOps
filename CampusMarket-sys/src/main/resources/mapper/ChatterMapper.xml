@@ -57,4 +57,39 @@
         </where>
         ORDER BY c.create_time DESC
     </select>
+
+    <!-- 查询聊天表项 -->
+    <select id="queryTable" resultMap="ChatterVOResultMap" parameterType="cn.pojo.dto.query.extend.ChatterQueryDto">
+        SELECT
+        c.*,
+        sender.user_name AS sender_name,
+        sender.user_account AS sender_account,
+        sender.user_avatar AS sender_avatar,
+        receiver.user_name AS receiver_name,
+        receiver.user_account AS receiver_account,
+        receiver.user_avatar AS receiver_avatar
+        FROM chatter c
+        INNER JOIN user sender ON c.sender_id = sender.id
+        INNER JOIN user receiver ON c.receiver_id = receiver.id
+        INNER JOIN (
+            SELECT
+            GREATEST(sender_id, receiver_id) AS user1,
+            LEAST(sender_id, receiver_id) AS user2,
+            MAX(create_time) AS last_time
+            FROM chatter
+            WHERE (#{senderId} = sender_id OR #{senderId} = receiver_id)
+            <if test="content != null and content != ''">
+                AND content LIKE CONCAT('%', #{content}, '%')
+            </if>
+            <if test="startTime != null and endTime != null">
+                AND c.create_time BETWEEN #{startTime} AND #{endTime}
+            </if>
+            GROUP BY user1, user2
+        ) last_conversation
+        ON (c.sender_id = user1 AND c.receiver_id = user2
+        OR c.sender_id = user2 AND c.receiver_id = user1)
+        AND c.create_time = last_conversation.last_time
+        WHERE (#{senderId} = c.sender_id OR #{senderId} = c.receiver_id)
+        ORDER BY c.create_time DESC
+    </select>
 </mapper>

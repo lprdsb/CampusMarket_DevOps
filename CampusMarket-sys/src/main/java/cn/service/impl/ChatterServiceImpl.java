@@ -55,4 +55,9 @@ public class ChatterServiceImpl implements ChatterService {
         System.out.println(combinedList);
         return ApiResult.success(combinedList);
     }
+
+    @Override
+    public Result<List<ChatterVO>> queryTable(ChatterQueryDto chatterQueryDto){
+        return ApiResult.success(chatterMapper.queryTable(chatterQueryDto));
+    }
 }

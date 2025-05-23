@@ -20,5 +20,5 @@ public interface ChatterMapper {
 
     List<ChatterVO> query(ChatterQueryDto chatterQueryDto);
 
-
+    List<ChatterVO> queryTable(ChatterQueryDto chatterQueryDto);
 }
