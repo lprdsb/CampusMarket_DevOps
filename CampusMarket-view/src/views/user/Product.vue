@@ -130,20 +130,15 @@ export default {
                 startTime = `${startDate.split('T')[0]}T00:00:00`;
                 endTime = `${endDate.split('T')[0]}T23:59:59`;
             }
-            const processedQuery = {
-                ...this.productQueryDto,
-                priceMin: this.productQueryDto.priceMin !== null 
+            this.productQueryDto.priceMin !== null 
                 ? Number(this.productQueryDto.priceMin) 
-                : null,
-                priceMax: this.productQueryDto.priceMax !== null 
+                : null;
+            this.productQueryDto.priceMax !== null 
                 ? Number(this.productQueryDto.priceMax) 
-                : null,
-                startTime,
-                endTime,
-                // current: this.currentPage,  // 保留分页参数
-                // size: this.pageSize
-            };
-            this.$axios.post('/product/query', processedQuery).then(res => {
+                : null;
+            this.productQueryDto.startTime=startTime;
+            this.productQueryDto.endTime=endTime;
+            this.$axios.post('/product/query', this.productQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.productList = data.data;

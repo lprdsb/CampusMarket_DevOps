@@ -165,7 +165,6 @@
         <result column="like_number" property="likeNumber"/>
         <result column="save_number" property="saveNumber"/>
         <result column="view_number" property="viewNumber"/>
-        <result column="relevance_score" property="relevanceScore"/>
     </resultMap>
 
     <select id="findRecommendedProducts" resultMap="BaseResultMap">
