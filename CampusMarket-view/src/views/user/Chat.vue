@@ -1,11 +1,11 @@
 <template>
   <div class="chat-container">
-    <!-- 顶部卖家信息栏 -->
-    <div class="seller-info">
-      <el-avatar :size="50" :src="seller.avatar"></el-avatar>
-      <div class="seller-details">
-        <h3>{{ seller.name }}</h3>
-        <p>正在出售 {{ seller.productCount }} 件商品</p>
+    <!-- 顶部接收者信息栏 -->
+    <div class="receiver-info">
+      <el-avatar :size="50" :src="receiver.avatar"></el-avatar>
+      <div class="receiver-details">
+        <h3>{{ receiver.name }}</h3>
+        <p>用户ID: {{ receiver.id }}</p>
       </div>
       <el-button type="info" plain @click="backToProduct">返回商品</el-button>
     </div>
@@ -13,13 +13,13 @@
     <!-- 聊天消息区域 -->
     <div class="message-area" ref="messageArea">
       <div
-          v-for="(message, index) in messages"
+          v-for="(chatter, index) in chatters"
           :key="index"
-          :class="['message-bubble', message.sender === 'me' ? 'sent' : 'received']"
+          :class="['message-bubble', chatter.sender === 'me' ? 'sent' : 'received']"
       >
         <div class="message-content">
-          <p>{{ message.content }}</p>
-          <span class="message-time">{{ formatTime(message.time) }}</span>
+          <p>{{ chatter.content }}</p>
+          <span class="message-time">{{ formatTime(chatter.createTime) }}</span>
         </div>
       </div>
     </div>
@@ -44,84 +44,175 @@
 
 <script>
 export default {
-  name: 'SellerChat',
+  name: 'ReceiverChat',
   data() {
     return {
-      seller: {
+      receiver: {
         id: '',
-        name: '卖家名称',
+        name: '接收者名称',
         avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
         productCount: 0
       },
       inputMessage: '',
-      messages: [
-        {
-          sender: 'seller',
-          content: '您好，您对我的商品有什么问题吗？',
-          time: new Date(Date.now() - 3600000)
-        }
-      ]
+      chatters: [],  // 改为 'chatters'，代表聊天记录
+      loading: false,
+      chatInterval: null  // 用来存储定时器ID，方便清除
     };
   },
   created() {
-    this.fetchSellerInfo();
+    this.fetchReceiverInfo();
+    this.loadChatHistory();
+    // 开始定时拉取聊天记录
+    this.startChatPolling();
+  },
+  destroyed() {
+    // 清除定时器，防止内存泄漏
+    if (this.chatInterval) {
+      clearInterval(this.chatInterval);
+    }
   },
   mounted() {
     this.scrollToBottom();
   },
   methods: {
-    fetchSellerInfo() {
-      // 从路由参数获取卖家ID
-      const sellerId = this.$route.query.SellerId||'';
-
-      if (!sellerId) {
-        this.$message.error('缺少卖家信息');
+    // 获取接收者的信息
+    async fetchReceiverInfo() {
+      const receiverId = this.$route.query.ReceiverId||'';
+      if (!receiverId) {
+        this.$message.error('缺少接收者信息');
         this.$router.back();
         return;
       }
 
-      // 这里应该是API调用获取卖家信息
-      // 模拟数据
-      this.seller = {
-        id: sellerId,
-        name: '卖家' + sellerId.slice(0, 4),
-        avatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-        productCount: 12
-      };
+      try {
+        const response = await this.$axios.get(`/chat/getById/${receiverId}`);
+        console.log(response.data);
+        const user = response.data.data;
+
+        this.receiver = {
+          id: receiverId,
+          name: user.userName || '接收者' + receiverId.slice(0, 4),
+          avatar: user.userAvatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+        };
+
+      }
+      catch (error) {
+        console.error('获取接收者信息失败:', error);
+        this.$message.error('获取接收者信息失败');
+        this.receiver.id = receiverId;
+      }
     },
-    sendMessage() {
+
+    // 加载聊天记录
+    async loadChatHistory() {
+      const receiverId = this.$route.query.ReceiverId||'';
+      if (!receiverId) return;
+
+      this.loading = true;
+      try {
+        const chatterQueryDto = {
+          senderId: -1,  // 当前用户ID
+          receiverId: receiverId,  // 接收者ID
+        };
+        const response = await this.$axios.post('/chat/queryUser',chatterQueryDto);
+        console.log('Response:', response);
+        console.log('Response Data:', response.data);
+        // 将消息处理成 'chatter' 对象
+        if (response.data.data && Array.isArray(response.data.data)) {
+          this.chatters = response.data.data.map(chatter => {
+            // 格式化时间 (根据数据格式)
+            const formattedTime = new Date(chatter.createTime.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', 'T'));
+            const sender = chatter.senderId == receiverId ? 'receiver' : 'me';
+            console.log(chatter.senderId);
+            console.log(receiverId);
+            console.log(chatter.content);
+            console.log(sender);
+            return {
+              sender: sender,  // 判断发送者
+              content: chatter.content,
+              createTime: formattedTime,  // 格式化时间
+            };
+          });
+        }
+        this.chatters.sort((a, b) => a.createTime - b.createTime);
+        console.log('Chat history:', this.chatters);
+        if (this.chatters.length === 0) {
+          this.chatters.push({
+            sender: 'receiver',
+            content: '您好，您对我的商品有什么问题吗？',
+            createTime: new Date(Date.now() - 3600000)
+          });
+        }
+      }
+      catch (error)
+      {
+        console.error('加载聊天记录失败:', error);
+      }
+      finally
+      {
+        this.loading = false;
+      }
+    },
+
+    // 定时拉取最新的聊天记录
+    startChatPolling() {
+      this.chatInterval = setInterval(() => {
+        this.loadChatHistory();
+      }, 500);  // 每1秒钟请求一次最新的聊天记录
+    },
+
+    // 发送消息
+    async sendMessage() {
+      const receiverId = this.$route.query.ReceiverId||'';
       if (!this.inputMessage.trim()) return;
+      if (!receiverId) {
+        this.$message.error('无法确定接收方');
+        return;
+      }
 
-      const newMessage = {
-        sender: 'me',
-        content: this.inputMessage,
-        time: new Date()
-      };
 
-      this.messages.push(newMessage);
-      this.inputMessage = '';
-
-      // 模拟卖家回复
-      setTimeout(() => {
-        this.messages.push({
-          sender: 'seller',
-          content: '感谢您的咨询，我会尽快回复您的问题',
-          time: new Date()
+      try {
+        // 发送聊天消息
+        await this.$axios.post('/chat/send', {
+          receiverId: receiverId,
+          content: this.inputMessage,
+          isRead:1
         });
+        const newMessage = {
+          sender: 'me',
+          content: this.inputMessage,
+          receiver:'receiver'
+        };
+        this.chatters.push(newMessage);
+        this.inputMessage = '';  // 清空输入框
         this.scrollToBottom();
-      }, 1500);
 
-      this.scrollToBottom();
+        setTimeout(() => {
+          this.simulateReceiverReply();
+        }, 1500);
+
+      } catch (error) {
+        console.error('发送消息失败:', error);
+        this.$message.error('发送消息失败');
+      }
     },
+
+    // 清空输入框
     clearInput() {
       this.inputMessage = '';
     },
+
+    // 返回商品页面
     backToProduct() {
       this.$router.back();
     },
+
+    // 格式化时间
     formatTime(time) {
       return time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     },
+
+    // 滚动到底部
     scrollToBottom() {
       this.$nextTick(() => {
         const container = this.$refs.messageArea;
@@ -132,96 +223,103 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #f5f5f5;
+  max-width: 800px;
+  margin: 0 auto;
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.seller-info {
+.receiver-info {
   display: flex;
   align-items: center;
   padding: 15px;
-  background-color: white;
-  border-bottom: 1px solid #eaeaea;
+  border-bottom: 1px solid #ebeef5;
+  background-color: #f5f7fa;
+}
 
-  .seller-details {
-    flex: 1;
-    margin-left: 15px;
+.receiver-details {
+  flex: 1;
+  margin-left: 15px;
+}
 
-    h3 {
-      margin: 0;
-      font-size: 18px;
-    }
+.receiver-details h3 {
+  margin: 0;
+  font-size: 18px;
+}
 
-    p {
-      margin: 5px 0 0;
-      font-size: 14px;
-      color: #999;
-    }
-  }
+.receiver-details p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #909399;
 }
 
 .message-area {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #e5ddd5;
-  background-image: url('https://web.whatsapp.com/img/bg-chat-tile-light_a4be512e7195b6b733d9110b408f075d.png');
+  background-color: #f9f9f9;
 }
 
 .message-bubble {
   margin-bottom: 15px;
   display: flex;
+}
 
-  &.sent {
-    justify-content: flex-end;
+.message-bubble.sent {
+  justify-content: flex-end;
+}
 
-    .message-content {
-      background-color: #dcf8c6;
-      border-radius: 7.5px 0 7.5px 7.5px;
-    }
-  }
+.message-bubble.received {
+  justify-content: flex-start;
+}
 
-  &.received {
-    justify-content: flex-start;
+.message-content {
+  max-width: 70%;
+  padding: 5px 8px;
+  border-radius: 18px;
+  position: relative;
+}
 
-    .message-content {
-      background-color: white;
-      border-radius: 0 7.5px 7.5px 7.5px;
-    }
-  }
+.sent .message-content {
+  background-color: rgb(255, 230, 15);
+  color: black;
+}
 
-  .message-content {
-    max-width: 70%;
-    padding: 8px 12px;
-    box-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.13);
+.received .message-content {
+  background-color: white;
+  border: 1px solid #ebeef5;
+}
 
-    p {
-      margin: 0;
-      word-wrap: break-word;
-    }
+.message-time {
+  display: block;
+  font-size: 12px;
+  margin-top: 5px;
+  opacity: 0.8;
+}
 
-    .message-time {
-      display: block;
-      font-size: 11px;
-      color: #999;
-      margin-top: 5px;
-      text-align: right;
-    }
-  }
+.sent .message-time {
+  text-align: right;
+  color: black;
+}
+
+.received .message-time {
+  text-align: left;
+  color: #909399;
 }
 
 .input-area {
-  padding: 10px;
+  padding: 15px;
+  border-top: 1px solid #ebeef5;
   background-color: white;
-  border-top: 1px solid #eaeaea;
+}
 
-  .action-buttons {
-    margin-top: 10px;
-    text-align: right;
-  }
+.action-buttons {
+  margin-top: 10px;
+  text-align: right;
 }
 </style>
