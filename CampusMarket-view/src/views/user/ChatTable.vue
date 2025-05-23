@@ -42,16 +42,22 @@ export default {
       this.loading = true;
       try {
         // 发起请求获取聊天记录
+        const currentId=await this.$axios.post('/chatTable/queryCurrentUser')
         const chatterQueryDto = {};
         const response = await this.$axios.post(`/chatTable/queryUser`,chatterQueryDto);
         console.log(response);
+        console.log(currentId.data);
         if (response.data.code === 200) {
           const data = response.data.data;
-          this.chatList = data.map((item) => {
+          this.chatList = data
+              .filter(item => item.receiverId != item.senderId)
+              .map((item) => {
             // 处理每个接收者的聊天记录数据
+                const receiverId = item.receiverId == currentId.data ? item.senderId : item.receiverId;
+                const receiverName = item.receiverId == currentId.data ? item.senderName : item.receiverName;
             return {
-              receiverId: item.receiverId,
-              receiverName: item.receiverName,
+              receiverId: receiverId,
+              receiverName: receiverName,
               lastMessage: item.content,  // 获取最后一条消息内容
               lastMessageTime: new Date(item.createTime.replace('年', '-').replace('月', '-').replace('日', '')),
             };
