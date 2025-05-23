@@ -148,7 +148,7 @@ export default {
                 if (data.code === 200) {
                     this.productList = data.data;
                 }
-                this.$axios.get('/product/recommend?limit=1').then(recommendRes => {
+                this.$axios.get('/product/recommend').then(recommendRes => {
                     const { data } = recommendRes;
                     if (data.code === 200) {
                         this.recommendedProducts = data.data;

@@ -79,6 +79,12 @@
             <if test="startTime != null and endTime != null">
                 AND p.create_time BETWEEN #{startTime} AND #{endTime}
             </if>
+            <if test="priceMin != null and priceMin > 0">
+                AND p.price >= #{priceMin}
+            </if>
+            <if test="priceMax != null and priceMax > 0">
+                AND p.price &lt;= #{priceMax}
+            </if>
         </where>
         ORDER BY p.id DESC
         <if test="current != null and size != null">
@@ -109,6 +115,12 @@
             </if>
             <if test="startTime != null and endTime != null">
                 AND p.create_time BETWEEN #{startTime} AND #{endTime}
+            </if>
+            <if test="priceMin != null and priceMin > 0">
+                AND p.price >= #{priceMin}
+            </if>
+            <if test="priceMax != null and priceMax > 0">
+                AND p.price &lt;= #{priceMax}
             </if>
         </where>
 
@@ -153,6 +165,7 @@
         <result column="like_number" property="likeNumber"/>
         <result column="save_number" property="saveNumber"/>
         <result column="view_number" property="viewNumber"/>
+        <result column="relevance_score" property="relevanceScore"/>
     </resultMap>
 
     <select id="findRecommendedProducts" resultMap="BaseResultMap">
