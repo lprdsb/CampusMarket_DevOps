@@ -45,8 +45,6 @@ export default {
         const currentId=await this.$axios.post('/chatTable/queryCurrentUser')
         const chatterQueryDto = {};
         const response = await this.$axios.post(`/chatTable/queryUser`,chatterQueryDto);
-        console.log(response);
-        console.log(currentId.data);
         if (response.data.code === 200) {
           const data = response.data.data;
           this.chatList = data

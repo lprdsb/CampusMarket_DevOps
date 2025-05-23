@@ -86,7 +86,6 @@ export default {
 
       try {
         const response = await this.$axios.get(`/chat/getById/${receiverId}`);
-        console.log(response.data);
         const user = response.data.data;
 
         this.receiver = {
@@ -115,18 +114,12 @@ export default {
           receiverId: receiverId,  // 接收者ID
         };
         const response = await this.$axios.post('/chat/queryUser',chatterQueryDto);
-        console.log('Response:', response);
-        console.log('Response Data:', response.data);
         // 将消息处理成 'chatter' 对象
         if (response.data.data && Array.isArray(response.data.data)) {
           this.chatters = response.data.data.map(chatter => {
             // 格式化时间 (根据数据格式)
             const formattedTime = new Date(chatter.createTime.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', 'T'));
             const sender = chatter.senderId == receiverId ? 'receiver' : 'me';
-            console.log(chatter.senderId);
-            console.log(receiverId);
-            console.log(chatter.content);
-            console.log(sender);
             return {
               sender: sender,  // 判断发送者
               content: chatter.content,
@@ -135,7 +128,6 @@ export default {
           });
         }
         this.chatters.sort((a, b) => a.createTime - b.createTime);
-        console.log('Chat history:', this.chatters);
         if (this.chatters.length === 0) {
           this.chatters.push({
             sender: 'receiver',

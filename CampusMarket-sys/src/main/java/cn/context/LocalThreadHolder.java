@@ -24,7 +24,6 @@ public class LocalThreadHolder {
         map.put("userId", userId);
         map.put("userRole", userRole);
         USER_HOLDER.set(map);
-        System.out.println("[" + Thread.currentThread().getName() + "] 设置用户信息: userId=" + userId);
     }
 
     /**
@@ -54,7 +53,6 @@ public class LocalThreadHolder {
      */
     public static void clear() {
         USER_HOLDER.remove();
-        System.out.println("[" + Thread.currentThread().getName() + "] 清理 ThreadLocal");
     }
 
 }
