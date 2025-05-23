@@ -48,6 +48,7 @@ public class JwtInterceptor implements HandlerInterceptor {
                 requestURI.contains("/query") && !requestURI.contains("/queryUser")
                         && !requestURI.contains("/queryOrdersList")
                         && !requestURI.contains("/queryProductInfo")
+                        && !requestURI.contains("/queryCurrentUser")
                 ||
                 requestURI.contains("/register")) {
             return true;

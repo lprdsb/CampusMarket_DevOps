@@ -23,4 +23,10 @@ public class ChatTableController {
         chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
         return chatterService.queryTable(chatterQueryDto);
     }
+
+    @PostMapping(value = "/queryCurrentUser")
+    @ResponseBody
+    public Integer queryCurrentUser(){
+        return LocalThreadHolder.getUserId();
+    }
 }
