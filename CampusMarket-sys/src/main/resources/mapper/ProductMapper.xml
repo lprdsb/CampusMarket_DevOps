@@ -155,5 +155,44 @@
         <result column="view_number" property="viewNumber"/>
     </resultMap>
 
+    <select id="findRecommendedProducts" resultMap="BaseResultMap">
+        SELECT p.*,
+               (
+                   (CASE WHEN p.category_id IN
+                              (SELECT DISTINCT category_id FROM product
+                               WHERE id IN
+                                     (SELECT product_id FROM interaction
+                                      WHERE user_id = #{userId} AND type = 2))
+                             THEN 0.6 ELSE 0 END) +
 
+                   (CASE WHEN EXISTS
+                       (SELECT 1 FROM product p2
+                        WHERE p2.id IN
+                              (SELECT product_id FROM interaction
+                               WHERE user_id = #{userId} AND type = 2)
+                          AND p.name LIKE CONCAT('%', p2.name, '%'))
+                             THEN 0.4 ELSE 0 END)
+                   ) AS relevance_score
+        FROM product p
+        WHERE p.id NOT IN
+              (SELECT product_id FROM interaction WHERE user_id = #{userId} AND type = 2)
+        ORDER BY relevance_score DESC, p.create_time DESC
+            LIMIT 5
+    </select>
+
+    <select id="getPopularProducts" resultMap="BaseResultMap">
+        SELECT p.*,
+               (COUNT(i_view.id) * 0.7 +
+                COUNT(i_save.id) * 0.3) AS popularity_score
+        FROM product p
+                 LEFT JOIN interaction i_view
+                           ON i_view.product_id = p.id
+                               AND i_view.type = 2
+                 LEFT JOIN interaction i_save
+                           ON i_save.product_id = p.id
+                               AND i_save.type = 1
+        GROUP BY p.id
+        ORDER BY popularity_score DESC, p.create_time DESC
+            LIMIT #{limit}
+    </select>
 </mapper>

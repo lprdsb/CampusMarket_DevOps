@@ -54,4 +54,8 @@ public interface ProductMapper {
     List<Integer> queryProductIds(@Param(value = "userId") Integer userId);
 
     List<ProductVO> queryProductList(@Param(value = "ids") List<Integer> ids);
+
+    List<Product> findRecommendedProducts(Integer userId);
+
+    List<Product> getPopularProducts(@Param("limit") Integer limit);
 }

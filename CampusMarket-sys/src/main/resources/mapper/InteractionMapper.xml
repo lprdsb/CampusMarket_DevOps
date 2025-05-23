@@ -91,5 +91,12 @@
         <result column="create_time" property="createTime"/>
     </resultMap>
 
-
+    <select id="getRecentViews" resultType="java.lang.Integer">
+        SELECT product_id
+        FROM interaction
+        WHERE user_id = #{userId}
+          AND type = 2
+        ORDER BY create_time DESC
+            LIMIT #{limit}
+    </select>
 </mapper>

@@ -50,4 +50,5 @@ public interface InteractionMapper {
      */
     void batchDelete(@Param(value = "ids") List<Integer> ids);
 
+    List<Integer> getRecentViews(@Param("userId") Integer userId,@Param("limit") Integer limit);
 }

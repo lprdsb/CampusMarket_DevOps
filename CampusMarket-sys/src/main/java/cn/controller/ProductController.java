@@ -22,6 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/product")
+@CrossOrigin
 public class ProductController {
 
     @Resource
@@ -144,5 +145,18 @@ public class ProductController {
         ProductQueryDto productQueryDto = new ProductQueryDto();
         productQueryDto.setUserId(id);
         return productService.query(productQueryDto);
+    }
+
+    /**
+     * 新增推荐商品接口
+     * @param limit 推荐数量（默认5条）
+     * @return 推荐商品列表
+     */
+    @GetMapping("/recommend")
+    @ResponseBody
+    public Result<List<Product>> getRecommendations(
+            @RequestParam(defaultValue = "5") Integer limit) {
+        Integer userId = LocalThreadHolder.getUserId();
+        return productService.getRecommendedProducts(userId);
     }
 }

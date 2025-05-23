@@ -226,4 +226,18 @@ public class ProductServiceImpl implements ProductService {
                 .filter(interaction -> Objects.equals(type, interaction.getType()))
                 .count();
     }
+
+    @Override
+    public Result<List<Product>> getRecommendedProducts(Integer userId) {
+        // 1. 获取用户最近浏览记录
+        List<Integer> viewedProducts = interactionMapper.getRecentViews(userId, 10);
+
+        // 2. 冷启动处理：无浏览记录时返回热销商品
+        if(viewedProducts.isEmpty()) {
+            return ApiResult.success(productMapper.getPopularProducts(5));
+        }
+
+        // 3. 执行推荐查询
+        return ApiResult.success(productMapper.findRecommendedProducts(userId));
+    }
 }
