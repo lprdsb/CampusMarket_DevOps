@@ -47,6 +47,8 @@ const routes = [
       { name: '商品详情', path: "/product-detail", component: () => import(`@/views/user/ProductDetail.vue`), meta: { requireAuth: true } },
       { name: '用户页面', path: "/space", component: () => import(`@/views/user/Space.vue`), meta: { requireAuth: true } },
       { name: '我的关注', path: "/star", component: () => import(`@/views/user/Star.vue`), meta: { requireAuth: true } },
+      { name: '聊天界面', path: "/chat", component: () => import(`@/views/user/Chat.vue`), meta: { requireAuth: true } },
+      { name: '聊天', path: "/chatTable", component: () => import(`@/views/user/ChatTable.vue`), meta: { requireAuth: true } },
     ]
   }
 ];

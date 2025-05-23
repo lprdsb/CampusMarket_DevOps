@@ -106,6 +106,10 @@ export default {
                 });
                 return;
             }
+            if(this.product.inventory === undefined)
+              this.product.inventory = 1;
+            if(this.product.oldLevel === undefined)
+              this.product.oldLevel = 9;
             this.product.coverList = this.coverList.join(',');
             // 商品封面需要处理
             this.$axios.post('/product/save', this.product).then(res => {
