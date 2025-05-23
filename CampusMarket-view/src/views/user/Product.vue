@@ -130,12 +130,6 @@ export default {
                 startTime = `${startDate.split('T')[0]}T00:00:00`;
                 endTime = `${endDate.split('T')[0]}T23:59:59`;
             }
-            this.productQueryDto.priceMin !== null 
-                ? Number(this.productQueryDto.priceMin) 
-                : null;
-            this.productQueryDto.priceMax !== null 
-                ? Number(this.productQueryDto.priceMax) 
-                : null;
             this.productQueryDto.startTime=startTime;
             this.productQueryDto.endTime=endTime;
             this.$axios.post('/product/query', this.productQueryDto).then(res => {
