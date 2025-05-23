@@ -16,3 +16,4 @@ public class StarQueryDto extends QueryDto {
     private Integer user1Id;
     private Integer user2Id;
 }
+//
