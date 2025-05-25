@@ -149,13 +149,11 @@ public class ProductController {
 
     /**
      * 新增推荐商品接口
-     * @param limit 推荐数量（默认5条）
      * @return 推荐商品列表
      */
     @GetMapping("/recommend")
     @ResponseBody
-    public Result<List<Product>> getRecommendations(
-            @RequestParam(defaultValue = "5") Integer limit) {
+    public Result<List<Product>> getRecommendations() {
         Integer userId = LocalThreadHolder.getUserId();
         return productService.getRecommendedProducts(userId);
     }
