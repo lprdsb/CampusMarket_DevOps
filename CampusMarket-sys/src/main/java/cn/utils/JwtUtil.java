@@ -8,7 +8,6 @@ import java.util.UUID;
 /**
  * jwt token 工具类
  *
- * @author 【B站：程序员辰星】
  */
 public class JwtUtil {
     /**
