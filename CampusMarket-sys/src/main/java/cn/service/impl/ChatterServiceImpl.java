@@ -31,7 +31,6 @@ public class ChatterServiceImpl implements ChatterService {
     @Override
     public Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto){
         // 第一次查询：原始参数
-        System.out.println(chatterQueryDto);
         List<ChatterVO> firstList = chatterMapper.query(chatterQueryDto);
 
         // 保存原始参数，避免后续污染
@@ -52,7 +51,6 @@ public class ChatterServiceImpl implements ChatterService {
         // 恢复原始参数
         chatterQueryDto.setSenderId(originalSenderId);
         chatterQueryDto.setReceiverId(originalReceiverId);
-        System.out.println(combinedList);
         return ApiResult.success(combinedList);
     }
 
