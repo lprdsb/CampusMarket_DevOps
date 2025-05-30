@@ -256,14 +256,14 @@ export default {
 
     .decimel-symbol {
         font-size: 14px;
-        color: #409EFF;
+        color: #007bff;
         margin-right: 2px;
     }
 
     .price {
         font-size: 18px;
         font-weight: bold;
-        color: #1a1a1a;
+        color: #007bff;
     }
 }
 
