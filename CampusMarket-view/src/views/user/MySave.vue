@@ -1,27 +1,25 @@
 <template>
     <div class="product-list">
-        <el-row v-if="productList.length === 0">
-            <el-empty description="暂无商品信息"></el-empty>
-        </el-row>
-        <el-row v-else>
-            <el-col :span="6" v-for="(product, index) in productList" :key="index">
-                <div class="item-product"@click="route(product)">
-                    <div class="cover">
-                        <img :src="coverListParse(product)" alt="" srcset="">
-                    </div>
-                    <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
-                        <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
-                        <span class="title" @click="route(product)">
-                            {{ product.name }}
-                        </span>
-                    </div>
-                    <div style="padding-block: 15px;">
-                        <span class="decimel-symbol">¥</span>
-                        <span class="price">{{ product.price }}</span>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
+      <el-row v-if="productList.length === 0" justify="center">
+        <el-empty description="暂无商品信息"></el-empty>
+      </el-row>
+      <el-row v-else :gutter="20" justify="center">
+        <el-col :span="6" v-for="(product, index) in productList" :key="index">
+          <div class="item-product" @click="route(product)">
+            <div class="cover">
+              <img :src="coverListParse(product)" alt="商品封面" />
+              <span class="bargain">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
+            </div>
+            <div class="info">
+              <div class="title">{{ product.name }}</div>
+              <div class="price-row">
+                <span class="decimel-symbol">¥</span>
+                <span class="price">{{ product.price }}</span>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 </template>
 <script>
@@ -71,59 +69,76 @@ export default {
 </script>
 <style scoped lang="scss">
 .product-list {
-    padding-block: 20px;
+  padding: 30px;
 
-    .item-product {
-        padding: 10px 10px 16px 10px;
-        box-sizing: border-box;
-        border-radius: 15px;
-        transition: all .5s;
-        cursor: pointer;
+  .item-product {
+    background-color: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
 
-        .cover {
-            img {
-                width: 100%;
-                height: 350px;
-                border-radius: 10px;
-            }
-        }
+    &:hover {
+      box-shadow: 0 6px 18px rgba(0, 123, 255, 0.2);
+      transform: translateY(-4px);
+    }
 
-        .bargain-hover {
-            font-size: 12px;
-            font-weight: 800;
-            background-color: rgb(255, 230, 15);
-            color: rgb(51, 51, 51);
-            border-radius: 2px;
-            padding: 2px 6px;
-        }
+    .cover {
+      position: relative;
 
-        .title {
-            font-size: 20px;
-            color: #1f1f1f;
-        }
+      img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .bargain {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #e3f2fd;
+        color: #007bff;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+    }
+
+    .info {
+      padding: 15px;
+
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f1f1f;
+        margin-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
 
         .decimel-symbol {
-            font-size: 14px;
-            color: #ff4f24;
-            font-weight: 800;
+          font-size: 14px;
+          color: #007bff;
+          font-weight: bold;
         }
 
         .price {
-            font-size: 24px;
-            color: #ff4f24;
-            font-weight: 800;
-            margin-right: 6px;
+          font-size: 22px;
+          color: #007bff;
+          font-weight: bold;
         }
-
-        .love {
-            font-size: 14px;
-            color: #999;
-        }
-
+      }
     }
-
-    .item-product:hover {
-        box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
+  }
 }
 </style>

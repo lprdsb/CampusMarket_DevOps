@@ -1,32 +1,34 @@
 <template>
     <div class="product-list">
-        <div class="clear-message">
-            <span @click="clearView">
-                <i class="el-icon-s-open"></i>
-            </span>
-        </div>
-        <el-row v-if="productList.length === 0">
-            <el-empty description="浏览记录为空"></el-empty>
-        </el-row>
-        <el-row v-else>
-            <el-col :span="6" v-for="(product, index) in productList" :key="index">
-                <div class="item-product">
-                    <div class="cover">
-                        <img :src="coverListParse(product)" alt="" srcset="">
-                    </div>
-                    <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
-                        <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
-                        <span class="title" @click="route(product)">
-                            {{ product.name }}
-                        </span>
-                    </div>
-                    <div style="padding-block: 15px;">
-                        <span class="decimel-symbol">¥</span>
-                        <span class="price">{{ product.price }}</span>
-                    </div>
-                </div>
-            </el-col>
-        </el-row>
+      <div class="clear-message">
+        <el-tooltip content="清除浏览记录" placement="top">
+          <span @click="clearView">
+            <i class="el-icon-delete"></i>
+          </span>
+        </el-tooltip>
+      </div>
+  
+      <el-row v-if="productList.length === 0" justify="center">
+        <el-empty description="浏览记录为空"></el-empty>
+      </el-row>
+  
+      <el-row v-else :gutter="20" justify="center">
+        <el-col :span="6" v-for="(product, index) in productList" :key="index">
+          <div class="item-product" @click="route(product)">
+            <div class="cover">
+              <img :src="coverListParse(product)" alt="商品图片" />
+              <span class="bargain">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
+            </div>
+            <div class="info">
+              <div class="title">{{ product.name }}</div>
+              <div class="price-row">
+                <span class="decimel-symbol">¥</span>
+                <span class="price">{{ product.price }}</span>
+              </div>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
     </div>
 </template>
 <script>
@@ -91,80 +93,102 @@ export default {
 </script>
 <style scoped lang="scss">
 .product-list {
-    padding-block: 20px;
+  padding: 30px;
 
-    .clear-message {
-        margin-block: 10px;
-        display: flex;
-        justify-content: right;
+  .clear-message {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
 
-        span:hover {
-            background-color: rgb(241, 241, 241);
-        }
+    span {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #e3f2fd;
+      color: #007bff;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
 
-        span {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: rgb(246, 246, 246);
-        }
+      &:hover {
+        background-color: #cce4fb;
+      }
+
+      i {
+        font-size: 18px;
+      }
+    }
+  }
+
+  .item-product {
+    background: #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0, 123, 255, 0.1);
+    cursor: pointer;
+
+    &:hover {
+      box-shadow: 0 6px 20px rgba(0, 123, 255, 0.2);
+      transform: translateY(-4px);
     }
 
-    .item-product {
-        padding: 10px 10px 16px 10px;
-        box-sizing: border-box;
-        border-radius: 15px;
-        transition: all .5s;
-        cursor: pointer;
+    .cover {
+      position: relative;
 
-        .cover {
-            img {
-                width: 100%;
-                height: 350px;
-                border-radius: 10px;
-            }
-        }
+      img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+      }
 
-        .bargain-hover {
-            font-size: 12px;
-            font-weight: 800;
-            background-color: rgb(255, 230, 15);
-            color: rgb(51, 51, 51);
-            border-radius: 2px;
-            padding: 2px 6px;
-        }
+      .bargain {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #d0eaff;
+        color: #007bff;
+        font-size: 12px;
+        font-weight: bold;
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+    }
 
-        .title {
-            font-size: 20px;
-            color: #1f1f1f;
-        }
+    .info {
+      padding: 14px;
+
+      .title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .price-row {
+        display: flex;
+        align-items: baseline;
+        gap: 4px;
 
         .decimel-symbol {
-            font-size: 14px;
-            color: #ff4f24;
-            font-weight: 800;
+          font-size: 14px;
+          color: #007bff;
+          font-weight: bold;
         }
 
         .price {
-            font-size: 24px;
-            color: #ff4f24;
-            font-weight: 800;
-            margin-right: 6px;
+          font-size: 22px;
+          color: #007bff;
+          font-weight: bold;
         }
-
-        .love {
-            font-size: 14px;
-            color: #999;
-        }
-
+      }
     }
-
-    .item-product:hover {
-        box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
-    }
+  }
 }
 </style>

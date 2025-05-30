@@ -1,113 +1,100 @@
 <template>
     <div class="detail-container">
-        <div class="cover">
-            <div>
-                <div :style="{
-                    border: coverIndex === index ? '1px solid rgb(51,51,51)' : ''
-                }" @click="coverSelected(coverItem, index)" class="cover-item" v-for="(coverItem, index) in coverList"
-                    :key="index">
-                    <img :src="coverItem" alt="" srcset="">
-                </div>
-            </div>
-            <div class="large-cover">
-                <div>
-                    <i @click="coverToLeft" class="el-icon-arrow-left"></i>
-                </div>
-                <img :src="coverItem" alt="" srcset="">
-                <div>
-                    <i @click="coverToRight" class="el-icon-arrow-right"></i>
-                </div>
-            </div>
+      <div class="cover-section">
+        <div class="cover-preview">
+          <div
+            class="cover-thumb"
+            v-for="(coverItem, index) in coverList"
+            :key="index"
+            :class="{ active: coverIndex === index }"
+            @click="coverSelected(coverItem, index)"
+          >
+            <img :src="coverItem" alt="" />
+          </div>
         </div>
-        <div class="info">
+        <div class="cover-display" v-if="coverItem">
+          <i @click="coverToLeft" class="el-icon-arrow-left"></i>
+          <img :src="coverItem" alt="" />
+          <i @click="coverToRight" class="el-icon-arrow-right"></i>
+        </div>
+      </div>
+      <div class="info">
+        <div class="decimal">
+          <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
+          <span class="dot"></span>
+          <span>{{ product.categoryName }}</span>
+          <span class="dot"></span>
+          <div @click="handleRouteSelect('/space?userId=' + product.userId)" class="owner">
+            <img :src="product.userAvatar" alt="" />
+            <span>{{ product.userName }}</span>
+          </div>
+          <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
+        </div>
+        <div class="decimal">
+          <span class="love">{{ product.likeNumber }}人想要</span>
+          <span class="dot"></span>
+          <span class="love">{{ product.saveNumber }}人收藏</span>
+          <span class="dot"></span>
+          <span class="love">{{ product.viewNumber }}人浏览</span>
+          <span class="dot"></span>
+          <span>{{ product.oldLevel }}成新</span>
+          <span class="dot"></span>
+          <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
+        </div>
+        <div class="name">{{ product.name }}</div>
+        <div><div v-html="product.detail"></div></div>
+        <div class="operation">
+          <div class="left">
+            <span @click="likeProduct"><i class="el-icon-sell"></i>我想要</span>
+            <el-button type="primary" icon="el-icon-chat-dot-round" @click="goToChat">和买家聊天</el-button>
+            <span @click="buyProduct">立即购买</span>
+          </div>
+          <div class="right">
+            <span @click="saveOperation">
+              <i class="el-icon-star-off"></i>{{ saveFlag ? '取消收藏' : '收藏' }}
+            </span>
+          </div>
+        </div>
+        <div v-if="userInfo !== null">
+          <Evaluations contentType="PRODUCT" :contentId="productId" />
+        </div>
+      </div>
+      <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="38%">
+        <div class="dialog-content">
+            <p>商品下单</p>
+            <div class="info">
             <div class="decimal">
                 <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
+                <span class="dot"></span>
                 <span>{{ product.categoryName }}</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                <div @click="handleRouteSelect(`/space?userId=` + product.userId)" class="owner">
-                    <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt=""
-                        srcset="">
-                    <span>{{ product.userName }}</span>
-                </div>
+                <span class="dot"></span>
+                <!-- 添加类 small-avatar -->
+                <img class="small-avatar" :src="product.userAvatar" alt="" />
+                <span>{{ product.userName }}</span>
                 <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
             </div>
             <div class="decimal">
-                <span class="love">{{ product.likeNumber }}人想要</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                <span class="love">{{ product.saveNumber }}人收藏</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                <span class="love">{{ product.viewNumber }}人浏览</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
+                <span class="dot"></span>
                 <span>{{ product.oldLevel }}成新</span>
-                <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
+                <span class="dot"></span>
                 <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
             </div>
-            <div class="name">
-                {{ product.name }}
+            <div class="name">{{ product.name }}</div>
             </div>
             <div>
-                <div v-html="product.detail"></div>
+            <p>下单数量</p>
+            <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" label="请选择"></el-input-number>
             </div>
-            <div class="operation">
-                <div class="left">
-                    <span @click="likeProduct"><i class="el-icon-sell" style="margin-right: 5px;"></i>我想要</span>
-                  <el-button type="primary" icon="el-icon-chat-dot-round" @click="goToChat">和买家聊天</el-button>
-                    <span @click="buyProduct">立即购买</span>
-                </div>
-                <div class="right">
-                    <span @click="saveOperation"><i style="margin-right: 5px;" class="el-icon-star-off"></i>{{ saveFlag
-                        ? '取消收藏' : '收藏' }}</span>
-                </div>
-            </div>
-            <div v-if="userInfo !== null">
-                <Evaluations contentType="PRODUCT" :contentId="productId" />
+            <div>
+            <p>备注信息</p>
+            <el-input type="textarea" :rows="3" placeholder="补充备注" v-model="detail"></el-input>
             </div>
         </div>
-        <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="35%">
-            <div style="padding:16px 20px;">
-                <p>商品下单</p>
-                <div class="info">
-                    <div class="decimal">
-                        <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
-                        <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                        <span>{{ product.categoryName }}</span>
-                        <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                        <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt=""
-                            srcset="">
-                        <span>{{ product.userName }}</span>
-                        <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
-                    </div>
-                    <div class="decimal">
-                        <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                        <span>{{ product.oldLevel }}成新</span>
-                        <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
-                        <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
-                    </div>
-                    <div class="name">
-                        {{ product.name }}
-                    </div>
-                </div>
-                <div>
-                    <p>下单数量</p>
-                    <el-input-number v-model="buyNumber" :min="1" :max="product.inventory"
-                        label="请选择"></el-input-number>
-                </div>
-                <div>
-                    <p>备注信息</p>
-                    <el-input type="textarea" :rows="3" placeholder="补充备注" v-model="detail">
-                    </el-input>
-                </div>
-            </div>
-            <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
-                <span class="channel-button" @click="cannelBuy()">
-                    取消下单
-                </span>
-                <span class="edit-button" @click="buyConfirm()">
-                    确定下单
-                </span>
-            </span>
-        </el-dialog>
+        <span slot="footer" class="dialog-footer">
+            <span class="cancel-button" @click="cannelBuy()">取消下单</span>
+            <span class="confirm-button" @click="buyConfirm()">确定下单</span>
+        </span>
+    </el-dialog>
     </div>
 </template>
 <script>
@@ -372,154 +359,201 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.love {
-    font-size: 14px;
-    color: #999;
+.detail-container {
+  display: flex;
+  gap: 40px;
+  padding: 24px;
+  background-color: #f5faff;
+}
+
+.cover-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 120, 255, 0.15);
+
+  .cover-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+
+    img {
+      width: 300px;
+      height: 300px;
+      border-radius: 12px;
+      border: 2px solid #cce6ff;
+    }
+
+    i {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 50%;
+      color: #007bff;
+      transition: background 0.3s;
+
+      &:hover {
+        background-color: #e6f0ff;
+      }
+    }
+  }
+
+  .cover-preview {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .cover-thumb {
+      border: 2px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 4px;
+      transition: border-color 0.3s;
+
+      img {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+      }
+
+      &.active {
+        border-color: #007bff;
+      }
+    }
+  }
 }
 
 .info {
-    width: 500px;
+  width: 560px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 120, 255, 0.1);
 
-    .operation {
-        display: flex;
-        justify-content: left;
-        gap: 20px;
-        font-size: 14px;
-        cursor: pointer;
+  .decimal {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    margin-bottom: 10px;
 
-        .right {
-            span:hover {
-                background-color: rgb(241, 241, 241);
-            }
+    .price {
+      font-size: 28px;
+      font-weight: bold;
+      color: #007bff;
 
-            span {
-                display: inline-block;
-                width: 100px;
-                text-align: center;
-                background-color: rgb(246, 246, 246);
-                border-radius: 20px;
-
-            }
-        }
-
-        .left {
-            display: flex;
-            justify-content: space-evenly;
-
-            span {
-                display: inline-block;
-                width: 160px;
-                text-align: center;
-            }
-
-            span:first-child {
-                background-color: rgb(255, 230, 15);
-                border-top-left-radius: 20px;
-                border-bottom-left-radius: 20px;
-            }
-
-            span:last-child {
-                background-color: rgb(59, 59, 59);
-                color: rgb(245, 245, 245);
-                border-top-right-radius: 20px;
-                border-bottom-right-radius: 20px;
-            }
-        }
-
-        div {
-            line-height: 40px;
-        }
+      .symbol {
+        font-size: 18px;
+      }
     }
 
-    .name {
-        margin-block: 10px;
-        font-size: 24px;
+    .owner img {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: 4px;
     }
 
-    .decimal {
-        display: flex;
-        justify-content: left;
-        align-items: center;
-        gap: 10px;
-        font-size: 14px;
-        margin-block: 6px;
-        width: 500px;
+    .bargain {
+      background: #e6f0ff;
+      color: #0056b3;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  }
 
-        .price {
-            .symbol {
-                font-size: 16px;
-            }
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: #b0d4ff;
+    border-radius: 50%;
+  }
 
-            font-size: 32px;
-            font-weight: 800;
-            color: rgb(255, 68, 0);
-        }
+  .love {
+    color: #888;
+  }
 
-        .owner {
-            cursor: pointer;
-        }
+  .name {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 12px 0;
+  }
 
-        .bargain {
-            font-size: 10px;
-            color: rgb(51, 51, 51);
-            background-color: rgb(246, 228, 24);
-            padding: 2px 4px;
-            border-radius: 5px;
-        }
+  .operation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 16px;
+
+    .left,
+    .right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
+    .left span,
+    .right span {
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: #e6f0ff;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .left span:first-child {
+      background: #cce6ff;
+    }
+
+    .left span:last-child {
+      background: #0056b3;
+      color: #fff;
+    }
+
+    .right span:hover {
+      background: #b3daff;
+    }
+  }
 }
 
-.detail-container {
-    display: flex;
-    justify-content: left;
+.dialog-content {
+  padding: 20px;
+}
 
-    .cover {
-        display: flex;
-        justify-content: left;
+.small-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 6px; /* 和文字间距调整 */
+  vertical-align: middle; /* 让头像和文字垂直对齐 */
+}
 
-        .large-cover {
-            padding: 6px;
-            margin: 10px;
-            display: flex;
-            justify-content: left;
-            gap: 10px;
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 20px;
 
-            i:hover {
-                background-color: rgb(246, 246, 246);
-            }
+  .cancel-button,
+  .confirm-button {
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
 
-            i {
-                display: inline-block;
-                padding: 20px;
-                border-radius: 50%;
-                font-size: 20px;
-                font-weight: 800;
-                cursor: pointer;
-            }
+  .cancel-button {
+    background: #f0f0f0;
+  }
 
-            img {
-                width: 280px;
-                height: 280px;
-            }
-        }
-
-        .cover-item:hover {
-            border: 1px solid rgb(51, 51, 51);
-        }
-
-        .cover-item {
-            padding: 6px;
-            margin: 10px;
-            border: 1px solid rgb(255, 255, 255);
-            border-radius: 5px;
-            transition: all .5s;
-
-            img {
-                width: 80px;
-                height: 80px;
-            }
-        }
-    }
+  .confirm-button {
+    background: #007bff;
+    color: white;
+  }
 }
 </style>

@@ -1,21 +1,27 @@
 <template>
     <div class="message-container">
-        <div class="clear-message">
-            <span @click="messageIsRead">
-                <i class="el-icon-s-open"></i>
-            </span>
+      <div class="clear-message">
+        <el-tooltip content="标记全部为已读" placement="top">
+          <span @click="messageIsRead" class="clear-btn">
+            <i class="el-icon-s-open"></i>
+          </span>
+        </el-tooltip>
+      </div>
+  
+      <div class="item" v-for="(message, index) in messageList" :key="index">
+        <div
+          class="bell"
+          :class="{ unread: !message.isRead, read: message.isRead }"
+        >
+          <i class="el-icon-message-solid">{{ message.isRead ? '已读' : '未读' }}</i>
         </div>
-        <div class="item" v-for="(message,index) in messageList" :key="index">
-            <div class="bell" :style="{backgroundColor: message.isRead ? 'rgb(246,246,246)' : 'rgb(239, 193, 87)'}">
-                <i :style="{color: message.isRead ? 'rgb(51,51,51)' : 'rgb(246,246,246)'}" class="el-icon-message-solid">{{ message.isRead ? '已读' : '未读' }}</i>
-            </div>
-            <div>
-                <div class="content">{{ message.content }}</div>
-                <div class="time">{{ message.createTime }}</div>
-            </div>
+        <div class="message-content">
+          <div class="content">{{ message.content }}</div>
+          <div class="time">{{ message.createTime }}</div>
         </div>
+      </div>
     </div>
-</template>
+  </template>
 <script>
 export default {
     name: 'Message',
@@ -58,57 +64,96 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.message-container{
-    .clear-message{
-        margin-block: 10px;
-        display: flex;
-        justify-content: right;
-        span:hover{
-            background-color: rgb(241,241,241); 
-        }
-        span{
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: rgb(246,246,246);
-        }
+$message-blue: #2c69f0;
+$message-light-blue: #e6f0ff;
+$message-dark-blue: #1a3a8f;
+$message-gray: #6780b3;
+
+.message-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 10px;
+
+  .clear-message {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+
+    .clear-btn {
+      width: 36px;
+      height: 36px;
+      background-color: $message-light-blue;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: $message-blue;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: $message-blue;
+        color: white;
+      }
     }
-    .item{
-        padding: 20px 10px;
-        display: flex;
-        justify-content: left;
-        gap: 20px;
-        align-items: center;
-        .content{
-            margin-block: 10px;
-            font-size: 18px;
-        }
-        .time{
-            margin-block: 2px;
-            font-size: 12px;
-        }
-        .bell:hover{
-            border: 2px solid rgb(220, 118, 44);
-        }
-        .bell{
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgb(252, 232, 210);
-            cursor: pointer;
-            transition: all .5s;
-            i{
-                font-size: 12px;
-                color: rgb(246,246,246);
-            }
-        }
+  }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 12px;
+    border-radius: 12px;
+    background-color: $message-light-blue;
+    box-shadow: 0 2px 8px rgba(44, 105, 240, 0.1);
+    margin-bottom: 12px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: lighten($message-light-blue, 10%);
     }
+
+    .bell {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: default;
+      transition: all 0.4s ease;
+      border: 2px solid $message-blue;
+
+      &.unread {
+        background-color: $message-blue;
+        color: white;
+      }
+      &.read {
+        background-color: #f0f4ff;
+        color: $message-dark-blue;
+      }
+    }
+
+    .message-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+
+      .content {
+        font-size: 16px;
+        font-weight: 600;
+        color: $message-dark-blue;
+        margin-bottom: 6px;
+      }
+
+      .time {
+        font-size: 12px;
+        color: $message-gray;
+      }
+    }
+  }
 }
 </style>

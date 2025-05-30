@@ -2,21 +2,22 @@
   <div class="chat-table-container">
     <div v-if="loading" class="loading">加载中...</div>
 
-    <!-- 聊天列表 -->
-    <el-table :data="chatList" style="width: 100%" v-if="!loading">
-      <el-table-column label="接收者" prop="receiverName">
-        <template slot-scope="scope">
-          <el-button @click="goToChatPage(scope.row.receiverId)" type="text">{{ scope.row.receiverName }}</el-button>
+    <el-table :data="chatList" v-if="!loading" stripe border :header-cell-style="headerStyle" :row-style="rowStyle">
+      <el-table-column label="接收者" prop="receiverName" width="180">
+        <template #default="{ row }">
+          <el-button @click="goToChatPage(row.receiverId)" type="text" class="receiver-btn">
+            {{ row.receiverName }}
+          </el-button>
         </template>
       </el-table-column>
       <el-table-column label="最后消息" prop="lastMessage">
-        <template slot-scope="scope">
-          <span>{{ scope.row.lastMessage }}</span>
+        <template #default="{ row }">
+          <span class="last-message" :title="row.lastMessage">{{ row.lastMessage }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="最后消息时间" prop="lastMessageTime">
-        <template slot-scope="scope">
-          <span>{{ formatTime(scope.row.lastMessageTime) }}</span>
+      <el-table-column label="最后消息时间" prop="lastMessageTime" width="160">
+        <template #default="{ row }">
+          <span class="time">{{ formatTime(row.lastMessageTime) }}</span>
         </template>
       </el-table-column>
     </el-table>
@@ -37,6 +38,15 @@ export default {
     this.loadChatList(); // 获取聊天记录
   },
   methods: {
+    formatTime(time) {
+      if (!time) return '';
+      const date = new Date(time);
+      return date.toLocaleString();
+    },
+    goToChatPage(receiverId) {
+      // 这里写跳转聊天页面的逻辑
+      this.$router.push({ name: 'Chat', params: { id: receiverId } });
+    },
     // 获取该 senderId 所有接收者的聊天记录
     async loadChatList() {
       this.loading = true;
@@ -80,26 +90,86 @@ export default {
     formatTime(time) {
       return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     }
+  },
+  computed: {
+    headerStyle() {
+      return {
+        backgroundColor: '#2c69f0',
+        color: 'white',
+        fontWeight: '600'
+      };
+    },
+    rowStyle({ rowIndex }) {
+      return rowIndex % 2 === 0 ? { background: '#f5faff' } : {};
+    }
   }
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$primary-blue: #2c69f0;
+$light-blue-bg: #e6f0ff;
+$text-dark: #1a3a8f;
+$text-muted: #6780b3;
+$row-hover: #d9e7ff;
+
 .chat-table-container {
   padding: 20px;
+  background-color: $light-blue-bg;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(44, 105, 240, 0.15);
 }
 
 .loading {
   text-align: center;
   font-size: 18px;
-  color: #999;
+  color: $text-muted;
+  padding: 40px 0;
 }
 
 .el-table {
-  width: 100%;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+
+  .el-table__header-wrapper {
+    background-color: $primary-blue;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .el-table__body-wrapper {
+    font-size: 14px;
+    color: $text-dark;
+  }
 }
 
-.el-table-column {
-  text-align: left;
+.receiver-btn {
+  color: $primary-blue;
+  font-weight: 600;
+  padding: 0;
+  text-transform: none;
+
+  &:hover {
+    background-color: transparent;
+    color: darken($primary-blue, 10%);
+    text-decoration: underline;
+  }
 }
+
+.last-message {
+  display: inline-block;
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: $text-muted;
+}
+
+.time {
+  color: $text-muted;
+  font-size: 12px;
+}
+
 </style>

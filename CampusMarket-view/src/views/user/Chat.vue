@@ -2,20 +2,20 @@
   <div class="chat-container">
     <!-- 顶部接收者信息栏 -->
     <div class="receiver-info">
-      <el-avatar :size="50" :src="receiver.avatar"></el-avatar>
+      <el-avatar :size="50" :src="receiver.avatar" />
       <div class="receiver-details">
         <h3>{{ receiver.name }}</h3>
         <p>用户ID: {{ receiver.id }}</p>
       </div>
-      <el-button type="info" plain @click="backToProduct">返回商品</el-button>
+      <el-button type="primary" plain @click="backToProduct">返回商品</el-button>
     </div>
 
     <!-- 聊天消息区域 -->
     <div class="message-area" ref="messageArea">
       <div
-          v-for="(chatter, index) in chatters"
-          :key="index"
-          :class="['message-bubble', chatter.sender === 'me' ? 'sent' : 'received']"
+        v-for="(chatter, index) in chatters"
+        :key="index"
+        :class="['message-bubble', chatter.sender === 'me' ? 'sent' : 'received']"
       >
         <div class="message-content">
           <p>{{ chatter.content }}</p>
@@ -27,13 +27,13 @@
     <!-- 消息输入区域 -->
     <div class="input-area">
       <el-input
-          type="textarea"
-          :rows="3"
-          placeholder="输入消息..."
-          v-model="inputMessage"
-          @keyup.enter.native="sendMessage"
-          resize="none"
-      ></el-input>
+        type="textarea"
+        :rows="3"
+        placeholder="输入消息..."
+        v-model="inputMessage"
+        @keyup.enter.native="sendMessage"
+        resize="none"
+      />
       <div class="action-buttons">
         <el-button type="primary" @click="sendMessage">发送</el-button>
         <el-button @click="clearInput">清空</el-button>
@@ -201,6 +201,9 @@ export default {
 
     // 格式化时间
     formatTime(time) {
+      if (time === null) {
+        return null;
+      }
       return time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     },
 
@@ -215,103 +218,160 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+$blue-primary: #2c69f0;
+$blue-light: #e6f0ff;
+$blue-lighter: #f0f6ff;
+$text-primary: #1a3a8f;
+$text-muted: #6780b3;
+$sent-bg: #2c69f0;
+$received-bg: #ffffff;
+
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100vh;
   max-width: 800px;
-  margin: 0 auto;
-  border: 1px solid #ebeef5;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(44, 105, 240, 0.25);
+  background-color: $blue-lighter;
 }
 
 .receiver-info {
   display: flex;
   align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #ebeef5;
-  background-color: #f5f7fa;
-}
+  padding: 16px 20px;
+  background-color: $blue-primary;
+  color: white;
 
-.receiver-details {
-  flex: 1;
-  margin-left: 15px;
-}
+  el-avatar {
+    border: 2px solid white;
+  }
 
-.receiver-details h3 {
-  margin: 0;
-  font-size: 18px;
-}
+  .receiver-details {
+    flex: 1;
+    margin-left: 16px;
 
-.receiver-details p {
-  margin: 5px 0 0;
-  font-size: 14px;
-  color: #909399;
+    h3 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 4px 0 0;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+  }
+
+  .el-button {
+    border-color: 1e90ff;
+    color: 1e90ff;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+
+    &:hover,
+    &:focus {
+      background-color: rgba(30, 144, 255, 0.15); /* 浅蓝色半透明 */
+      color: #1e90ff; /* 道奇蓝 */
+      border-color: #1e90ff;
+    }
+  }
 }
 
 .message-area {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  background-color: #f9f9f9;
+  background-color: $blue-light;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .message-bubble {
-  margin-bottom: 15px;
   display: flex;
-}
-
-.message-bubble.sent {
-  justify-content: flex-end;
-}
-
-.message-bubble.received {
-  justify-content: flex-start;
-}
-
-.message-content {
   max-width: 70%;
-  padding: 5px 8px;
-  border-radius: 18px;
-  position: relative;
-}
+  word-wrap: break-word;
 
-.sent .message-content {
-  background-color: rgb(255, 230, 15);
-  color: black;
-}
+  &.sent {
+    align-self: flex-end;
+    justify-content: flex-end;
 
-.received .message-content {
-  background-color: white;
-  border: 1px solid #ebeef5;
-}
+    .message-content {
+      background-color: $sent-bg;
+      color: white;
+      border-radius: 18px 18px 4px 18px;
+      box-shadow: 0 4px 8px rgba(44, 105, 240, 0.3);
+      padding: 10px 16px;
+    }
 
-.message-time {
-  display: block;
-  font-size: 12px;
-  margin-top: 5px;
-  opacity: 0.8;
-}
+    .message-time {
+      color: rgba(255, 255, 255, 0.75);
+      text-align: right;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+  }
 
-.sent .message-time {
-  text-align: right;
-  color: black;
-}
+  &.received {
+    align-self: flex-start;
 
-.received .message-time {
-  text-align: left;
-  color: #909399;
+    .message-content {
+      background-color: $received-bg;
+      color: $text-primary;
+      border: 1px solid $blue-primary;
+      border-radius: 18px 18px 18px 4px;
+      padding: 10px 16px;
+      box-shadow: 0 2px 6px rgba(44, 105, 240, 0.15);
+    }
+
+    .message-time {
+      color: $text-muted;
+      text-align: left;
+      margin-top: 6px;
+      font-size: 11px;
+    }
+  }
 }
 
 .input-area {
-  padding: 15px;
-  border-top: 1px solid #ebeef5;
+  padding: 16px 20px;
   background-color: white;
-}
+  border-top: 1px solid $blue-light;
 
-.action-buttons {
-  margin-top: 10px;
-  text-align: right;
+  .el-input {
+    width: 100%;
+    font-size: 14px;
+
+    textarea {
+      border-radius: 10px;
+      border: 1px solid $blue-primary !important;
+      resize: none;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+
+      &:focus {
+        border-color: darken($blue-primary, 10%) !important;
+        box-shadow: 0 0 6px rgba(44, 105, 240, 0.5);
+      }
+    }
+  }
+
+  .action-buttons {
+    margin-top: 10px;
+    text-align: right;
+
+    .el-button {
+      min-width: 100px; /* 你觉得合适的宽度 */
+      padding: 8px 16px;
+      margin-left: 10px;
+      box-sizing: border-box;
+    }
+  }
 }
 </style>

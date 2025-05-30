@@ -181,12 +181,18 @@ export default {
 <style scoped lang="scss">
 .user-space {
   display: flex;
-  gap: 60px;
-  padding: 30px;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 40px;
+  background-color: #f5f9ff;
 }
 
 .user-info-panel {
-  width: 300px;
+  width: 320px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 12px rgba(64, 158, 255, 0.1);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -203,32 +209,51 @@ export default {
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #eee;
+  border: 3px solid #409eff;
 }
 
 .avatar-placeholder {
   font-size: 50px;
-  color: #ccc;
+  color: #a0cfff;
+  border: 2px dashed #a0cfff;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .follow-btn {
   text-align: center;
+  .el-button {
+    background: linear-gradient(to right, #409eff, #66b1ff);
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    &:hover {
+      background: linear-gradient(to right, #66b1ff, #409eff);
+      transform: scale(1.05);
+    }
+  }
 }
 
 .info-item {
   .label {
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 4px;
-    color: #666;
+    margin-bottom: 6px;
+    color: #333;
   }
 
   .value {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 500;
-    background-color: #f8f8f8;
-    padding: 6px 10px;
+    background-color: #f0f6ff;
+    padding: 8px 12px;
     border-radius: 6px;
+    color: #409eff;
   }
 }
 
@@ -238,25 +263,37 @@ export default {
   gap: 6px;
   font-size: 14px;
   font-weight: 500;
-  padding: 4px 10px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 20px;
 
   &.normal {
-    color: #1b9c35;
-    background-color: #e6f4ea;
+    color: #409eff;
+    background-color: #eaf4ff;
   }
 
   &.banned {
     color: #e63f31;
-    background-color: #fcebea;
+    background-color: #ffeceb;
     text-decoration: underline dashed;
   }
 }
 
 .edit-btn {
+  text-align: center;
   margin-top: 10px;
+  .el-button {
+    background-color: #409eff;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+    &:hover {
+      background-color: #66b1ff;
+    }
+  }
 }
+
 .product-list {
   flex: 1;
+  min-width: 0;
 }
 </style>

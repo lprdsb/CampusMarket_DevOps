@@ -205,9 +205,9 @@ public class ProductServiceImpl implements ProductService {
         long saveCount = getProductCount(interactionList, InteractionEnum.SAVE.getType());
         long loveCount = getProductCount(interactionList, InteractionEnum.LOVE.getType());
         List<ChartVO> chartVOList = new ArrayList<>();
-        ChartVO chartVOView = new ChartVO("商品被浏览", (int) viewCount);
-        ChartVO chartVOSave = new ChartVO("商品被收藏", (int) saveCount);
-        ChartVO chartVOLove = new ChartVO("商品被想要", (int) loveCount);
+        ChartVO chartVOView = new ChartVO("被浏览", (int) viewCount);
+        ChartVO chartVOSave = new ChartVO("被收藏", (int) saveCount);
+        ChartVO chartVOLove = new ChartVO("被想要", (int) loveCount);
         chartVOList.add(chartVOView);
         chartVOList.add(chartVOSave);
         chartVOList.add(chartVOLove);
@@ -233,7 +233,7 @@ public class ProductServiceImpl implements ProductService {
         List<Integer> viewedProducts = interactionMapper.getRecentViews(userId, 10);
 
         // 2. 冷启动处理：无浏览记录时返回热销商品
-        if(viewedProducts.isEmpty()) {
+        if (viewedProducts.isEmpty()) {
             return ApiResult.success(productMapper.getPopularProducts(5));
         }
 

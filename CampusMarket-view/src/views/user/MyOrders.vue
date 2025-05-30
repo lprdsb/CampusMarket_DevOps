@@ -1,55 +1,70 @@
 <template>
     <div>
-        <div class="condition">
-            <span class="trade">
-                <span :style="{
-                    color: tradeStatusSelectedItem.name === tradeStatus.name ? 'rgb(51,51,51)' : '',
-                    backgroundColor: tradeStatusSelectedItem.name === tradeStatus.name ? 'rgb(255,255,255)' : ''
-                }" @click="tradeStatusSelected(tradeStatus)" v-for="(tradeStatus, index) in tradeStatusList"
-                    :key="index">{{ tradeStatus.name }}</span>
-            </span>
-            <el-input size="small" style="width: 166px;" v-model="ordersQueryDto.code" placeholder="订单号" clearable
-                @clear="handleFilterClear">
-                <el-button slot="append" @click="fetchOrders" icon="el-icon-search"></el-button>
-            </el-input>
-        </div>
-        <div v-if="ordersList.length === 0">
-            <el-empty description="未找到符合条件的订单数据"></el-empty>
-        </div>
-        <div v-else class="item-order" v-for="(orderInfo, index) in ordersList" :key="index">
-            <div class="orders-base-info">
-                <div class="code">订单号：{{ orderInfo.code }}</div>
-                <div class="code" v-if="orderInfo.tradeStatus">支付时间：{{ orderInfo.tradeTime }}</div>
-                <div class="code" v-if="orderInfo.isRefundConfirm">退款时间：{{ orderInfo.refundTime }}</div>
+      <div class="condition">
+        <span class="trade">
+          <span
+            :class="{ active: tradeStatusSelectedItem.name === tradeStatus.name }"
+            @click="tradeStatusSelected(tradeStatus)"
+            v-for="(tradeStatus, index) in tradeStatusList"
+            :key="index"
+            >{{ tradeStatus.name }}</span
+          >
+        </span>
+        <el-input
+          size="small"
+          style="width: 180px;"
+          v-model="ordersQueryDto.code"
+          placeholder="订单号"
+          clearable
+          @clear="handleFilterClear"
+        >
+          <el-button slot="append" @click="fetchOrders" icon="el-icon-search"></el-button>
+        </el-input>
+      </div>
+  
+      <div v-if="ordersList.length === 0" class="empty-container">
+        <el-empty description="未找到符合条件的订单数据"></el-empty>
+      </div>
+  
+      <div v-else class="orders-container">
+        <div class="item-order" v-for="(orderInfo, index) in ordersList" :key="index">
+          <div class="orders-base-info">
+            <div class="code">订单号：{{ orderInfo.code }}</div>
+            <div class="code" v-if="orderInfo.tradeStatus">支付时间：{{ orderInfo.tradeTime }}</div>
+            <div class="code" v-if="orderInfo.isRefundConfirm">退款时间：{{ orderInfo.refundTime }}</div>
+          </div>
+          <div class="info">
+            <div class="img-wrap">
+              <img :src="orderInfo.cover" alt="" />
             </div>
-            <div class="info">
-                <div>
-                    <img :src="orderInfo.cover" alt="" srcset="">
-                </div>
-                <div>
-                    <div>
-                        <span class="title">{{ orderInfo.productTitle }}</span>
-                        <span class="number">x{{ orderInfo.buyNumber }}</span>
-                    </div>
-                    <div class="detail">
-                        备注：{{ orderInfo.detail }}
-                    </div>
-                    <div>
-                        <span class="symbol">￥</span>
-                        <span class="price">{{ totalPrice(orderInfo) }}</span>
-                    </div>
-                    <div class="orders-base-info">创建时间：{{ orderInfo.createTime }}</div>
-                    <div style="margin-block: 10px;">
-                        <span v-if="orderInfo.refundStatus" style="color: rgb(0, 121, 186);">
-                            钱款已经原路返回
-                        </span>
-                        <span v-else>
-                            <span @click="returnMoney(orderInfo)" class="edit-button">确定退款</span>
-                        </span>
-                    </div>
-                </div>
+            <div class="info-content">
+              <div class="title-row">
+                <span class="title">{{ orderInfo.productTitle }}</span>
+                <span class="number">x{{ orderInfo.buyNumber }}</span>
+              </div>
+              <div class="detail">备注：{{ orderInfo.detail }}</div>
+              <div class="price-row">
+                <span class="symbol">￥</span>
+                <span class="price">{{ totalPrice(orderInfo) }}</span>
+              </div>
+              <div class="orders-base-info">创建时间：{{ orderInfo.createTime }}</div>
+              <div class="action-row">
+                <span v-if="orderInfo.refundStatus" class="refund-status">
+                  钱款已经原路返回
+                </span>
+                <el-button
+                  v-else
+                  type="primary"
+                  size="small"
+                  @click="returnMoney(orderInfo)"
+                >
+                  确定退款
+                </el-button>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
 </template>
 <script>
@@ -185,78 +200,148 @@ export default {
 </script>
 <style scoped lang="scss">
 .condition {
-    display: flex;
-    justify-content: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
 
-    .trade {
-        display: inline-block;
-        font-size: 12px;
-        background-color: rgb(246, 246, 246);
-        line-height: 24px;
-        padding-inline: 10px;
-        padding-block: 4px;
-        margin-right: 5px;
-        border-radius: 5px;
-        cursor: pointer;
+  .trade {
+    font-size: 13px;
+    background-color: #e6f0ff;
+    border-radius: 6px;
+    padding: 6px 14px;
 
-        span {
-            display: inline-block;
-            padding-inline: 10px;
-            border-radius: 5px;
-        }
+    span {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 4px;
+      color: #2c69f0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &.active,
+      &:hover {
+        background-color: #2c69f0;
+        color: white;
+        font-weight: 600;
+      }
     }
+  }
 }
 
-.item-order {
+.empty-container {
+  margin-top: 60px;
+}
+
+.orders-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  .item-order {
+    background-color: #f8fbff;
+    border-radius: 12px;
+    padding: 18px 24px;
+    box-shadow: 0 2px 10px rgba(44, 105, 240, 0.15);
     font-size: 14px;
-    margin-block: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgb(246, 246, 246);
+    color: #334466;
 
     .orders-base-info {
-        font-size: 14px;
-        margin-block: 6px;
-        color: rgb(117, 117, 117);
+      font-size: 13px;
+      color: #6780b3;
+      margin-bottom: 14px;
 
-        .code {
-            margin-block: 4px;
-        }
+      .code {
+        margin: 4px 0;
+      }
     }
 
     .info {
-        .detail {
-            margin-block: 4px;
-            font-size: 14px;
-        }
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+
+      .img-wrap {
+        width: 140px;
+        height: 140px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(44, 105, 240, 0.2);
 
         img {
-            width: 140px;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          display: block;
+        }
+      }
+
+      .info-content {
+        flex-grow: 1;
+
+        .title-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          font-size: 18px;
+          font-weight: 700;
+          color: #2248c5;
+          margin-bottom: 8px;
+
+          .number {
+            font-weight: 500;
+            color: #5577bb;
+          }
         }
 
-        display: flex;
-        justify-content: left;
-        gap: 20px;
-
-        .symbol {
-            font-size: 12px;
-            margin-right: 4px;
-            color: rgb(255, 79, 36);
+        .detail {
+          font-size: 14px;
+          color: #4b6fa8;
+          margin-bottom: 12px;
         }
 
-        .price {
-            font-size: 18px;
+        .price-row {
+          display: flex;
+          align-items: baseline;
+          gap: 6px;
+          margin-bottom: 12px;
+
+          .symbol {
+            font-size: 14px;
+            color: #2c69f0;
+            font-weight: 700;
+          }
+
+          .price {
+            font-size: 22px;
             font-weight: 800;
-            color: rgb(255, 79, 36);
+            color: #1a3a8f;
+          }
         }
 
-        .title {
-            font-size: 20px;
-            font-weight: 800;
+        .orders-base-info {
+          font-size: 13px;
+          color: #7a8cbf;
+          margin-bottom: 12px;
         }
 
-        .number {
-            margin-left: 6px;
+        .action-row {
+          display: flex;
+          align-items: center;
+
+          .refund-status {
+            color: #1a73e8;
+            font-weight: 600;
+          }
+
+          .el-button {
+            padding: 6px 18px;
+            font-size: 14px;
+          }
         }
+      }
     }
+  }
 }
 </style>

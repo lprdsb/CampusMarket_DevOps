@@ -38,12 +38,12 @@
           <div class="user-info">
             <div class="title1">
               <span class="title">{{ userInfo.userName }}</span>
-              <span class="poin" v-for="(info, index) in productInfoList" :key="index">
-                {{ info.name }}·{{ info.count }}
-              </span>
             </div>
-            <div class="date">上一次登录时间： {{ userInfo.lastLoginTime }}</div>
-            <div class="date">注册于： {{ userInfo.createTime }}</div>
+            <span class="poin" v-for="(info, index) in productInfoList" :key="index">
+              {{ info.name }}·{{ info.count }}
+            </span>
+            <!-- <div class="date">上一次登录时间： {{ userInfo.lastLoginTime }}</div>
+            <div class="date">注册于： {{ userInfo.createTime }}</div> -->
           </div>
         </div>
   
@@ -230,13 +230,13 @@ export default {
         align-items: center;
         gap: 12px;
 
-        .poin {
-          font-size: 12px;
-          color: #fff;
-          background-color: #3B82F6;
-          padding: 4px 8px;
-          border-radius: 20px;
-        }
+      }
+      .poin {
+        font-size: 12px;
+        color: #fff;
+        background-color: #3B82F6;
+        padding: 4px 8px;
+        border-radius: 20px;
       }
 
       .date {
