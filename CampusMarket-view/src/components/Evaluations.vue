@@ -9,7 +9,7 @@
                 <el-col :span="22">
                     <div class="parent-comment"
                         :style="{ backgroundColor: bgColor, height: isFocused ? '120px' : '70px', borderColor: isFocused ? '#007bff' : 'transparent' }">
-                        <textarea class="comment-parent-input" v-model="content" placeholder="请友好交流" @focus="onFocus"
+                        <textarea class="comment-parent-input" v-model="content" @focus="onFocus"
                             @blur="onBlur"></textarea>
                         <div>
                             <span class="comment-input-number">{{ content.length }} / 300</span>

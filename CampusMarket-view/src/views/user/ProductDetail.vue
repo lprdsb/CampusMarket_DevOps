@@ -36,7 +36,7 @@
         <div class="decimal">
           <span>{{ product.oldLevel }}成新</span>
           <span class="dot"></span>
-          <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
+          <span>库存&nbsp;{{ product.inventory }}</span>
         </div>
         <div class="name">{{ product.name }}</div>
         <div>
@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="38%">
+    <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="62%">
       <div class="dialog-content">
         <p>商品下单</p>
         <div class="info">
@@ -79,7 +79,7 @@
             <span class="dot"></span>
             <span>{{ product.oldLevel }}成新</span>
             <span class="dot"></span>
-            <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
+            <span>库存&nbsp;{{ product.inventory }}</span>
           </div>
           <div class="name">{{ product.name }}</div>
         </div>
@@ -89,7 +89,8 @@
         </div>
         <div>
           <p>备注信息</p>
-          <el-input type="textarea" :rows="3" placeholder="补充备注" v-model="detail"></el-input>
+          <el-input type="textarea" :rows="3" v-model="detail"></el-input>
+          <!-- <textarea style="resize: none;" :rows="3" v-model="detail"></textarea> -->
         </div>
       </div>
       <span slot="footer" class="dialog-footer">

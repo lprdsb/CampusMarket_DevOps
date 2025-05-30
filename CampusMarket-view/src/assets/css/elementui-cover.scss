@@ -10,7 +10,8 @@
 // 超出两行省略号
 .el-table .cell-name {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* 限制为两行 */
+  -webkit-line-clamp: 2;
+  /* 限制为两行 */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -84,7 +85,7 @@
   color: rgb(167, 135, 135) !important;
   font-weight: 400;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  background-color: rgb(255,255,255) !important;
+  background-color: rgb(255, 255, 255) !important;
   text-align: left !important;
 }
 
@@ -106,7 +107,7 @@
   padding: 0 !important;
 }
 
-.text{
+.text {
   font-size: 24px;
   text-align: center;
 }
@@ -143,16 +144,17 @@
 
 .el-slider__bar {
   height: 4px;
-  background-color: rgb(51,51,51);
+  background-color: rgb(51, 51, 51);
 }
 
 .el-input__inner {
   background-color: rgb(246, 246, 246);
   border: none;
-  color: rgb(51,51,51);
+  color: rgb(51, 51, 51);
 }
 
-.el-input-group__append, .el-input-group__prepend {
+.el-input-group__append,
+.el-input-group__prepend {
   background-color: rgb(128, 158, 77);
   color: rgb(246, 246, 246);
   border: none;
@@ -160,7 +162,7 @@
 
 /* 分页显示色 */
 .el-pager li.active {
-  color: rgb(51,51,51) !important;
+  color: rgb(51, 51, 51) !important;
   cursor: default;
   border-radius: 3px;
   border: 1px solid rgb(246, 246, 246);
@@ -218,7 +220,7 @@
   }
 }
 
-.el-radio{
+.el-radio {
   margin-top: 10px;
 }
 
