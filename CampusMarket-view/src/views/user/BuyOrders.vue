@@ -218,11 +218,12 @@ export default {
     padding-bottom: 10px;
     border-bottom: 1px solid rgb(246, 246, 246);
 
-    .orders-base-info{
+    .orders-base-info {
         font-size: 14px;
         margin-block: 6px;
         color: rgb(117, 117, 117);
-        .code{
+
+        .code {
             margin-block: 4px;
         }
     }
