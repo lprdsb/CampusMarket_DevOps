@@ -1,8 +1,8 @@
 <template>
     <div class="star-container">
-        <h2 class="title">我关注的用户</h2>
     <div v-if="userList.length === 0" class="empty">
-      暂无关注用户~
+        
+        <el-empty description="暂无关注用户"></el-empty>
     </div>
     <el-row gutter="20">
       <el-col :span="24" v-for="(id, index) in userList" :key="index">

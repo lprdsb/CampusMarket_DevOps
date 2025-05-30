@@ -2,7 +2,7 @@
     <div class="container">
       <div class="sidebar">
         <div class="logo-box">
-          <Logo name="校园交易" />
+          <Logo name="跳蚤市场" />
         </div>
         <div class="nav-links">
           <span @click="handleRouteSelect('/product')">商品</span>
