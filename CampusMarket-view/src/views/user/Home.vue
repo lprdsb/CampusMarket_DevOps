@@ -1,136 +1,136 @@
 <template>
-    <div class="container">
-      <div class="sidebar">
-        <div class="logo-box">
-          <Logo name="跳蚤市场" />
-        </div>
-        <div class="nav-links">
-          <span @click="handleRouteSelect('/product')">商品</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/star')">我的关注</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/chatTable')">聊天</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/orders')">订单</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/message')">通知</span>
-          <span v-if="loginStatus" @click="handleRouteSelect('/post-product')">发布商品</span>
-          <span v-if="!loginStatus" @click="loginOperation">登录 | 注册</span>
-          <div v-else @click="handleRouteSelect('/space?userId=' + userInfo.id)">
-            <img class="avatar" :src="userInfo.userAvatar" />
-          </div>
-        </div>
+  <div class="container">
+    <div class="sidebar">
+      <div class="logo-box">
+        <Logo name="跳蚤市场" />
       </div>
-  
-      <div class="main-content">
-        <!-- 搜索栏 -->
-        <div class="search-bar">
-          <div class="word-search">
-            <div class="item">
-              <input type="text" placeholder="搜索商品" v-model="key">
-              <i class="el-icon-search" @click="fetch"></i>
-            </div>
-          </div>
-        </div>
-  
-        <!-- 登录信息 -->
-        <div class="info" v-if="loginStatus">
-          <img :src="userInfo.userAvatar" />
-          <div class="user-info">
-            <div class="title1">
-              <span class="title">{{ userInfo.userName }}</span>
-            </div>
-            <span class="poin" v-for="(info, index) in productInfoList" :key="index">
-              {{ info.name }}·{{ info.count }}
-            </span>
-            <!-- <div class="date">上一次登录时间： {{ userInfo.lastLoginTime }}</div>
-            <div class="date">注册于： {{ userInfo.createTime }}</div> -->
-          </div>
-        </div>
-  
-        <!-- 路由内容 -->
-        <div class="router-view-wrapper">
-          <router-view></router-view>
+      <div class="nav-links">
+        <span @click="handleRouteSelect('/product')">商品</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/star')">我的关注</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/chatTable')">聊天</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/orders')">订单</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/message')">通知</span>
+        <span v-if="loginStatus" @click="handleRouteSelect('/post-product')">发布商品</span>
+        <span v-if="!loginStatus" @click="loginOperation">登录 | 注册</span>
+        <div v-else @click="handleRouteSelect('/space?userId=' + userInfo.id)">
+          <img class="avatar" :src="userInfo.userAvatar" />
         </div>
       </div>
     </div>
+
+    <div class="main-content">
+      <!-- 搜索栏 -->
+      <div class="search-bar">
+        <div class="word-search">
+          <div class="item">
+            <input type="text" placeholder="搜索商品" v-model="key">
+            <i class="el-icon-search" @click="fetch"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- 登录信息 -->
+      <!-- <div class="info" v-if="loginStatus">
+        <img :src="userInfo.userAvatar" />
+        <div class="user-info">
+          <div class="title1">
+            <span class="title">{{ userInfo.userName }}</span>
+          </div>
+          <span class="poin" v-for="(info, index) in productInfoList" :key="index">
+            {{ info.name }}·{{ info.count }}
+          </span>
+          <div class="date">上一次登录时间： {{ userInfo.lastLoginTime }}</div>
+          <div class="date">注册于： {{ userInfo.createTime }}</div>
+        </div>
+      </div> -->
+
+      <!-- 路由内容 -->
+      <div class="router-view-wrapper">
+        <router-view></router-view>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 import Logo from "@/components/Logo";
 import { getToken, setUserInfo, setSearchKey } from "@/utils/storage";
 export default {
-    name: "Home",
-    components: {
-        Logo,
+  name: "Home",
+  components: {
+    Logo,
+  },
+  data() {
+    return {
+      selfPath: { name: '个人中心', path: '/mySelf' },
+      userRoutes: [],
+      key: null,
+      dialogOperaion: false,
+      loginStatus: false, // 默认未登录
+      userInfo: {},
+      searchPath: '/search',
+      productInfoList: []
+    };
+  },
+  created() {
+    this.loadLoginStatus();
+    this.handleRouteSelect('/product')
+  },
+  methods: {
+    queryProductInfo() {
+      this.$axios.post(`/product/queryProductInfo`, {}).then(res => {
+        const { data } = res;
+        if (data.code === 200) {
+          this.productInfoList = data.data;
+        }
+        this.loginStatus = data.code === 200;
+      }).catch(error => {
+        console.log("商品指标查询异常：", error);
+      });
     },
-    data() {
-        return {
-            selfPath: { name: '个人中心', path: '/mySelf' },
-            userRoutes: [],
-            key: null,
-            dialogOperaion: false,
-            loginStatus: false, // 默认未登录
-            userInfo: {},
-            searchPath: '/search',
-            productInfoList: []
-        };
+    // 跳转登录页
+    loginOperation() {
+      this.$router.push('/login');
     },
-    created() {
-        this.loadLoginStatus();
-        this.handleRouteSelect('/product')
+    // 搜索
+    fetch() {
+      setSearchKey(this.key);
+      this.handleRouteSelect(this.searchPath);
     },
-    methods: {
-        queryProductInfo() {
-            this.$axios.post(`/product/queryProductInfo`, {}).then(res => {
-                const { data } = res;
-                if (data.code === 200) {
-                    this.productInfoList = data.data;
-                }
-                this.loginStatus = data.code === 200;
-            }).catch(error => {
-                console.log("商品指标查询异常：", error);
-            });
-        },
-        // 跳转登录页
-        loginOperation() {
-            this.$router.push('/login');
-        },
-        // 搜索
-        fetch() {
-            setSearchKey(this.key);
-            this.handleRouteSelect(this.searchPath);
-        },
-        // 路由切换
-        handleRouteSelect(path) {
-            if (this.$router.currentRoute.fullPath !== path) {
-                this.$router.push(path);
-            }
-        },
-        //判断用户是否已经登录
-        loadLoginStatus() {
-            const token = getToken();
-            // 没登录
-            if (token === null) {
-                this.loginStatus = false;
-                return;
-            }
-            this.auth();
-        },
-        // token检验
-        auth() {
-            this.$axios.get(`/user/auth`).then(res => {
-                const { data } = res;
-                if (data.code === 200) {
-                    // 存储用户信息
-                    setUserInfo(data.data);
-                    this.userInfo = data.data;
-                    this.queryProductInfo();
-                }
-                this.loginStatus = data.code === 200;
-            }).catch(error => {
-                console.log("token检验异常：", error);
-            });
-        },
-    }
+    // 路由切换
+    handleRouteSelect(path) {
+      if (this.$router.currentRoute.fullPath !== path) {
+        this.$router.push(path);
+      }
+    },
+    //判断用户是否已经登录
+    loadLoginStatus() {
+      const token = getToken();
+      // 没登录
+      if (token === null) {
+        this.loginStatus = false;
+        return;
+      }
+      this.auth();
+    },
+    // token检验
+    auth() {
+      this.$axios.get(`/user/auth`).then(res => {
+        const { data } = res;
+        if (data.code === 200) {
+          // 存储用户信息
+          setUserInfo(data.data);
+          this.userInfo = data.data;
+          this.queryProductInfo();
+        }
+        this.loginStatus = data.code === 200;
+      }).catch(error => {
+        console.log("token检验异常：", error);
+      });
+    },
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -187,9 +187,10 @@ export default {
         border-color: #93C5FD;
       }
     }
+
     .active {
-        background-color: #3B82F6;
-        color: #fff;
+      background-color: #3B82F6;
+      color: #fff;
     }
   }
 }
@@ -231,6 +232,7 @@ export default {
         gap: 12px;
 
       }
+
       .poin {
         font-size: 12px;
         color: #fff;

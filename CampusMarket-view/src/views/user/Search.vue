@@ -10,7 +10,7 @@
                         <img :src="coverListParse(product)" alt="" srcset="">
                     </div>
                     <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
-                        <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
+                        <!-- <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span> -->
                         <span class="title">
                             {{ product.name }}
                         </span>

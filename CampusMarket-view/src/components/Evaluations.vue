@@ -60,8 +60,8 @@
                         <span @click="upvote(comment)"
                             style="cursor: pointer;margin-left: 15px;font-size: 14px;color: #8A919F;user-select: none;">
                             <i class="el-icon-discount" v-if="!comment.upvoteFlag">点赞</i>
-                            <i class="el-icon-discount" v-else style="color: #1E80FF;">&nbsp;{{ comment.upvoteCount
-                            }}</i>
+                            <i class="el-icon-discount" v-else style="color: #1E80FF;">&nbsp;{{
+                                comment.upvoteCount }}</i>
                         </span>
                     </el-col>
                 </el-row>
@@ -570,7 +570,7 @@ export default {
     width: 100%;
     min-height: 60px;
     overflow: auto;
-    resize: vertical;
+    resize: none;
     user-select: none;
     margin: 0 0 20px 0;
     display: block;

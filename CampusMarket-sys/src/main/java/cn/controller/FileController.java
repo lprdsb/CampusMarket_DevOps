@@ -26,7 +26,7 @@ public class FileController {
     @Value("${my-server.api-context-path}")
     private String API;
 
-    private final static String URL = "http://localhost:21090";
+    private final static String URL = "http://localhost:11451";
 
     /**
      * 文件上传

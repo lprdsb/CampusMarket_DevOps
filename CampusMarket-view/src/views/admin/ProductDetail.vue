@@ -27,7 +27,7 @@
                 <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>
                 <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt="" srcset="">
                 <span>{{ product.userName }}</span>
-                <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
+                <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
             </div>
             <div class="decimal">
                 <span class="love">{{ product.likeNumber }}人想要</span>
@@ -72,7 +72,7 @@
                         <img :src="product.userAvatar" style="width: 20px;height: 20px;border-radius: 50%;" alt=""
                             srcset="">
                         <span>{{ product.userName }}</span>
-                        <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
+                        <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
                     </div>
                     <div class="decimal">
                         <span style="border: 2px solid rgb(214, 214, 214);border-radius: 50%;"></span>

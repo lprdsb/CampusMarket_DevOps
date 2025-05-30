@@ -31,7 +31,7 @@ export default Vue.extend({
                 placeholder: '请输入内容...',
                 MENU_CONF: {
                     uploadImage: {
-                        server: 'http://localhost:21090/api/campus-product-sys/v1.0/file/upload',
+                        server: 'http://localhost:11451/api/campus-product-sys/v1.0/file/upload',
                         fieldName: 'file',
                         maxFileSize: 10 * 1024 * 1024,
                         maxNumberOfFiles: 10,
@@ -54,7 +54,7 @@ export default Vue.extend({
     methods: {
         onCreated(editor) {
             this.editor = Object.seal(editor);
-            this.toolbarConfig.excludeKeys = ['group-video','group-image'];
+            this.toolbarConfig.excludeKeys = ['group-video', 'group-image'];
         },
     },
     watch: {

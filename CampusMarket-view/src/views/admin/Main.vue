@@ -7,7 +7,7 @@
                         :title="staticCount.name"></el-statistic>
                 </div>
             </div>
-            <div  style="width: 800px;">
+            <div style="width: 800px;">
                 <LineChart @on-selected="onSelected" tag="商品上架情况" :values="values" :date="dates" height="600px" />
             </div>
         </div>
@@ -19,7 +19,7 @@
                         <img :src="coverListParse(product)" alt="" srcset="">
                     </div>
                     <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
-                        <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
+                        <!-- <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span> -->
                         <span class="title" @click="route(product)">
                             {{ product.name }}
                         </span>

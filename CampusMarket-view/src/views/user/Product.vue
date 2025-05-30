@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="nav-category">
+        <!-- <div class="nav-category">
             <div class="left">
                 <span :style="{
                     color: categorySelectedItem.name === isUseCategory.name ? '#fff' : '',
@@ -10,30 +10,39 @@
                     {{ isUseCategory.name }}
                 </span>
             </div>
-        </div>
+        </div> -->
+
+        <!-- <div class="search-bar">
+            <div class="word-search">
+                <div class="item">
+                    <input type="text" placeholder="搜索商品" v-model="key">
+                    <i class="el-icon-search" @click="fetch"></i>
+                </div>
+            </div>
+        </div> -->
         <div class="nav-category">
             <div class="right">
-                <span class="bargain">
+                <!-- <span class="bargain">
                     <span :style="{
                         color: bargainSelectedItem.name === bargain.name ? '#fff' : '',
                         backgroundColor: bargainSelectedItem.name === bargain.name ? '#409EFF' : ''
                     }" @click="bargainSelected(bargain)" v-for="(bargain, index) in bargainStatus" :key="index">{{
                         bargain.name }}</span>
-                </span>
+                </span> -->
                 <el-date-picker style="width: 216px;margin-right: 5px;" @change="fetchFreshData" size="small"
                     v-model="searchTime" type="daterange" range-separator="至" start-placeholder="发布开始"
                     end-placeholder="发布结束">
                 </el-date-picker>
-                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMin" 
+                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMin"
                     placeholder="最低价" @change="val => handlePriceChange('priceMin', val)">
                 </el-input>
                 <span style="margin-right: 5px;">-</span>
-                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMax" 
+                <el-input style="width: 100px;margin-right: 5px;" size="small" v-model="productQueryDto.priceMax"
                     placeholder="最高价" @change="val => handlePriceChange('priceMax', val)">
                 </el-input>
                 <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
                     v-model="productQueryDto.categoryId" placeholder="商品类别">
-                    <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
+                    <el-option v-for="item in isUseCategoryList" :key="item.id" :label="item.name" :value="item.id">
                     </el-option>
                 </el-select>
             </div>
@@ -45,26 +54,31 @@
             <el-row v-else>
                 <el-col @click.native="route(product)" :span="6" v-for="(product, index) in productList" :key="index">
                     <div class="item-product" style="position: relative;">
+
                         <div class="cover">
-                            <img :src="coverListParse(product)" alt="" srcset="" >
-                            <div v-if="product.isRecommended" class="recommend-tag" style="position: absolute; right: 10px; top: 10px;">
+                            <img :src="coverListParse(product)" alt="" srcset="">
+                            <div v-if="product.isRecommended" class="recommend-tag"
+                                style="position: absolute; right: 10px; top: 10px;">
                                 猜你喜欢
                             </div>
+                            <div class="price-box">
+                                <!-- <div style="padding-block: 15px;position: absolute; left: 20px; top: 10px;"> -->
+                                <span class="decimel-symbol">¥</span>
+                                <span class="price">{{ product.price }}</span>
+                                <!-- </div> -->
+                            </div>
                         </div>
+
                         <div style="display: flex;justify-content: left;gap: 4px;align-items: center;">
-                            <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span>
                             <span class="title">
                                 {{ product.name }}
                             </span>
-                        </div>
-                        <div style="padding-block: 15px;">
-                            <span class="decimel-symbol">¥</span>
-                            <span class="price">{{ product.price }}</span>
-                            <span class="love">{{ product.likeNumber }}人想要</span>
+                            <!-- <span class="bargain-hover">{{ product.isBargain ? '支持砍价' : '不支持砍价' }}</span> -->
                         </div>
                         <div class="info">
                             <img :src="product.userAvatar" alt="" srcset="">
                             <span>{{ product.userName }}</span>
+                            <span class="love">{{ product.likeNumber }}人想要</span>
                         </div>
                     </div>
                 </el-col>
@@ -73,6 +87,7 @@
     </div>
 </template>
 <script>
+import { getToken, setUserInfo, setSearchKey } from "@/utils/storage";
 export default {
     name: 'Product',
     data() {
@@ -88,6 +103,7 @@ export default {
             recommendedProducts: [], // 新增推荐列表
             bargainSelectedItem: {},
             searchTime: [],
+            searchPath: '/search',
             bargainStatus: [{ isBargain: null, name: '全部' }, { isBargain: true, name: '支持砍价' }, { isBargain: false, name: '不支持砍价' }]
 
         };
@@ -102,6 +118,18 @@ export default {
         route(product) {
             // 跳转商品详情
             this.$router.push('/product-detail?productId=' + product.id);
+        },
+        // 搜索
+        fetch() {
+            setSearchKey(this.key);
+            this.handleRouteSelect(this.searchPath);
+        },
+
+        handleRouteSelect(path) {
+            // console.log(path);
+            if (this.$router.currentRoute.fullPath !== path) {
+                this.$router.push(path);
+            }
         },
         coverListParse(product) {
             if (product.coverList === null) {
@@ -130,8 +158,8 @@ export default {
                 startTime = `${startDate.split('T')[0]}T00:00:00`;
                 endTime = `${endDate.split('T')[0]}T23:59:59`;
             }
-            this.productQueryDto.startTime=startTime;
-            this.productQueryDto.endTime=endTime;
+            this.productQueryDto.startTime = startTime;
+            this.productQueryDto.endTime = endTime;
             this.$axios.post('/product/query', this.productQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
@@ -156,7 +184,7 @@ export default {
             );
 
             const mergedList = this.productList.map(product => {
-                return{
+                return {
                     ...product,
                     isRecommended: recommendedIds.has(product.id)
                 }
@@ -211,6 +239,31 @@ export default {
         height: 350px;
         border-radius: 10px;
         object-fit: cover;
+    }
+
+    .price-box {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 6px 12px;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: baseline;
+        backdrop-filter: blur(4px); // 可选：增加磨砂玻璃质感
+    }
+
+    .decimel-symbol {
+        font-size: 14px;
+        color: #409EFF;
+        margin-right: 2px;
+    }
+
+    .price {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1a1a1a;
     }
 }
 
@@ -340,5 +393,41 @@ export default {
     font-size: 12px;
     font-weight: 600;
     z-index: 1;
+}
+
+.search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.word-search {
+    .item {
+        background-color: #DBEAFE;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        border: 1px solid #93C5FD;
+
+        input {
+            border: none;
+            background-color: transparent;
+            padding: 8px 10px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        i {
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 0 20px 20px 0;
+            background-color: #93C5FD;
+            color: #fff;
+        }
+
+        i:hover {
+            background-color: #60A5FA;
+        }
+    }
 }
 </style>

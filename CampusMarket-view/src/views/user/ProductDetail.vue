@@ -1,23 +1,19 @@
 <template>
-    <div class="detail-container">
-      <div class="cover-section">
-        <div class="cover-preview">
-          <div
-            class="cover-thumb"
-            v-for="(coverItem, index) in coverList"
-            :key="index"
-            :class="{ active: coverIndex === index }"
-            @click="coverSelected(coverItem, index)"
-          >
-            <img :src="coverItem" alt="" />
-          </div>
-        </div>
-        <div class="cover-display" v-if="coverItem">
-          <i @click="coverToLeft" class="el-icon-arrow-left"></i>
+  <div class="detail-container">
+    <div class="cover-section">
+      <div class="cover-preview">
+        <div class="cover-thumb" v-for="(coverItem, index) in coverList" :key="index"
+          :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
           <img :src="coverItem" alt="" />
-          <i @click="coverToRight" class="el-icon-arrow-right"></i>
         </div>
       </div>
+      <div class="cover-display" v-if="coverItem">
+        <i @click="coverToLeft" class="el-icon-arrow-left"></i>
+        <img :src="coverItem" alt="" />
+        <i @click="coverToRight" class="el-icon-arrow-right"></i>
+      </div>
+    </div>
+    <div class="info-container">
       <div class="info">
         <div class="decimal">
           <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
@@ -25,28 +21,31 @@
           <span>{{ product.categoryName }}</span>
           <span class="dot"></span>
           <div @click="handleRouteSelect('/space?userId=' + product.userId)" class="owner">
-            <img :src="product.userAvatar" alt="" />
+            <img :src="product.userAvatar" alt="" style="cursor: pointer;" />
             <span>{{ product.userName }}</span>
           </div>
-          <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
+          <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
         </div>
         <div class="decimal">
-          <span class="love">{{ product.likeNumber }}人想要</span>
-          <span class="dot"></span>
+          <!-- <span class="love">{{ product.likeNumber }}人想要</span>
+        <span class="dot"></span> -->
           <span class="love">{{ product.saveNumber }}人收藏</span>
           <span class="dot"></span>
           <span class="love">{{ product.viewNumber }}人浏览</span>
-          <span class="dot"></span>
+        </div>
+        <div class="decimal">
           <span>{{ product.oldLevel }}成新</span>
           <span class="dot"></span>
           <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
         </div>
         <div class="name">{{ product.name }}</div>
-        <div><div v-html="product.detail"></div></div>
+        <div>
+          <div v-html="product.detail"></div>
+        </div>
         <div class="operation">
           <div class="left">
             <span @click="likeProduct"><i class="el-icon-sell"></i>我想要</span>
-            <el-button type="primary" icon="el-icon-chat-dot-round" @click="goToChat">和买家聊天</el-button>
+            <span @click="goToChat"><i class="el-icon-chat-dot-round"></i>和买家聊天</span>
             <span @click="buyProduct">立即购买</span>
           </div>
           <div class="right">
@@ -55,307 +54,310 @@
             </span>
           </div>
         </div>
+      </div>
+      <div class="info">
         <div v-if="userInfo !== null">
           <Evaluations contentType="PRODUCT" :contentId="productId" />
         </div>
       </div>
-      <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="38%">
-        <div class="dialog-content">
-            <p>商品下单</p>
-            <div class="info">
-            <div class="decimal">
-                <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
-                <span class="dot"></span>
-                <span>{{ product.categoryName }}</span>
-                <span class="dot"></span>
-                <!-- 添加类 small-avatar -->
-                <img class="small-avatar" :src="product.userAvatar" alt="" />
-                <span>{{ product.userName }}</span>
-                <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span>
-            </div>
-            <div class="decimal">
-                <span class="dot"></span>
-                <span>{{ product.oldLevel }}成新</span>
-                <span class="dot"></span>
-                <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
-            </div>
-            <div class="name">{{ product.name }}</div>
-            </div>
-            <div>
-            <p>下单数量</p>
-            <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" label="请选择"></el-input-number>
-            </div>
-            <div>
-            <p>备注信息</p>
-            <el-input type="textarea" :rows="3" placeholder="补充备注" v-model="detail"></el-input>
-            </div>
-        </div>
-        <span slot="footer" class="dialog-footer">
-            <span class="cancel-button" @click="cannelBuy()">取消下单</span>
-            <span class="confirm-button" @click="buyConfirm()">确定下单</span>
-        </span>
-    </el-dialog>
     </div>
+    <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="38%">
+      <div class="dialog-content">
+        <p>商品下单</p>
+        <div class="info">
+          <div class="decimal">
+            <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
+            <span class="dot"></span>
+            <span>{{ product.categoryName }}</span>
+            <span class="dot"></span>
+            <!-- 添加类 small-avatar -->
+            <img class="small-avatar" :src="product.userAvatar" alt="" />
+            <span>{{ product.userName }}</span>
+            <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
+          </div>
+          <div class="decimal">
+            <span class="dot"></span>
+            <span>{{ product.oldLevel }}成新</span>
+            <span class="dot"></span>
+            <span>库存&nbsp;{{ product.inventory }}（件/盒/箱..）</span>
+          </div>
+          <div class="name">{{ product.name }}</div>
+        </div>
+        <div>
+          <p>下单数量</p>
+          <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" label="请选择"></el-input-number>
+        </div>
+        <div>
+          <p>备注信息</p>
+          <el-input type="textarea" :rows="3" placeholder="补充备注" v-model="detail"></el-input>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <span class="cancel-button" @click="cannelBuy()">取消下单</span>
+        <span class="confirm-button" @click="buyConfirm()">确定下单</span>
+      </span>
+    </el-dialog>
+  </div>
 </template>
 <script>
 import { getUserInfo } from "@/utils/storage"
 import Evaluations from "@/components/Evaluations"
 export default {
-    components: { Evaluations },
-    name: 'ProductDetail',
-    data() {
-        return {
-            productId: null,
-            product: {},
-            coverList: [],
-            coverIndex: 0,
-            coverItem: null,
-            keyInterval: null,
-            saveFlag: false, // 判断用户是否已经收藏
-            dialogProductOperaion: false,
-            buyNumber: 1,
-            detail: '',
-            userInfo: null
-        }
-    },
-    created() {
-        this.getParam();
-        this.viewOperation();
-        // console.log("asdasd" + this.productId);
-    },
-    beforeDestroy() {
-        this.clearBanner(); // 清除定时器
-    },
-    methods: {
-        // 浏览操作
-        viewOperation() {
-            const userInfo = getUserInfo();
-            if (userInfo === null) { // 没登录不用记录
-                return;
-            }
-            this.userInfo = userInfo;
-            // 对于用户这是无感的
-            this.$axios.post(`/interaction/view/${this.productId}`).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    console.log("用户浏览已经处理");
-                }
-            }).catch(error => {
-                console.log("浏览记录异常：", error);
-            })
-        },
-        handleRouteSelect(path) {
-            // console.log(path);
-            if (this.$router.currentRoute.fullPath !== path) {
-                this.$router.push(path);
-            }
-        },
-        /**
-         * 商品下单
-         */
-        buyConfirm() {
-            const ordersDTO = {
-                productId: this.product.id,
-                buyNumber: this.buyNumber,
-                detail: this.detail
-            }
-            this.$axios.post(`/product/buyProduct`, ordersDTO).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    this.$notify({
-                        duration: 1000,
-                        title: '下单操作',
-                        message: data.msg,
-                        type: 'success'
-                    });
-                    this.fetchProduct(this.product.id);
-                    this.cannelBuy();
-                } else {
-                    this.$notify({
-                        duration: 2000,
-                        title: '下单操作',
-                        message: data.msg,
-                        type: 'error'
-                    });
-                }
-            }).catch(error => {
-                this.$notify({
-                    duration: 2000,
-                    title: '下单操作',
-                    message: error,
-                    type: 'error'
-                });
-                console.log("商品下单异常：", error);
-            })
-        },
-        cannelBuy() {
-            this.dialogProductOperaion = false;
-            this.buyNumber = 1;
-        },
-        buyProduct() {
-            const userInfo = getUserInfo();
-            if (userInfo === null) { // 没登录不用记录
-                this.$notify({
-                    duration: 1000,
-                    title: '未登录',
-                    message: '登录后才可操作',
-                    type: 'info'
-                });
-                this.$router.push('/login');
-                return;
-            }
-            this.dialogProductOperaion = true;
-        },
-        likeProduct() {
-            this.$axios.post(`/interaction/likeProduct/${this.product.id}`).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    this.$notify({
-                        duration: 1000,
-                        title: '想要操作通知',
-                        message: data.msg,
-                        type: 'success'
-                    });
-                } else {
-                    this.$notify({
-                        duration: 2000,
-                        title: '想要操作通知',
-                        message: data.msg,
-                        type: 'info'
-                    });
-                    this.$router.push('/login');
-                }
-            }).catch(error => {
-                console.log("商品---想要---异常：", error);
-            })
-        },
-      goToChat() {
-        // 假设聊天页面的路由路径是 '/chat'
-        this.$router.push({ path: '/chat', query: { ReceiverId: this.product.userId } });
-
-        // 或者直接跳转到指定买家的聊天窗口（带参数）
-        // this.$router.push({ path: '/chat', query: { buyerId: '123' } });
-      },
-        querySaveStatus() {
-            // 判断用户是否已经登录
-            const userInfo = getUserInfo();
-            if (userInfo === null) { // 没登录不用查
-                console.log("用户未登录");
-                return;
-            }
-            const interactionQueryDto = {
-                userId: userInfo.id,
-                productId: this.product.id,
-                type: 1 // 1代表的是收藏行为
-            };
-            this.$axios.post('/interaction/query', interactionQueryDto).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    // 代表没有收藏
-                    this.saveFlag = data.total !== 0;
-                }
-            }).catch(error => {
-                console.log("商品查询异常：", error);
-            })
-        },
-        /**
-         * 收藏操作 （收藏跟取消收藏是一组对立的操作）
-         */
-        saveOperation() {
-            const userInfo = getUserInfo();
-            if (userInfo === null) { // 没登录不用记录
-                this.$notify({
-                    duration: 1000,
-                    title: '未登录',
-                    message: '登录后才可操作',
-                    type: 'info'
-                });
-                this.$router.push('/login');
-                return;
-            }
-            this.$axios.post(`/interaction/saveOperation/${this.product.id}`).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    // 代表没有收藏
-                    this.saveFlag = data.data;
-                    this.$notify({
-                        duration: 1000,
-                        title: '收藏操作成功',
-                        message: data.msg,
-                        type: 'success'
-                    });
-                }
-            }).catch(error => {
-                console.log("商品查询异常：", error);
-            })
-        },
-        clearBanner() {
-            if (this.keyInterval) {
-                clearInterval(this.keyInterval);
-                this.keyInterval = null; // 重置定时器引用
-            }
-        },
-        startBanner() {
-            this.keyInterval = setInterval(() => {
-                if (this.coverIndex === this.coverList.length - 1) {
-                    this.coverIndex = 0;
-                } else {
-                    this.coverIndex = this.coverIndex + 1;
-                }
-                this.coverItem = this.coverList[this.coverIndex];
-            }, 5000);
-        },
-        coverToLeft() {
-            if (this.coverIndex === 0) {
-                this.coverIndex = this.coverList.length - 1;
-            } else {
-                this.coverIndex = this.coverIndex - 1;
-            }
-            this.coverItem = this.coverList[this.coverIndex];
-        },
-        coverToRight() {
-            if (this.coverIndex === this.coverList.length - 1) {
-                this.coverIndex = 0;
-            } else {
-                this.coverIndex = this.coverIndex + 1;
-            }
-            this.coverItem = this.coverList[this.coverIndex];
-        },
-        coverSelected(coverItem, index) {
-            this.coverItem = coverItem;
-            this.coverIndex = index;
-        },
-        /**
-         * 从路径上取得商品ID
-         */
-        getParam() {
-            const param = this.$route.query;
-            this.productId = Number(param.productId);
-            this.fetchProduct(this.productId);
-        },
-        coverListParse(product) {
-            if (product.coverList === null) {
-                return;
-            }
-            this.coverList = product.coverList.split(',');
-            // 默认选中第一张封面
-            this.coverItem = this.coverList[0];
-            // 启动定时器，定时轮播
-            this.startBanner();
-        },
-        fetchProduct(productId) {
-            this.$axios.post('/product/query', { id: productId }).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    this.product = data.data[0];
-                    this.coverListParse(this.product);
-                    this.querySaveStatus();
-                }
-            }).catch(error => {
-                console.log("商品查询异常：", error);
-            })
-        },
+  components: { Evaluations },
+  name: 'ProductDetail',
+  data() {
+    return {
+      productId: null,
+      product: {},
+      coverList: [],
+      coverIndex: 0,
+      coverItem: null,
+      keyInterval: null,
+      saveFlag: false, // 判断用户是否已经收藏
+      dialogProductOperaion: false,
+      buyNumber: 1,
+      detail: '',
+      userInfo: null
     }
+  },
+  created() {
+    this.getParam();
+    this.viewOperation();
+    // console.log("asdasd" + this.productId);
+  },
+  beforeDestroy() {
+    this.clearBanner(); // 清除定时器
+  },
+  methods: {
+    // 浏览操作
+    viewOperation() {
+      const userInfo = getUserInfo();
+      if (userInfo === null) { // 没登录不用记录
+        return;
+      }
+      this.userInfo = userInfo;
+      // 对于用户这是无感的
+      this.$axios.post(`/interaction/view/${this.productId}`).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          console.log("用户浏览已经处理");
+        }
+      }).catch(error => {
+        console.log("浏览记录异常：", error);
+      })
+    },
+    handleRouteSelect(path) {
+      // console.log(path);
+      if (this.$router.currentRoute.fullPath !== path) {
+        this.$router.push(path);
+      }
+    },
+    /**
+     * 商品下单
+     */
+    buyConfirm() {
+      const ordersDTO = {
+        productId: this.product.id,
+        buyNumber: this.buyNumber,
+        detail: this.detail
+      }
+      this.$axios.post(`/product/buyProduct`, ordersDTO).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          this.$notify({
+            duration: 1000,
+            title: '下单操作',
+            message: data.msg,
+            type: 'success'
+          });
+          this.fetchProduct(this.product.id);
+          this.cannelBuy();
+        } else {
+          this.$notify({
+            duration: 2000,
+            title: '下单操作',
+            message: data.msg,
+            type: 'error'
+          });
+        }
+      }).catch(error => {
+        this.$notify({
+          duration: 2000,
+          title: '下单操作',
+          message: error,
+          type: 'error'
+        });
+        console.log("商品下单异常：", error);
+      })
+    },
+    cannelBuy() {
+      this.dialogProductOperaion = false;
+      this.buyNumber = 1;
+    },
+    buyProduct() {
+      const userInfo = getUserInfo();
+      if (userInfo === null) { // 没登录不用记录
+        this.$notify({
+          duration: 1000,
+          title: '未登录',
+          message: '登录后才可操作',
+          type: 'info'
+        });
+        this.$router.push('/login');
+        return;
+      }
+      this.dialogProductOperaion = true;
+    },
+    likeProduct() {
+      this.$axios.post(`/interaction/likeProduct/${this.product.id}`).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          this.$notify({
+            duration: 1000,
+            title: '想要操作通知',
+            message: data.msg,
+            type: 'success'
+          });
+        } else {
+          this.$notify({
+            duration: 2000,
+            title: '想要操作通知',
+            message: data.msg,
+            type: 'info'
+          });
+          this.$router.push('/login');
+        }
+      }).catch(error => {
+        console.log("商品---想要---异常：", error);
+      })
+    },
+    goToChat() {
+      // 假设聊天页面的路由路径是 '/chat'
+      this.$router.push({ path: '/chat', query: { ReceiverId: this.product.userId } });
+
+      // 或者直接跳转到指定买家的聊天窗口（带参数）
+      // this.$router.push({ path: '/chat', query: { buyerId: '123' } });
+    },
+    querySaveStatus() {
+      // 判断用户是否已经登录
+      const userInfo = getUserInfo();
+      if (userInfo === null) { // 没登录不用查
+        console.log("用户未登录");
+        return;
+      }
+      const interactionQueryDto = {
+        userId: userInfo.id,
+        productId: this.product.id,
+        type: 1 // 1代表的是收藏行为
+      };
+      this.$axios.post('/interaction/query', interactionQueryDto).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          // 代表没有收藏
+          this.saveFlag = data.total !== 0;
+        }
+      }).catch(error => {
+        console.log("商品查询异常：", error);
+      })
+    },
+    /**
+     * 收藏操作 （收藏跟取消收藏是一组对立的操作）
+     */
+    saveOperation() {
+      const userInfo = getUserInfo();
+      if (userInfo === null) { // 没登录不用记录
+        this.$notify({
+          duration: 1000,
+          title: '未登录',
+          message: '登录后才可操作',
+          type: 'info'
+        });
+        this.$router.push('/login');
+        return;
+      }
+      this.$axios.post(`/interaction/saveOperation/${this.product.id}`).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          // 代表没有收藏
+          this.saveFlag = data.data;
+          this.$notify({
+            duration: 1000,
+            title: '收藏操作成功',
+            message: data.msg,
+            type: 'success'
+          });
+        }
+      }).catch(error => {
+        console.log("商品查询异常：", error);
+      })
+    },
+    clearBanner() {
+      if (this.keyInterval) {
+        clearInterval(this.keyInterval);
+        this.keyInterval = null; // 重置定时器引用
+      }
+    },
+    startBanner() {
+      this.keyInterval = setInterval(() => {
+        if (this.coverIndex === this.coverList.length - 1) {
+          this.coverIndex = 0;
+        } else {
+          this.coverIndex = this.coverIndex + 1;
+        }
+        this.coverItem = this.coverList[this.coverIndex];
+      }, 5000);
+    },
+    coverToLeft() {
+      if (this.coverIndex === 0) {
+        this.coverIndex = this.coverList.length - 1;
+      } else {
+        this.coverIndex = this.coverIndex - 1;
+      }
+      this.coverItem = this.coverList[this.coverIndex];
+    },
+    coverToRight() {
+      if (this.coverIndex === this.coverList.length - 1) {
+        this.coverIndex = 0;
+      } else {
+        this.coverIndex = this.coverIndex + 1;
+      }
+      this.coverItem = this.coverList[this.coverIndex];
+    },
+    coverSelected(coverItem, index) {
+      this.coverItem = coverItem;
+      this.coverIndex = index;
+    },
+    /**
+     * 从路径上取得商品ID
+     */
+    getParam() {
+      const param = this.$route.query;
+      this.productId = Number(param.productId);
+      this.fetchProduct(this.productId);
+    },
+    coverListParse(product) {
+      if (product.coverList === null) {
+        return;
+      }
+      this.coverList = product.coverList.split(',');
+      // 默认选中第一张封面
+      this.coverItem = this.coverList[0];
+      // 启动定时器，定时轮播
+      this.startBanner();
+    },
+    fetchProduct(productId) {
+      this.$axios.post('/product/query', { id: productId }).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          this.product = data.data[0];
+          this.coverListParse(this.product);
+          this.querySaveStatus();
+        }
+      }).catch(error => {
+        console.log("商品查询异常：", error);
+      })
+    },
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -363,8 +365,10 @@ export default {
   display: flex;
   gap: 40px;
   padding: 24px;
-  background-color: #f5faff;
+  background-color: #EFF6FF;
 }
+
+
 
 .cover-section {
   display: flex;
@@ -374,6 +378,7 @@ export default {
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 120, 255, 0.15);
+  height: 450px;
 
   .cover-display {
     display: flex;
@@ -427,8 +432,15 @@ export default {
   }
 }
 
+.info-container {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+
 .info {
-  width: 560px;
+  width: 1500px;
+  // height: 300px;
   background: #ffffff;
   border-radius: 16px;
   padding: 20px;
@@ -497,8 +509,7 @@ export default {
       gap: 12px;
     }
 
-    .left span,
-    .right span {
+    span {
       padding: 6px 12px;
       border-radius: 20px;
       background: #e6f0ff;
@@ -506,16 +517,7 @@ export default {
       transition: background 0.3s;
     }
 
-    .left span:first-child {
-      background: #cce6ff;
-    }
-
-    .left span:last-child {
-      background: #0056b3;
-      color: #fff;
-    }
-
-    .right span:hover {
+    span:hover {
       background: #b3daff;
     }
   }
@@ -530,8 +532,10 @@ export default {
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
-  margin: 0 6px; /* 和文字间距调整 */
-  vertical-align: middle; /* 让头像和文字垂直对齐 */
+  margin: 0 6px;
+  /* 和文字间距调整 */
+  vertical-align: middle;
+  /* 让头像和文字垂直对齐 */
 }
 
 .dialog-footer {

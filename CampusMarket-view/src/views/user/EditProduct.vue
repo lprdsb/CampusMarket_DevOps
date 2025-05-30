@@ -13,11 +13,11 @@
                 <p>价格</p>
                 <input class="dialog-input" v-model="product.price" placeholder="价格" />
             </div>
-            <div>
+            <!-- <div>
                 <p>是否支持砍价</p>
                 <el-switch v-model="product.isBargain" active-text="支持砍价" inactive-text="不支持砍价">
                 </el-switch>
-            </div>
+            </div> -->
             <div>
                 <span class="post" @click="editProduct">修改商品</span>
             </div>
@@ -25,7 +25,7 @@
         <div>
             <div>
                 <p>产品图</p>
-                <el-upload action="http://localhost:21090/api/campus-product-sys/v1.0/file/upload"
+                <el-upload action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload"
                     list-type="picture-card" :on-success="handlePictureCardSuccess" :file-list="coverList"
                     :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
                     <i class="el-icon-plus"></i>
