@@ -1,29 +1,19 @@
 <template>
     <div class="login-container">
-        <div class="login-panel">
-            <div style="width: 300px;padding: 40px;display: flex;justify-content: center;align-items: center;">
-                <img src="/bag.png" style="width: 350px;" />
-            </div>
-            <div class="right-login">
-                <div>
-                    <h2>校园跳蚤交易平台</h2>
-                </div>
-                <div class="text">
-                    <input v-model="act" class="act" placeholder="输入账号" />
-                </div>
-                <div class="text">
-                    <input v-model="pwd" class="pwd" type="password" placeholder="输入密码" />
-                </div>
-                <div>
-                    <span class="login-btn" @click="login">立即登录</span>
-                </div>
-                <div class="tip">
-                    <p>没有账号？<span class="no-act" @click="toDoRegister">点此注册</span></p>
-                </div>
-            </div>
+      <div class="login-panel">
+        <div class="image-box">
+          <img src="/bag.png" class="login-image" />
         </div>
+        <div class="right-login">
+          <h2 class="title">校园跳蚤交易平台</h2>
+          <input v-model="act" class="input-field" placeholder="输入账号" />
+          <input v-model="pwd" class="input-field" type="password" placeholder="输入密码" />
+          <button class="login-btn" @click="login">立即登录</button>
+          <p class="tip">没有账号？<span class="no-act" @click="toDoRegister">点此注册</span></p>
+        </div>
+      </div>
     </div>
-</template>
+  </template>
 
 <script>
 const DELAY_TIME = 1300;
@@ -100,129 +90,106 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 * {
-    user-select: none;
+  user-select: none;
 }
 
 .login-container {
-    width: 100%;
-    min-height: 100vh;
-    background-color: rgb(255, 255, 255);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
-    .login-panel {
-        display: flex;
-        border-top-left-radius: 10px;
-        padding: 20px;
-        justify-content: space-between;
-        height: auto;
-        border-radius: 6px;
-        border-top-left-radius: 100px;
-        border-bottom-left-radius: 20px;
-        // background-color: rgb(100, 119, 224);
-        background: rgb(30, 190, 94);
-        box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+.login-panel {
+  display: flex;
+  padding: 20px;
+  border-radius: 10px;
+  background: #66ccff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
-        .right-login {
-            width: 283px;
-            background-color: rgb(255, 255, 255);
-            padding: 30px;
-            border-radius: 5px;
-            // border-top-left-radius: 150px;
-            // border-bottom-left-radius: 5px;
-            // border-top-right-radius: 5px;
-            // border-bottom-right-radius: 5px;
-        }
+.image-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  width: 300px;
+}
 
-        .logo {
-            margin: 10px 0 30px 0;
-        }
+.login-image {
+  width: 300px;
+  max-width: 100%;
+}
 
-        .act,
-        .pwd {
-            margin: 8px 0;
-            height: 63px;
-            line-height: 63px;
-            width: 100%;
-            font-size: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-weight: 800;
-            padding: 0 8px;
-            background-color: rgb(248, 248, 248);
-            box-sizing: border-box;
-            border: 2px solid rgb(255, 255, 255);
-            border-radius: 6px;
-            padding: 0 15px;
-            margin-top: 13px;
-        }
+.right-login {
+  width: 280px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-        .act:focus,
-        .pwd:focus {
-            outline: none;
-            //border: 2px solid rgb(16, 170, 209);
-            transition: 1.2s;
-            background-color: rgb(244, 244, 244);
-        }
+.title {
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
 
-        .role {
-            display: inline-block;
-            color: rgb(30, 102, 147);
-            font-size: 14px;
-            padding-right: 10px;
-        }
-    }
+.input-field {
+  width: 100%;
+  height: 48px;
+  margin-top: 12px;
+  padding: 0 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #f8f8f8;
+}
 
-    .login-btn:hover {
-        background-color: rgb(25, 180, 87);
-    }
+.input-field:focus {
+  outline: none;
+  background-color: #f0f0f0;
+  border-color: #1ebe5e;
+}
 
-    .login-btn {
-        display: inline-block;
-        text-align: center;
-        border-radius: 3px;
-        margin-top: 20px;
-        height: 43px;
-        line-height: 43px;
-        width: 100%;
-        background-color: rgb(30, 190, 94);
-        font-size: 14px !important;
-        border: none;
-        color: white;
-        padding: 0 !important;
-        cursor: pointer;
-        user-select: none;
-    }
+.login-btn {
+  margin-top: 20px;
+  width: 100%;
+  height: 43px;
+  background-color: #1ebe5e;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
-    .tip {
-        margin: 20px 0;
+.login-btn:hover {
+  background-color: #19b457;
+}
 
-        p {
-            padding: 3px 0;
-            margin: 0;
-            font-size: 14px;
-            color: #647897;
+.tip {
+  margin-top: 16px;
+  font-size: 14px;
+  color: #647897;
+  text-align: center;
 
-            i {
-                margin-right: 3px;
-            }
+  .no-act {
+    color: #3e77c2;
+    margin-left: 5px;
+    cursor: pointer;
+  }
 
-            span {
-                color: #3b3c3e;
-                border-radius: 2px;
-                margin: 0 6px;
-            }
-
-            .no-act:hover {
-                color: #3e77c2;
-                cursor: pointer;
-            }
-
-        }
-    }
-
+  .no-act:hover {
+    text-decoration: underline;
+  }
 }
 </style>
