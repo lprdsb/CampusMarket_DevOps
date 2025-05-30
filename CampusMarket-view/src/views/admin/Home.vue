@@ -2,7 +2,7 @@
     <div class="menu-container">
         <div class="menu-side" :class="{ 'menu-side-narrow': flag }">
             <div style="display: flex;align-items: center;">
-                <Logo name="校园二手" style="padding: 0 40px;margin: 15px 0;" :flag="flag" :bag="colorLogo" />
+                <Logo name="校园跳蚤" style="padding: 0 40px;margin: 15px 0;" :flag="flag" :bag="colorLogo" />
             </div>
             <div style="margin-top: 12px;">
                 <AdminMenu :flag="flag" :routes="adminRoutes" :bag="bagMenu" @select="handleRouteSelect" />

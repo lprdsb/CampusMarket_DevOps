@@ -1,15 +1,12 @@
 <template>
     <div class="login-container">
-        <!-- <div style="display: flex;justify-content: left;margin: 20px 0;">
-            <img src="/logo.jpg" style="width: 220px;height: 100px;">
-        </div> -->
         <div class="login-panel">
             <div style="width: 300px;padding: 40px;display: flex;justify-content: center;align-items: center;">
                 <img src="/bag.png" style="width: 350px;" />
             </div>
             <div class="right-login">
                 <div>
-                    <h2>校园二手交易平台</h2>
+                    <h2>校园跳蚤交易平台</h2>
                 </div>
                 <div class="text">
                     <input v-model="act" class="act" placeholder="输入账号" />
