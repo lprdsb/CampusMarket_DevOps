@@ -3,8 +3,8 @@
         <div class="nav-category">
             <div class="left">
                 <span :style="{
-                    color: categorySelectedItem.name === isUseCategory.name ? 'rgb(51, 51, 51)' : '',
-                    backgroundColor: categorySelectedItem.name === isUseCategory.name ? 'rgb(254, 223, 70)' : ''
+                    color: categorySelectedItem.name === isUseCategory.name ? '#fff' : '',
+                    backgroundColor: categorySelectedItem.name === isUseCategory.name ? '#409EFF' : ''
                 }" @click="categorySelected(isUseCategory)" :key="index"
                     v-for="(isUseCategory, index) in isUseCategoryList">
                     {{ isUseCategory.name }}
@@ -15,8 +15,8 @@
             <div class="right">
                 <span class="bargain">
                     <span :style="{
-                        color: bargainSelectedItem.name === bargain.name ? 'rgb(51,51,51)' : '',
-                        backgroundColor: bargainSelectedItem.name === bargain.name ? 'rgb(254, 223, 70)' : ''
+                        color: bargainSelectedItem.name === bargain.name ? '#fff' : '',
+                        backgroundColor: bargainSelectedItem.name === bargain.name ? '#409EFF' : ''
                     }" @click="bargainSelected(bargain)" v-for="(bargain, index) in bargainStatus" :key="index">{{
                         bargain.name }}</span>
                 </span>
@@ -210,46 +210,47 @@ export default {
         width: 100%;
         height: 350px;
         border-radius: 10px;
+        object-fit: cover;
     }
 }
 
 .bargain-hover {
     font-size: 12px;
-    font-weight: 800;
-    background-color: rgb(255, 230, 15);
-    color: rgb(51, 51, 51);
-    border-radius: 2px;
+    font-weight: 600;
+    background-color: #e8f3ff;
+    color: #409EFF;
+    border-radius: 3px;
     padding: 2px 6px;
 }
 
 .title {
-    font-size: 20px;
+    font-size: 18px;
     color: #1f1f1f;
+    font-weight: 600;
 }
 
 .decimel-symbol {
     font-size: 14px;
-    color: #ff4f24;
-    font-weight: 800;
+    color: #409EFF;
+    font-weight: 700;
 }
 
 .price {
-    font-size: 24px;
-    color: #ff4f24;
-    font-weight: 800;
+    font-size: 22px;
+    color: #409EFF;
+    font-weight: 700;
     margin-right: 6px;
 }
 
 .love {
-    font-size: 14px;
+    font-size: 13px;
     color: #999;
 }
 
 .info {
     display: flex;
-    justify-content: left;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
 
     img {
         width: 20px;
@@ -259,25 +260,29 @@ export default {
 
     span {
         font-size: 14px;
-        color: #999;
+        color: #666;
     }
 }
 
 .bargain {
     display: inline-block;
     font-size: 12px;
-    background-color: rgb(246, 246, 246);
+    background-color: #f5f7fa;
     line-height: 24px;
-    padding-inline: 10px;
-    padding-block: 4px;
+    padding: 4px 10px;
     margin-right: 5px;
-    border-radius: 5px;
+    border-radius: 6px;
     cursor: pointer;
 
     span {
         display: inline-block;
-        padding-inline: 10px;
-        border-radius: 5px;
+        padding: 2px 10px;
+        border-radius: 6px;
+    }
+
+    span:hover {
+        background-color: #ecf5ff;
+        color: #409EFF;
     }
 }
 
@@ -285,39 +290,42 @@ export default {
     padding-block: 20px;
 
     .item-product {
-        padding: 10px 10px 16px 10px;
-        box-sizing: border-box;
-        border-radius: 15px;
-        transition: all .5s;
+        padding: 10px;
+        border-radius: 12px;
+        transition: all 0.3s;
         cursor: pointer;
+        background-color: #fff;
+        border: 1px solid #f0f0f0;
     }
 
     .item-product:hover {
-        box-shadow: 1px 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 2px 10px rgba(64, 158, 255, 0.1);
+        border-color: #d9ecff;
     }
 }
 
 .nav-category {
-    margin-block: 10px;
+    margin-block: 12px;
     display: flex;
     justify-content: space-between;
 
     .left {
         display: flex;
-        justify-content: left;
         gap: 6px;
 
         span {
             display: inline-block;
-            background-color: rgb(246, 246, 246);
+            background-color: #f5f7fa;
             padding: 6px 12px;
             cursor: pointer;
-            border-radius: 15px;
-            font-size: 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: #409EFF;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         span:hover {
-            background-color: rgb(242, 242, 242);
+            background-color: #ecf5ff;
         }
     }
 }
@@ -325,7 +333,8 @@ export default {
 .recommend-tag {
     top: 10px;
     right: 10px;
-    background: rgba(255, 230, 15, 0.9);
+    background: #ecf5ff;
+    color: #409EFF;
     padding: 4px 8px;
     border-radius: 12px;
     font-size: 12px;

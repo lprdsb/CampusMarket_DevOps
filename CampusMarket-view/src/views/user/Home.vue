@@ -1,84 +1,57 @@
 <template>
-    <div>
-        <div class="container">
-            <div class="top">
-                <div class="nav">
-                    <div>
-                        <Logo name="校园交易" />
-                    </div>
-                    <div class="route">
-                        <span @click="handleRouteSelect('/product')">商品</span>
-                        <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
-                        <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
-                        <span v-if="loginStatus" @click="handleRouteSelect('/star')">我的关注</span>
-                        <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
-                      <span v-if="loginStatus" @click="handleRouteSelect('/chatTable')">聊天</span>
-                    </div>
-                </div>
-                <div
-                    style="cursor: pointer;font-size: 14px;display: flex;justify-content: left;align-items: center;gap: 20px;color: rgb(143, 143, 143);">
-                    <div class="word-search">
-                        <div class="item">
-                            <input type="text" placeholder="搜索商品" v-model="key">
-                            <i class="el-icon-search" @click="fetch"></i>
-                        </div>
-                    </div>
-                    <div style="text-align: center;" v-if="loginStatus" @click="handleRouteSelect('/orders')">
-                        <div>
-                            <i class="el-icon-document"></i>
-                        </div>
-                        <div>
-                            订单
-                        </div>
-                    </div>
-                    <div style="text-align: center;" v-if="loginStatus" @click="handleRouteSelect('/message')">
-                        <div>
-                            <i class="el-icon-bell"></i>
-                        </div>
-                        <div>
-                            通知
-                        </div>
-                    </div>
-                    <div style="text-align: center;" v-if="loginStatus" @click="handleRouteSelect('/post-product')">
-                        <div>
-                            <i class="el-icon-plus"></i>
-                        </div>
-                        <div>
-                            发布商品
-                        </div>
-                    </div>
-                    <div v-if="!loginStatus" @click="loginOperation">
-                        登录&nbsp;|&nbsp;注册
-                    </div>
-                    <div v-else>
-                        <img @click="handleRouteSelect('/space?userId=' + userInfo.id)" class="avatar"
-                            :src="userInfo.userAvatar">
-                    </div>
-                </div>
-            </div>
-            <div class="info" v-if="loginStatus">
-                <div>
-                    <img :src="userInfo.userAvatar" style="width: 90px;width: 90px;border-radius: 50%;">
-                </div>
-                <div style="padding: 0 40px;">
-                    <div class="title1">
-                        <span class="title">{{ userInfo.userName }}</span>
-                        <span class="poin" v-for="(info, index) in productInfoList" :key="index">
-                            {{ info.name }}·{{ info.count }}
-                        </span>
-                    </div>
-                    <div class="date">
-                        上一次登录时间： {{ userInfo.lastLoginTime }}
-                    </div>
-                    <div class="date">
-                        注册于： {{ userInfo.createTime }}
-                    </div>
-                </div>
-            </div>
+    <div class="container">
+      <div class="sidebar">
+        <div class="logo-box">
+          <Logo name="校园交易" />
         </div>
-        <div style="padding: 10px 300px;">
-            <router-view></router-view>
+        <div class="nav-links">
+          <span @click="handleRouteSelect('/product')">商品</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/myProduct')">我的商品</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/mySave')">我的收藏</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/star')">我的关注</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/myView')">足迹</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/chatTable')">聊天</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/orders')">订单</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/message')">通知</span>
+          <span v-if="loginStatus" @click="handleRouteSelect('/post-product')">发布商品</span>
+          <span v-if="!loginStatus" @click="loginOperation">登录 | 注册</span>
+          <div v-else @click="handleRouteSelect('/space?userId=' + userInfo.id)">
+            <img class="avatar" :src="userInfo.userAvatar" />
+          </div>
         </div>
+      </div>
+  
+      <div class="main-content">
+        <!-- 搜索栏 -->
+        <div class="search-bar">
+          <div class="word-search">
+            <div class="item">
+              <input type="text" placeholder="搜索商品" v-model="key">
+              <i class="el-icon-search" @click="fetch"></i>
+            </div>
+          </div>
+        </div>
+  
+        <!-- 登录信息 -->
+        <div class="info" v-if="loginStatus">
+          <img :src="userInfo.userAvatar" />
+          <div class="user-info">
+            <div class="title1">
+              <span class="title">{{ userInfo.userName }}</span>
+              <span class="poin" v-for="(info, index) in productInfoList" :key="index">
+                {{ info.name }}·{{ info.count }}
+              </span>
+            </div>
+            <div class="date">上一次登录时间： {{ userInfo.lastLoginTime }}</div>
+            <div class="date">注册于： {{ userInfo.createTime }}</div>
+          </div>
+        </div>
+  
+        <!-- 路由内容 -->
+        <div class="router-view-wrapper">
+          <router-view></router-view>
+        </div>
+      </div>
     </div>
 </template>
 <script>
@@ -161,134 +134,152 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.avatar {
-    border: 3px solid rgb(51, 51, 51);
-    width: 30px;
-    border-radius: 50%;
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #EFF6FF; // 主体背景浅蓝
 }
 
-.avatar:hover {
-    border: 3px solid rgb(216, 206, 25);
+// 左侧导航栏
+.sidebar {
+  width: 200px;
+  background-color: #1E3A8A; // 深蓝色
+  color: #E0F2FE;
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .logo-box {
+    margin-bottom: 30px;
+  }
+
+  .nav-links {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    span {
+      cursor: pointer;
+      padding: 10px;
+      font-size: 14px;
+      color: #BFDBFE; // 字体浅蓝
+      transition: color 0.3s, background-color 0.3s;
+      border-radius: 8px;
+
+      &:hover {
+        color: #fff;
+        background-color: #2563EB; // hover亮蓝色
+      }
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      cursor: pointer;
+      margin-top: 20px;
+
+      &:hover {
+        border-color: #93C5FD;
+      }
+    }
+    .active {
+        background-color: #3B82F6;
+        color: #fff;
+    }
+  }
 }
 
-.word-search {
+// 主内容区
+.main-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+
+  .search-bar {
     display: flex;
     justify-content: center;
+    margin-bottom: 20px;
+  }
 
-    .item {
-        max-width: 210px;
-        background-color: rgb(244, 244, 244);
-        border-radius: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
-        border: 1px solid rgb(245, 245, 245);
-
-        input:focus {
-            width: 110px;
-        }
-
-        input {
-            border: none;
-            transition: all 0.6s;
-            width: 80px;
-            margin: 0 10px;
-            background-color: rgb(244, 244, 244);
-            outline: none;
-            font-size: 14px;
-        }
-
-        i {
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            border-top-right-radius: 20px;
-            border-bottom-right-radius: 20px;
-            background-color: rgb(244, 244, 244);
-        }
-
-        i:hover {
-            background-color: rgb(241, 241, 241);
-        }
-    }
-
-}
-
-.container {
-    background-color: rgb(51, 51, 51);
-}
-
-.info {
-    padding: 10px 200px;
+  .info {
     display: flex;
+    align-items: center;
+    gap: 30px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
     img {
-        padding: 6px;
-        box-sizing: border-box;
-        border: 3px solid rgb(255, 255, 255);
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #BFDBFE;
     }
 
-    .title1 {
-        font-size: 26px;
-        color: rgb(255, 255, 255);
+    .user-info {
+      .title1 {
+        font-size: 24px;
+        color: #1E3A8A;
+        display: flex;
+        align-items: center;
         gap: 12px;
 
         .poin {
-            display: inline-block;
-            padding: 2px 6px;
-            margin-inline: 4px;
-            box-sizing: border-box;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 10px;
-            color: rgb(255, 255, 255);
-            background-color: rgb(197, 153, 57);
+          font-size: 12px;
+          color: #fff;
+          background-color: #3B82F6;
+          padding: 4px 8px;
+          border-radius: 20px;
         }
-    }
+      }
 
-    .save,
-    .date {
-        margin: 10px 0;
-        font-size: 12px;
-        color: rgb(153, 150, 141);
+      .date {
+        font-size: 13px;
+        color: #64748B;
+        margin-top: 8px;
+      }
     }
+  }
 
+  .router-view-wrapper {
+    margin-top: 30px;
+  }
 }
 
-.top {
-
-    height: 80px;
-    padding: 0 200px;
+// 搜索栏
+.word-search {
+  .item {
+    background-color: #DBEAFE;
+    border-radius: 20px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    border: 1px solid #93C5FD;
 
-    .nav {
-        padding: 20px 0;
-        display: flex;
-        justify-content: left;
-        align-items: center;
-        gap: 20px;
-
-        .route {
-            display: flex;
-            justify-content: left;
-            align-items: center;
-            gap: 30px;
-
-
-            span {
-                font-size: 14px;
-                color: rgb(143, 143, 143);
-                cursor: pointer;
-            }
-
-            span:hover {
-                color: rgb(255, 255, 255);
-            }
-        }
-
+    input {
+      border: none;
+      background-color: transparent;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
     }
+
+    i {
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: 0 20px 20px 0;
+      background-color: #93C5FD;
+      color: #fff;
+    }
+
+    i:hover {
+      background-color: #60A5FA;
+    }
+  }
 }
 </style>
