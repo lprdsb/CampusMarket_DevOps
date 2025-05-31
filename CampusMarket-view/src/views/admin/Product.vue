@@ -1,91 +1,84 @@
 <template>
-    <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
-        <el-row style="padding: 10px;margin-left: 5px;">
-            <el-row>
-                <span class="bargain">
-                    <span
-                        :style="{ backgroundColor: bargainSelectedItem.name === bargain.name ? 'rgb(255,255,255)' : '' }"
-                        @click="bargainSelected(bargain)" v-for="(bargain, index) in bargainStatus" :key="index">{{
-                            bargain.name }}</span>
-                </span>
-                <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
-                    v-model="productQueryDto.categoryId" placeholder="商品类别">
-                    <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id">
-                    </el-option>
-                </el-select>
-                <el-date-picker style="width: 216px;margin-right: 5px;" @change="fetchFreshData" size="small"
-                    v-model="searchTime" type="daterange" range-separator="至" start-placeholder="发布开始"
-                    end-placeholder="发布结束">
-                </el-date-picker>
-                <el-input size="small" style="width: 166px;" v-model="productQueryDto.name" placeholder="商品名" clearable
-                    @clear="handleFilterClear">
-                    <el-button slot="append" @click="handleFilter" icon="el-icon-search"></el-button>
-                </el-input>
-            </el-row>
-        </el-row>
-        <el-row style="margin: 0 22px;border-top: 1px solid rgb(245,245,245);">
-            <el-table :stripe="true" :data="tableData">
-                <el-table-column prop="userAvatar" width="68" label="头像">
+    <div class="product-page">
+
+        <!-- 筛选卡片 -->
+        <el-card shadow="always" class="filter-card">
+            <el-form :inline="true" size="small" label-width="auto" class="filter-form">
+                <el-form-item label="类别">
+                    <el-select v-model="productQueryDto.categoryId" placeholder="请选择" @change="fetchFreshData"
+                        style="width: 120px">
+                        <el-option v-for="item in categoryList" :key="item.id" :label="item.name" :value="item.id" />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="时间范围">
+                    <el-date-picker v-model="searchTime" type="daterange" range-separator="至" start-placeholder="开始日期"
+                        end-placeholder="结束日期" @change="fetchFreshData" style="width: 250px" />
+                </el-form-item>
+                <el-form-item label="商品名">
+                    <el-input v-model="productQueryDto.name" placeholder="输入关键词" clearable @clear="handleFilterClear"
+                        style="width: 200px">
+                        <el-button slot="append" icon="el-icon-search" style="background-color: #4a90e2;"
+                            @click="handleFilter" />
+                    </el-input>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <!-- 表格卡片 -->
+        <el-card shadow="hover" class="table-card">
+            <el-table :stripe="true" :data="tableData" style="width: 100%">
+                <el-table-column label="头像" width="70">
                     <template slot-scope="scope">
-                        <el-avatar :size="25" :src="scope.row.userAvatar" style="margin-top: 10px;"></el-avatar>
+                        <el-avatar :size="32" :src="scope.row.userAvatar" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="userName" width="180" label="用户"></el-table-column>
-                <el-table-column prop="name" label="商品名"></el-table-column>
-                <el-table-column prop="categoryName" width="110" label="类别"></el-table-column>
-                <el-table-column prop="price" width="130" label="价格">
+                <el-table-column prop="userName" label="用户" width="140" />
+                <el-table-column prop="name" label="商品名" />
+                <el-table-column prop="categoryName" label="类别" width="110" />
+                <el-table-column label="价格" width="100">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.price }}元</span>
+                        <span class="price-text">￥{{ scope.row.price }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="inventory" width="110" label="库存"></el-table-column>
-                <el-table-column prop="oldLevel" width="168" label="新旧程度">
+                <el-table-column prop="inventory" label="库存" width="90" />
+                <el-table-column prop="createTime" label="发布时间" width="160" :sortable="true" />
+                <el-table-column label="操作" width="130">
                     <template slot-scope="scope">
-                        <span>{{ scope.row.oldLevel }}成新</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="isBargain" width="138" label="是否支持打折">
-                    <template slot-scope="scope">
-                        <span>{{ scope.row.isBargain ? '支持打折' : '不支持打折' }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="createTime" width="168" label="发布时间"></el-table-column>
-                <el-table-column label="操作" width="160">
-                    <template slot-scope="scope">
-                        <span class="text-button" @click="handleEdit(scope.row)">商品详情</span>
-                        <span class="text-button" @click="handleDelete(scope.row)">删除</span>
+                        <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"></el-pagination>
-        </el-row>
-        <el-drawer title="商品详情" :visible.sync="drawerProductOperaion" :direction="direction">
-            <div style="padding: 0 15px;">
-                <div>
-                    <span class="dialog-hover">产品封面图</span>
-                    <div class="detail-cover">
-                        <div @click="coverExpansion(cover)" class="cover" v-for="(cover, index) in coverList"
-                            :key="index">
-                            <img :src="cover">
-                        </div>
+
+            <!-- 分页 -->
+            <div class="pagination-wrapper">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20]"
+                    layout="total, sizes, prev, pager, next, jumper" :total="totalItems" />
+            </div>
+        </el-card>
+
+        <!-- 商品详情抽屉 -->
+        <el-drawer title="商品详情" :visible.sync="drawerProductOperaion" :direction="direction" size="40%">
+            <div class="drawer-body">
+                <h4>产品封面图</h4>
+                <div class="cover-list">
+                    <div class="cover-item" v-for="(cover, index) in coverList" :key="index"
+                        @click="coverExpansion(cover)">
+                        <img :src="cover" />
                     </div>
                 </div>
-                <div>
-                    <span class="dialog-hover">商品详情</span>
-                    <div style="padding: 10px 6px;" v-html="data.detail"></div>
-                </div>
+                <h4 style="margin-top: 16px;">商品详情</h4>
+                <div class="product-description" v-html="data.detail"></div>
             </div>
         </el-drawer>
-        <el-dialog :visible.sync="dialogCoverExpansion" width="35%">
-            <div style="padding: 10px;display: flex;justify-content: center;align-items: center;">
-                <img style="width: 500px;height: 500px;" :src="cover" alt="" srcset="">
-            </div>
 
+        <!-- 放大图片对话框 -->
+        <el-dialog :visible.sync="dialogCoverExpansion" width="40%">
+            <div class="cover-preview">
+                <img :src="cover" />
+            </div>
         </el-dialog>
-    </el-row>
+    </div>
 </template>
 
 <script>
@@ -108,7 +101,7 @@ export default {
             direction: 'rtl', // 从右往左 right to left
             categoryList: [],
             bargainSelectedItem: {},
-            bargainStatus: [{ isBargain: null, name: '全部' }, { isBargain: true, name: '支持砍价' }, { isBargain: false, name: '不支持砍价' }]
+            // bargainStatus: [{ isBargain: null, name: '全部' }, { isBargain: true, name: '支持砍价' }, { isBargain: false, name: '不支持砍价' }]
         };
     },
     created() {
@@ -250,44 +243,91 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.bargain {
-    display: inline-block;
-    font-size: 12px;
-    background-color: rgb(246, 246, 246);
-    line-height: 24px;
-    padding-inline: 10px;
-    padding-block: 4px;
-    margin-right: 5px;
-    border-radius: 5px;
-    cursor: pointer;
+.product-page {
+    padding: 10px;
+}
 
-    span {
-        display: inline-block;
-        padding-inline: 10px;
-        border-radius: 5px;
+.filter-card {
+    margin-bottom: 16px;
+    border-radius: 10px;
+
+    .el-form-item {
+        margin-right: 20px;
     }
 }
 
-.detail-cover {
-    display: flex;
-    justify-content: left;
-    gap: 10px;
+.table-card {
+    border-radius: 10px;
 
-    .cover {
-        padding: 10px;
-        box-sizing: border-box;
-        border-radius: 5px;
-        cursor: pointer;
+    .price-text {
+        font-weight: 600;
+        color: #ff5722;
+    }
+}
 
-        img {
-            width: 100px;
-            height: 100px;
+.pagination-wrapper {
+    margin-top: 16px;
+    text-align: right;
+}
+
+.drawer-body {
+    padding: 10px;
+
+    h4 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+    }
+
+    .cover-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        .cover-item {
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+
+            img {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                display: block;
+            }
+
+            &:hover {
+                transform: scale(1.05);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            }
         }
     }
 
-    .cover:hover {
-        background-color: rgb(246, 246, 246);
+    .product-description {
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 6px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-size: 14px;
+        line-height: 1.6;
     }
+}
 
+.cover-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        width: 400px;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.15);
+    }
 }
 </style>

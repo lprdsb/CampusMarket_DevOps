@@ -13,55 +13,79 @@
         <i @click="coverToRight" class="el-icon-arrow-right"></i>
       </div>
     </div>
-    <div class="info-container">
-      <div class="info">
-        <div class="decimal">
-          <span class="price"><span class="symbol">￥</span>{{ product.price }}</span>
-          <span class="dot"></span>
-          <span>{{ product.categoryName }}</span>
-          <span class="dot"></span>
-          <div @click="handleRouteSelect('/space?userId=' + product.userId)" class="owner">
-            <img :src="product.userAvatar" alt="" style="cursor: pointer;" />
-            <span>{{ product.userName }}</span>
-          </div>
-          <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
+    <section class="info-section">
+      <div class="info-left">
+        <h1 class="product-name">{{ product.name }}</h1>
+        <div class="price-category">
+          <span class="price">￥{{ product.price.toFixed(2) }}</span>
+          <span class="category">{{ product.categoryName }}</span>
         </div>
-        <div class="decimal">
-          <!-- <span class="love">{{ product.likeNumber }}人想要</span>
-        <span class="dot"></span> -->
-          <span class="love">{{ product.saveNumber }}人收藏</span>
-          <span class="dot"></span>
-          <span class="love">{{ product.viewNumber }}人浏览</span>
+        <div class="seller-info" @click="handleRouteSelect('/space?userId=' + product.userId)">
+          <img :src="product.userAvatar" alt="avatar" class="seller-avatar" />
+          <span class="seller-name">{{ product.userName }}</span>
         </div>
-        <div class="decimal">
+        <div class="stock-level">
+          <span>{{ product.saveNumber }}人收藏</span>
+          <span>{{ product.viewNumber }}人浏览</span>
           <span>{{ product.oldLevel }}成新</span>
-          <span class="dot"></span>
-          <span>库存&nbsp;{{ product.inventory }}</span>
-        </div>
-        <div class="name">{{ product.name }}</div>
-        <div>
-          <div v-html="product.detail"></div>
-        </div>
-        <div class="operation">
-          <div class="left">
-            <span @click="likeProduct"><i class="el-icon-sell"></i>我想要</span>
-            <span @click="goToChat"><i class="el-icon-chat-dot-round"></i>和买家聊天</span>
-            <span @click="buyProduct">立即购买</span>
-          </div>
-          <div class="right">
-            <span @click="saveOperation">
-              <i class="el-icon-star-off"></i>{{ saveFlag ? '取消收藏' : '收藏' }}
-            </span>
-          </div>
+          <span>库存: {{ product.inventory }}</span>
         </div>
       </div>
-      <div class="info">
-        <div v-if="userInfo !== null">
+
+      <div class="info-right">
+        <div class="actions">
+          <button @click="likeProduct" class="btn btn-primary">我想要</button>
+          <button @click="goToChat" class="btn btn-secondary">和买家聊天</button>
+          <button @click="buyProduct" class="btn btn-success">立即购买</button>
+          <button @click="saveOperation" class="btn btn-star">
+            <i :class="saveFlag ? 'el-icon-star-on' : 'el-icon-star-off'"></i> {{ saveFlag ? '取消收藏' : '收藏' }}
+          </button>
+        </div>
+        <div v-if="userInfo !== null" class="evaluation-wrapper">
           <Evaluations contentType="PRODUCT" :contentId="productId" />
         </div>
       </div>
-    </div>
-    <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="62%">
+    </section>
+
+    <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="50%" class="order-dialog">
+      <div class="order-container">
+        <div class="header">
+          <h2>确认下单</h2>
+          <p class="sub-text">请核对商品信息后填写下单详情</p>
+        </div>
+
+        <div class="product-info-grid">
+          <img :src="product.userAvatar" class="avatar" />
+          <div class="info">
+            <h3 class="product-name">{{ product.name }}</h3>
+            <p class="price"><span class="symbol">￥</span>{{ product.price }}</p>
+            <p class="meta">{{ product.categoryName }} · {{ product.oldLevel }}成新</p>
+            <p class="meta">库存：{{ product.inventory }}</p>
+            <p class="owner">卖家：{{ product.userName }}</p>
+          </div>
+        </div>
+
+        <el-divider></el-divider>
+
+        <div class="form-section">
+          <el-form label-position="top">
+            <el-form-item label="购买数量">
+              <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
+            </el-form-item>
+
+            <el-form-item label="备注信息">
+              <el-input type="textarea" :rows="4" v-model="detail" placeholder="填写备注（选填）" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <span slot="footer" class="footer-actions">
+        <button class="btn btn-secondary" @click="cannelBuy()">取消</button>
+        <button class="btn btn-primary" @click="buyConfirm()">下单</button>
+      </span>
+    </el-dialog>
+    <!-- <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="62%">
       <div class="dialog-content">
         <p>商品下单</p>
         <div class="info">
@@ -70,10 +94,8 @@
             <span class="dot"></span>
             <span>{{ product.categoryName }}</span>
             <span class="dot"></span>
-            <!-- 添加类 small-avatar -->
             <img class="small-avatar" :src="product.userAvatar" alt="" />
             <span>{{ product.userName }}</span>
-            <!-- <span class="bargain">{{ product.isBargain ? '可砍价' : '不支持砍价' }}</span> -->
           </div>
           <div class="decimal">
             <span class="dot"></span>
@@ -90,14 +112,13 @@
         <div>
           <p>备注信息</p>
           <el-input type="textarea" :rows="3" v-model="detail"></el-input>
-          <!-- <textarea style="resize: none;" :rows="3" v-model="detail"></textarea> -->
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <span class="cancel-button" @click="cannelBuy()">取消下单</span>
         <span class="confirm-button" @click="buyConfirm()">确定下单</span>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
@@ -362,6 +383,160 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.order-dialog::v-deep(.el-dialog) {
+  border-radius: 16px;
+}
+
+.order-container {
+  padding: 20px;
+  // background-color: #f9fbff;
+  border-radius: 12px;
+}
+
+.header {
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1e2f50;
+  }
+
+  .sub-text {
+    font-size: 13px;
+    color: #8a9ab0;
+    margin-top: 4px;
+  }
+}
+
+.product-info-grid {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 20px 0;
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 2px solid #cce0ff;
+  }
+
+  .info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 90%;
+
+    .product-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .price {
+      font-size: 22px;
+      font-weight: bold;
+      color: #007bff;
+
+      .symbol {
+        font-size: 16px;
+      }
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #6c7b91;
+    }
+
+    .owner {
+      font-size: 13px;
+      color: #444;
+    }
+  }
+}
+
+.form-section {
+  margin-top: 20px;
+
+  ::v-deep(.el-form-item__label) {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  ::v-deep(.el-input__inner),
+  ::v-deep(.el-textarea__inner) {
+    border-radius: 8px;
+  }
+}
+
+.footer-actions {
+  padding: 10px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  .btn {
+    padding: 14px 14px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgb(0 123 255 / 0.4);
+    transition: all 0.3s ease;
+
+    &.btn-primary {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        box-shadow: 0 6px 14px rgb(39 174 96 / 0.7);
+      }
+    }
+
+    &.btn-secondary {
+      background: linear-gradient(45deg, #e26139, #df2605);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(45deg, #df2605, #e26139);
+        box-shadow: 0 6px 14px rgb(41 128 185 / 0.7);
+      }
+    }
+
+    &.btn-star {
+      background: #fff;
+      color: #007bff;
+      border: 2px solid #007bff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 16px;
+
+      i {
+        font-size: 20px;
+        color: #ffcc00;
+      }
+
+      &:hover {
+        background: #007bff;
+        color: white;
+
+        i {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
 .detail-container {
   display: flex;
   gap: 40px;
@@ -369,7 +544,187 @@ export default {
   background-color: #EFF6FF;
 }
 
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 70%;
 
+  .info-left {
+    flex: 1.2;
+
+    .product-name {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #007bff;
+    }
+
+    .price-category {
+      display: flex;
+      gap: 24px;
+      font-size: 20px;
+      margin-bottom: 18px;
+
+      .price {
+        font-weight: 700;
+        color: #e74c3c;
+      }
+
+      .category {
+        color: #555;
+        font-style: italic;
+      }
+    }
+
+    .seller-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      margin-bottom: 16px;
+
+      .seller-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      &:hover .seller-avatar {
+        transform: scale(1.1);
+      }
+
+      .seller-name {
+        font-weight: 600;
+        color: #007bff;
+      }
+    }
+
+    .stock-level {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .product-detail {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444;
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 12px;
+      border-right: 2px solid #007bff1a;
+    }
+  }
+
+  .info-right {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .stats {
+      font-size: 14px;
+      color: #888;
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+      justify-content: center;
+    }
+
+    .actions {
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+      justify-content: center;
+
+      .btn {
+        padding: 14px 14px;
+        border: none;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgb(0 123 255 / 0.4);
+        transition: all 0.3s ease;
+
+        &.btn-primary {
+          background: linear-gradient(45deg, #2ecc71, #27ae60);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(45deg, #27ae60, #2ecc71);
+            box-shadow: 0 6px 14px rgb(39 174 96 / 0.7);
+          }
+        }
+
+        &.btn-secondary {
+          background: linear-gradient(45deg, #3498db, #2980b9);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(45deg, #2980b9, #3498db);
+            box-shadow: 0 6px 14px rgb(41 128 185 / 0.7);
+          }
+        }
+
+        &.btn-success {
+          background: linear-gradient(45deg, #9b59b6, #8e44ad);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(45deg, #8e44ad, #9b59b6);
+            box-shadow: 0 6px 14px rgb(142 68 173 / 0.7);
+          }
+        }
+
+        &.btn-star {
+          background: #fff;
+          color: #007bff;
+          border: 2px solid #007bff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          font-size: 16px;
+
+          i {
+            font-size: 20px;
+            color: #ffcc00;
+          }
+
+          &:hover {
+            background: #007bff;
+            color: white;
+
+            i {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+
+    .evaluation-wrapper {
+      margin-top: 30px;
+      background: #f0f6ff;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: inset 0 0 12px #d0e4ff;
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+  }
+}
 
 .cover-section {
   display: flex;

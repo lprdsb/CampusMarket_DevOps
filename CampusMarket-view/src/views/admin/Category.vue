@@ -1,5 +1,61 @@
 <template>
-    <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
+    <div class="category-page">
+        <el-card shadow="always" class="filter-card">
+            <el-form :inline="true" size="small" label-width="auto" class="filter-form">
+                <el-form-item label="类别名">
+                    <el-input size="small" style="width: 166px;" v-model="categoryQueryDto.name" placeholder="商品类别名"
+                        clearable @clear="handleFilterClear">
+                        <el-button slot="append" @click="handleFilter" icon="el-icon-search"
+                            style="background-color: #4a90e2;"></el-button>
+                    </el-input>
+                </el-form-item>
+                <el-form-item style="float: right; ">
+                    <span class="edit-button" style="background-color: #4a90e2;" @click="add()">
+                        新增类别
+                    </span>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <el-card shadow="hover" class="table-card">
+            <el-table :stripe="true" :data="tableData" style="width: 100%">
+                <el-table-column prop="id" width="88" label="ID" :sortable="true"></el-table-column>
+                <el-table-column prop="name" label="类别名"></el-table-column>
+                <el-table-column label="操作" width="120">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination-wrapper">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20]"
+                    layout="total, sizes, prev, pager, next, jumper" :total="totalItems" />
+            </div>
+        </el-card>
+
+        <el-dialog :show-close="false" :visible.sync="dialogCategoryOperaion" width="18%">
+            <div style="padding:16px 20px;">
+                <el-row>
+                    <p>类别名</p>
+                    <input class="dialog-input" v-model="data.name" placeholder="类别名" />
+                </el-row>
+            </div>
+            <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
+                <span class="channel-button" @click="cannel()">
+                    取消
+                </span>
+                <span v-if="!isOperation" class="edit-button" @click="addOperation()">
+                    确定
+                </span>
+                <span v-else class="edit-button" @click="updateOperation()">
+                    确定
+                </span>
+            </span>
+        </el-dialog>
+    </div>
+    <!-- <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
         <el-row style="padding: 10px;margin-left: 5px;">
             <el-row>
                 <el-input size="small" style="width: 166px;" v-model="categoryQueryDto.name" placeholder="商品类别名"
@@ -19,45 +75,43 @@
                     <template slot-scope="scope">
                         <span>{{ scope.row.isUse ? '启用' : '不启用' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column label="操作" width="120">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column label="操作" width="120">
+    <template slot-scope="scope">
                         <span class="text-button" @click="handleEdit(scope.row)">编辑</span>
                         <span class="text-button" @click="handleDelete(scope.row)">删除</span>
                     </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"></el-pagination>
+</el-table-column>
+</el-table>
+<el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+    :current-page="currentPage" :page-sizes="[10, 20]" :page-size="pageSize"
+    layout="total, sizes, prev, pager, next, jumper" :total="totalItems"></el-pagination>
+</el-row>
+<el-dialog :show-close="false" :visible.sync="dialogCategoryOperaion" width="18%">
+    <div style="padding:16px 20px;">
+        <el-row>
+            <p>*类别名</p>
+            <input class="dialog-input" v-model="data.name" placeholder="商品类别名" />
         </el-row>
-        <!-- 操作面板 -->
-        <el-dialog :show-close="false" :visible.sync="dialogCategoryOperaion" width="18%">
-            <div style="padding:16px 20px;">
-                <el-row>
-                    <p>*类别名</p>
-                    <input class="dialog-input" v-model="data.name" placeholder="商品类别名" />
-                </el-row>
-                <el-row>
-                    <p>*是否启用</p>
-                    <el-switch v-model="data.isUse" active-text="启用" inactive-text="不启用">
-                    </el-switch>
-                </el-row>
-            </div>
-            <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
-                <span class="channel-button" @click="cannel()">
-                    取消操作
-                </span>
-                <span v-if="!isOperation" class="edit-button" @click="addOperation()">
-                    确定新增
-                </span>
-                <span v-else class="edit-button" @click="updateOperation()">
-                    确定修改
-                </span>
-            </span>
-        </el-dialog>
-    </el-row>
+        <el-row>
+            <p>*是否启用</p>
+            <el-switch v-model="data.isUse" active-text="启用" inactive-text="不启用">
+            </el-switch>
+        </el-row>
+    </div>
+    <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
+        <span class="channel-button" @click="cannel()">
+            取消操作
+        </span>
+        <span v-if="!isOperation" class="edit-button" @click="addOperation()">
+            确定新增
+        </span>
+        <span v-else class="edit-button" @click="updateOperation()">
+            确定修改
+        </span>
+    </span>
+</el-dialog>
+</el-row> -->
 </template>
 
 <script>
@@ -221,4 +275,31 @@ export default {
     },
 };
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.category-page {
+    padding: 10px;
+}
+
+.filter-card {
+    margin-bottom: 16px;
+    border-radius: 10px;
+
+    .el-form-item {
+        margin-right: 20px;
+    }
+}
+
+.pagination-wrapper {
+    margin-top: 16px;
+    text-align: right;
+}
+
+.table-card {
+    border-radius: 10px;
+
+    .price-text {
+        font-weight: 600;
+        color: #ff5722;
+    }
+}
+</style>

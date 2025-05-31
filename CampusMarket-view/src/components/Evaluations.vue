@@ -12,7 +12,7 @@
                         <textarea class="comment-parent-input" v-model="content" @focus="onFocus"
                             @blur="onBlur"></textarea>
                         <div>
-                            <span class="comment-input-number">{{ content.length }} / 300</span>
+                            <span class="comment-input-number">{{ content.length }} / 500</span>
                             <el-button
                                 :style="{ backgroundColor: isFocused ? '#007bff' : '#666', borderColor: isFocused ? '#007bff' : '#666' }"
                                 @click="commentClick" class="comment-clike" size="mini" type="primary">评论</el-button>
@@ -31,7 +31,7 @@
                         <el-col :span="22">
                             <span style="height: 40px;line-height: 40px;font-size: 16px;color: #515767;">{{
                                 comment.userName }}</span>
-                            <span v-if="comment.userId == userId" class="my-body-tag">我自己</span>
+                            <span v-if="comment.userId == userId" class="my-body-tag">我</span>
                         </el-col>
                     </div>
                 </el-row>
@@ -59,9 +59,9 @@
                         </span>
                         <span @click="upvote(comment)"
                             style="cursor: pointer;margin-left: 15px;font-size: 14px;color: #8A919F;user-select: none;">
-                            <i class="el-icon-discount" v-if="!comment.upvoteFlag">点赞</i>
+                            <!-- <i class="el-icon-discount" v-if="!comment.upvoteFlag">点赞</i>
                             <i class="el-icon-discount" v-else style="color: #1E80FF;">&nbsp;{{
-                                comment.upvoteCount }}</i>
+                                comment.upvoteCount }}</i> -->
                         </span>
                     </el-col>
                 </el-row>
@@ -73,7 +73,7 @@
                             <textarea class="comment-parent-input" v-model="replyContent"
                                 :placeholder="replyText"></textarea>
                             <div>
-                                <span class="comment-input-number">{{ replyContent.length }} / 300</span>
+                                <span class="comment-input-number">{{ replyContent.length }} / 500</span>
                                 <el-button style="background-color: #007bff;user-select: none;"
                                     @click="submitReply(comment)" class="comment-clike" size="mini"
                                     type="primary">评论</el-button>
@@ -93,7 +93,7 @@
                                         style="margin-right: 5px;"></el-avatar>
                                     <span style="color: #515767; padding: 0 5px;">{{ commentChild.userName }}</span>
                                 </div>
-                                <span v-if="commentChild.userId == userId" class="my-body-tag">我自己</span>
+                                <span v-if="commentChild.userId == userId" class="my-body-tag">我</span>
                                 <span v-if="commentChild.replierName != null"
                                     style="margin:0 15px;color: #1c1c1c;user-select: none;font-size: 12px;">
                                     回复
@@ -102,7 +102,7 @@
                                     :src="commentChild.replierAvatar" style="margin-right: 5px;"></el-avatar>
                                 <span v-if="commentChild.replierName != null" style="color: #515767;padding: 0 5px;">{{
                                     commentChild.replierName }}</span>
-                                <span v-if="commentChild.replierId == userId" class="my-body-tag">我自己</span>
+                                <span v-if="commentChild.replierId == userId" class="my-body-tag">我</span>
                                 <span
                                     style="letter-spacing: 1px;font-size: 16px; color: #252933; white-space: normal; margin-left: 5px;padding: 6px 0;">
                                     : {{ commentChild.content }}
@@ -126,9 +126,9 @@
                                 </span>
                                 <span @click="upvote(commentChild)"
                                     style="cursor: pointer;margin-left: 15px;font-size: 14px;color: #8A919F;user-select: none;">
-                                    <i class="el-icon-discount" v-if="!commentChild.upvoteFlag">点赞</i>
+                                    <!-- <i class="el-icon-discount" v-if="!commentChild.upvoteFlag">点赞</i>
                                     <i class="el-icon-discount" v-else style="color: #1E80FF;">&nbsp;{{
-                                        commentChild.upvoteCount }}</i>
+                                        commentChild.upvoteCount }}</i> -->
                                 </span>
                             </el-row>
                             <!-- 子级评论的回复按钮和输入框 -->
@@ -140,7 +140,7 @@
                                             :placeholder="replyText"></textarea>
                                         <div>
                                             <span class="comment-input-number">{{ replyChildContent.length }} /
-                                                300</span>
+                                                500</span>
                                             <el-button style="background-color: #007bff;"
                                                 @click="submitReply1(commentChild)" class="comment-clike" size="mini"
                                                 type="primary">评论</el-button>
@@ -200,7 +200,7 @@ export default {
             id: null,
             isFocused: false,
             bgColor: 'rgb(245 245 245)',
-            strLength: '0/300',
+            strLength: '0/500',
             replyText: '',
             userId: '',
             dialogVisibleReport: false,

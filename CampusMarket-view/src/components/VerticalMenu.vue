@@ -38,7 +38,7 @@ export default {
 		const saveLastPath = sessionStorage.getItem('activeMenuItem');
 		if (saveLastPath === null) {
 			// 加载首页
-			this.handleSelect('/adminLayout');
+			this.handleSelect('/userManage');
 		} else {
 			this.handleSelect(saveLastPath);
 		}

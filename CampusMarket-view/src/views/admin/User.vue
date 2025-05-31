@@ -1,5 +1,171 @@
 <template>
-    <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
+
+    <div class="user-page">
+        <el-card shadow="always" class="filter-card">
+            <el-form :inline="true" size="small" label-width="auto" class="filter-form">
+                <el-form-item label="登录状态">
+                    <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
+                        v-model="userQueryDto.isLogin" placeholder="登录状态">
+                        <el-option v-for="item in loginStatuList" :key="item.value" :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="禁言状态">
+                    <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
+                        v-model="userQueryDto.isWord" placeholder="禁言状态">
+                        <el-option v-for="item in wordStatuList" :key="item.value" :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="注册时间范围">
+                    <el-date-picker style="width: 216px;margin-right: 5px;" @change="fetchFreshData" size="small"
+                        v-model="searchTime" type="daterange" range-separator="至" start-placeholder="注册开始"
+                        end-placeholder="注册结束">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="用户名">
+                    <el-input size="small" style="width: 200px;" v-model="userQueryDto.userName" placeholder="用户名"
+                        clearable @clear="handleFilterClear">
+                        <el-button slot="append" @click="handleFilter" style="background-color: #4a90e2;"
+                            icon="el-icon-search"></el-button>
+                    </el-input>
+                </el-form-item>
+                <el-form-item style="float:right;">
+                    <span style="background-color: #4a90e2;" class="edit-button" @click="add()">
+                        新增用户
+                    </span>
+                </el-form-item>
+            </el-form>
+        </el-card>
+
+        <el-card shadow="hover" class="table-card">
+            <el-table :stripe="true" :data="tableData" style="width: 100%">
+                <el-table-column prop="id" width="88" label="ID" :sortable="true"></el-table-column>
+                <el-table-column prop="userAvatar" width="68" label="头像">
+                    <template slot-scope="scope">
+                        <el-avatar :size="25" :src="scope.row.userAvatar" style="margin-top: 10px;"></el-avatar>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="userName" label="名称"></el-table-column>
+                <el-table-column prop="userAccount" width="128" label="账号"></el-table-column>
+                <el-table-column prop="userEmail" width="168" label="邮箱"></el-table-column>
+                <!-- <el-table-column prop="userRole" width="68" label="角色">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.userRole === 1 ? '管理员' : '用户' }}</span>
+                    </template>
+                </el-table-column> -->
+                <el-table-column prop="isLogin" width="108" label="封号">
+
+                    <template slot-scope="scope">
+                        <div @click="handleStatus(scope.row), comfirmStatus()">
+                            <el-switch v-model="scope.row.isLogin">
+                            </el-switch>
+                        </div>
+                        <!-- <i v-if="scope.row.isLogin" style="margin-right: 5px;" class="el-icon-warning"></i>
+                        <i v-else style="margin-right: 5px;color: rgb(253, 199, 50);" class="el-icon-success"></i>
+                        <el-tooltip v-if="scope.row.isLogin" class="item" effect="dark"
+                            content="账号一经封号，不可登录系统。经由管理员解禁后，方可登录" placement="bottom-end">
+                            <span style="text-decoration: underline;text-decoration-style: dashed;">已封号</span>
+                        </el-tooltip>
+                        <span v-else>正常</span> -->
+                    </template>
+                </el-table-column>
+                <el-table-column prop="isWord" width="108" label="禁言">
+                    <template slot-scope="scope">
+                        <div @click="handleStatus(scope.row), comfirmStatus()">
+                            <el-switch v-model="scope.row.isWord">
+                            </el-switch>
+                        </div>
+                        <!-- <i v-if=" scope.row.isWord" style="margin-right: 5px;" class="el-icon-warning"></i>
+                            <i v-else style="margin-right: 5px;color: rgb(253, 199, 50);" class="el-icon-success"></i>
+                            <el-tooltip v-if="scope.row.isWord" class="item" effect="dark"
+                                content="账号一经禁言，不可评论互动。经由管理员解禁后，方可评论" placement="bottom-end">
+                                <span style="text-decoration: underline;text-decoration-style: dashed;">已禁言</span>
+                            </el-tooltip>
+                            <span v-else>正常</span> -->
+                    </template>
+                </el-table-column>
+                <el-table-column :sortable="true" prop="createTime" width="168" label="注册于"></el-table-column>
+                <el-table-column label="操作" width="170">
+                    <template slot-scope="scope">
+                        <!-- <span class="text-button" @click="handleStatus(scope.row)">账号状态</span> -->
+                        <span class="text-button" @click="handleEdit(scope.row)">编辑</span>
+                        <span class="text-button" @click="handleDelete(scope.row)">删除</span>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="pagination-wrapper">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20]"
+                    layout="total, sizes, prev, pager, next, jumper" :total="totalItems" />
+            </div>
+        </el-card>
+        <el-dialog :show-close="false" :visible.sync="dialogUserOperaion" width="25%">
+            <div style="padding:16px 20px;">
+                <el-row>
+                    <p>用户头像</p>
+                    <el-upload class="avatar-uploader"
+                        action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload" :show-file-list="false"
+                        :on-success="handleAvatarSuccess">
+                        <img v-if="userAvatar" :src="userAvatar" class="dialog-avatar">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                </el-row>
+                <el-row>
+                    <span class="dialog-hover">用户名</span>
+                    <input class="dialog-input" v-model="data.userName" placeholder="用户名" />
+                    <span class="dialog-hover">账号</span>
+                    <input class="dialog-input" v-model="data.userAccount" placeholder="账号" />
+                    <span class="dialog-hover">邮箱</span>
+                    <input class="dialog-input" v-model="data.userEmail" placeholder="邮箱" />
+                    <span class="dialog-hover">密码</span>
+                    <input class="dialog-input" v-model="userPwd" type="password" placeholder="密码" />
+                </el-row>
+            </div>
+            <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
+                <span class="channel-button" @click="cannel()">
+                    取消
+                </span>
+                <span v-if="!isOperation" class="edit-button" @click="addOperation()">
+                    确定
+                </span>
+                <span v-else class="edit-button" @click="updateOperation()">
+                    确定
+                </span>
+            </span>
+        </el-dialog>
+        <el-dialog :show-close="false" :visible.sync="dialogStatusOperation" width="18%">
+            <div style="padding:30px 20px 0 20px;">
+                <el-row>
+                    <p>封号状态</p>
+                    <el-switch v-model="data.isLogin" active-text="封号" inactive-text="正常状态">
+                    </el-switch>
+                </el-row>
+                <el-row style="margin: 20px 0;">
+                    <p>禁言状态</p>
+                    <el-switch v-model="data.isWord" active-text="禁言" inactive-text="正常状态">
+                    </el-switch>
+                </el-row>
+                <!-- <el-row style="margin: 20px 0;">
+                    <p>*是否设置为管理员</p>
+                    <el-switch v-model="isAdmin" active-text="管理员" inactive-text="普通用户">
+                    </el-switch>
+                </el-row> -->
+            </div>
+            <span slot="footer" class="dialog-footer">
+                <span class="channel-button" @click="cannel()">
+                    取消
+                </span>
+                <span class="edit-button" @click="comfirmStatus()">
+                    确定
+                </span>
+            </span>
+        </el-dialog>
+    </div>
+    <!-- <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
         <el-row style="padding: 10px;margin-left: 5px;">
             <el-row>
                 <el-select style="width: 100px;margin-right: 5px;" @change="fetchFreshData" size="small"
@@ -31,17 +197,17 @@
                     <template slot-scope="scope">
                         <el-avatar :size="25" :src="scope.row.userAvatar" style="margin-top: 10px;"></el-avatar>
                     </template>
-                </el-table-column>
-                <el-table-column prop="userName" label="名称"></el-table-column>
-                <el-table-column prop="userAccount" width="128" label="账号"></el-table-column>
-                <el-table-column prop="userEmail" width="168" label="邮箱"></el-table-column>
-                <el-table-column prop="userRole" width="68" label="角色">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column prop="userName" label="名称"></el-table-column>
+<el-table-column prop="userAccount" width="128" label="账号"></el-table-column>
+<el-table-column prop="userEmail" width="168" label="邮箱"></el-table-column>
+<el-table-column prop="userRole" width="68" label="角色">
+    <template slot-scope="scope">
                         <span>{{ scope.row.userRole === 1 ? '管理员' : '用户' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column prop="isLogin" width="108" label="封号">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column prop="isLogin" width="108" label="封号">
+    <template slot-scope="scope">
                         <i v-if="scope.row.isLogin" style="margin-right: 5px;" class="el-icon-warning"></i>
                         <i v-else style="margin-right: 5px;color: rgb(253, 199, 50);" class="el-icon-success"></i>
                         <el-tooltip v-if="scope.row.isLogin" class="item" effect="dark"
@@ -50,9 +216,9 @@
                         </el-tooltip>
                         <span v-else>正常</span>
                     </template>
-                </el-table-column>
-                <el-table-column prop="isWord" width="108" label="禁言">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column prop="isWord" width="108" label="禁言">
+    <template slot-scope="scope">
                         <i v-if="scope.row.isWord" style="margin-right: 5px;" class="el-icon-warning"></i>
                         <i v-else style="margin-right: 5px;color: rgb(253, 199, 50);" class="el-icon-success"></i>
                         <el-tooltip v-if="scope.row.isWord" class="item" effect="dark"
@@ -61,84 +227,82 @@
                         </el-tooltip>
                         <span v-else>正常</span>
                     </template>
-                </el-table-column>
-                <el-table-column :sortable="true" prop="createTime" width="168" label="注册于"></el-table-column>
-                <el-table-column label="操作" width="170">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column :sortable="true" prop="createTime" width="168" label="注册于"></el-table-column>
+<el-table-column label="操作" width="170">
+    <template slot-scope="scope">
                         <span class="text-button" @click="handleStatus(scope.row)">账号状态</span>
                         <span class="text-button" @click="handleEdit(scope.row)">编辑</span>
                         <span class="text-button" @click="handleDelete(scope.row)">删除</span>
                     </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"></el-pagination>
+</el-table-column>
+</el-table>
+<el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+    :current-page="currentPage" :page-sizes="[10, 20]" :page-size="pageSize"
+    layout="total, sizes, prev, pager, next, jumper" :total="totalItems"></el-pagination>
+</el-row>
+
+<el-dialog :show-close="false" :visible.sync="dialogUserOperaion" width="25%">
+    <div style="padding:16px 20px;">
+        <el-row>
+            <p>用户头像</p>
+            <el-upload class="avatar-uploader" action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload"
+                :show-file-list="false" :on-success="handleAvatarSuccess">
+                <img v-if="userAvatar" :src="userAvatar" class="dialog-avatar">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
         </el-row>
-        <!-- 操作面板 -->
-        <el-dialog :show-close="false" :visible.sync="dialogUserOperaion" width="25%">
-            <div style="padding:16px 20px;">
-                <el-row>
-                    <p>用户头像</p>
-                    <el-upload class="avatar-uploader"
-                        action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload" :show-file-list="false"
-                        :on-success="handleAvatarSuccess">
-                        <img v-if="userAvatar" :src="userAvatar" class="dialog-avatar">
-                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                    </el-upload>
-                </el-row>
-                <el-row>
-                    <span class="dialog-hover">用户名</span>
-                    <input class="dialog-input" v-model="data.userName" placeholder="用户名" />
-                    <span class="dialog-hover">账号</span>
-                    <input class="dialog-input" v-model="data.userAccount" placeholder="账号" />
-                    <span class="dialog-hover">邮箱</span>
-                    <input class="dialog-input" v-model="data.userEmail" placeholder="邮箱" />
-                    <span class="dialog-hover">密码</span>
-                    <input class="dialog-input" v-model="userPwd" type="password" placeholder="密码" />
-                </el-row>
-            </div>
-            <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
-                <span class="channel-button" @click="cannel()">
-                    取消操作
-                </span>
-                <span v-if="!isOperation" class="edit-button" @click="addOperation()">
-                    确定新增
-                </span>
-                <span v-else class="edit-button" @click="updateOperation()">
-                    确定修改
-                </span>
-            </span>
-        </el-dialog>
-        <el-dialog :show-close="false" :visible.sync="dialogStatusOperation" width="18%">
-            <div style="padding:30px 20px 0 20px;">
-                <el-row>
-                    <p>*封号状态</p>
-                    <el-switch v-model="data.isLogin" active-text="封号" inactive-text="正常状态">
-                    </el-switch>
-                </el-row>
-                <el-row style="margin: 20px 0;">
-                    <p>*禁言状态</p>
-                    <el-switch v-model="data.isWord" active-text="禁言" inactive-text="正常状态">
-                    </el-switch>
-                </el-row>
-                <el-row style="margin: 20px 0;">
-                    <p>*是否设置为管理员</p>
-                    <el-switch v-model="isAdmin" active-text="管理员" inactive-text="普通用户">
-                    </el-switch>
-                </el-row>
-            </div>
-            <span slot="footer" class="dialog-footer">
-                <span class="channel-button" @click="cannel()">
-                    取消操作
-                </span>
-                <span class="edit-button" @click="comfirmStatus()">
-                    确定设置
-                </span>
-            </span>
-        </el-dialog>
-    </el-row>
+        <el-row>
+            <span class="dialog-hover">用户名</span>
+            <input class="dialog-input" v-model="data.userName" placeholder="用户名" />
+            <span class="dialog-hover">账号</span>
+            <input class="dialog-input" v-model="data.userAccount" placeholder="账号" />
+            <span class="dialog-hover">邮箱</span>
+            <input class="dialog-input" v-model="data.userEmail" placeholder="邮箱" />
+            <span class="dialog-hover">密码</span>
+            <input class="dialog-input" v-model="userPwd" type="password" placeholder="密码" />
+        </el-row>
+    </div>
+    <span slot="footer" class="dialog-footer" style="margin-top: 10px;">
+        <span class="channel-button" @click="cannel()">
+            取消操作
+        </span>
+        <span v-if="!isOperation" class="edit-button" @click="addOperation()">
+            确定新增
+        </span>
+        <span v-else class="edit-button" @click="updateOperation()">
+            确定修改
+        </span>
+    </span>
+</el-dialog>
+<el-dialog :show-close="false" :visible.sync="dialogStatusOperation" width="18%">
+    <div style="padding:30px 20px 0 20px;">
+        <el-row>
+            <p>*封号状态</p>
+            <el-switch v-model="data.isLogin" active-text="封号" inactive-text="正常状态">
+            </el-switch>
+        </el-row>
+        <el-row style="margin: 20px 0;">
+            <p>*禁言状态</p>
+            <el-switch v-model="data.isWord" active-text="禁言" inactive-text="正常状态">
+            </el-switch>
+        </el-row>
+        <el-row style="margin: 20px 0;">
+            <p>*是否设置为管理员</p>
+            <el-switch v-model="isAdmin" active-text="管理员" inactive-text="普通用户">
+            </el-switch>
+        </el-row>
+    </div>
+    <span slot="footer" class="dialog-footer">
+        <span class="channel-button" @click="cannel()">
+            取消操作
+        </span>
+        <span class="edit-button" @click="comfirmStatus()">
+            确定设置
+        </span>
+    </span>
+</el-dialog>
+</el-row> -->
 </template>
 
 <script>
@@ -202,9 +366,10 @@ export default {
         },
         // 修改用户状态
         handleStatus(data) {
+            // console.log(data.id);
             // 设置用户角色
             this.isAdmin = data.userRole === 1;
-            this.dialogStatusOperation = true;
+            // this.dialogStatusOperation = true;
             this.data = data;
         },
         // 头像上传回调函数
@@ -371,4 +536,31 @@ export default {
     },
 };
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.user-page {
+    padding: 10px;
+}
+
+.filter-card {
+    margin-bottom: 16px;
+    border-radius: 10px;
+
+    .el-form-item {
+        margin-right: 20px;
+    }
+}
+
+.table-card {
+    border-radius: 10px;
+
+    .price-text {
+        font-weight: 600;
+        color: #ff5722;
+    }
+}
+
+.pagination-wrapper {
+    margin-top: 16px;
+    text-align: right;
+}
+</style>

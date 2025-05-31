@@ -1,5 +1,43 @@
 <template>
-    <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
+    <div class="message-page">
+
+        <el-card shadow="always" class="filter-card">
+            <el-form :inline="true" size="small" label-width="auto" class="filter-form">
+                <el-form-item label="时间范围">
+                    <el-date-picker v-model="searchTime" type="daterange" range-separator="至" start-placeholder="开始日期"
+                        end-placeholder="结束日期" @change="fetchFreshData" style="width: 250px" />
+                </el-form-item>
+            </el-form>
+        </el-card>
+        <el-card shadow="hover" class="table-card">
+            <el-table :stripe="true" :data="tableData" style="width: 100%">
+                <el-table-column prop="userAvatar" width="68" label="头像">
+                    <template slot-scope="scope">
+                        <el-avatar :size="25" :src="scope.row.userAvatar" style="margin-top: 10px;"></el-avatar>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="userName" width="130" label="接收者"></el-table-column>
+                <el-table-column prop="content" label="消息体"></el-table-column>
+                <!-- <el-table-column prop="isRead" width="168" label="是否已读">
+                    <template slot-scope="scope">
+                        <span>{{ scope.row.isRead ? '已读' : '未读' }}</span>
+                    </template>
+                </el-table-column> -->
+                <el-table-column prop="createTime" width="200" label="发送时间" :sortable="true"></el-table-column>
+                <el-table-column label="操作" width="120">
+                    <template slot-scope="scope">
+                        <el-button type="text" size="small" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination-wrapper">
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-size="pageSize" :page-sizes="[10, 20]"
+                    layout="total, sizes, prev, pager, next, jumper" :total="totalItems" />
+            </div>
+        </el-card>
+    </div>
+    <!-- <el-row style="background-color: #FFFFFF;padding: 5px 0;border-radius: 5px;">
         <el-row style="padding: 10px;margin-left: 5px;">
             <el-row>
                 <el-date-picker style="width: 216px;margin-right: 5px;" @change="fetchFreshData" size="small"
@@ -18,27 +56,26 @@
                     <template slot-scope="scope">
                         <el-avatar :size="25" :src="scope.row.userAvatar" style="margin-top: 10px;"></el-avatar>
                     </template>
-                </el-table-column>
-                <el-table-column prop="userName" width="130" label="接收者"></el-table-column>
-                <el-table-column prop="content" label="消息体"></el-table-column>
-                <el-table-column prop="isRead" width="168" label="是否已读">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column prop="userName" width="130" label="接收者"></el-table-column>
+<el-table-column prop="content" label="消息体"></el-table-column>
+<el-table-column prop="isRead" width="168" label="是否已读">
+    <template slot-scope="scope">
                         <span>{{ scope.row.isRead ? '已读' : '未读' }}</span>
                     </template>
-                </el-table-column>
-                <el-table-column prop="createTime" width="200" label="发送时间"></el-table-column>
-                <el-table-column label="操作" width="120">
-                    <template slot-scope="scope">
+</el-table-column>
+<el-table-column prop="createTime" width="200" label="发送时间"></el-table-column>
+<el-table-column label="操作" width="120">
+    <template slot-scope="scope">
                         <span class="text-button" @click="handleDelete(scope.row)">删除</span>
                     </template>
-                </el-table-column>
-            </el-table>
-            <el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[10, 20]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"></el-pagination>
-        </el-row>
-    </el-row>
+</el-table-column>
+</el-table>
+<el-pagination style="margin:10px 0;float: right;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+    :current-page="currentPage" :page-sizes="[10, 20]" :page-size="pageSize"
+    layout="total, sizes, prev, pager, next, jumper" :total="totalItems"></el-pagination>
+</el-row>
+</el-row> -->
 </template>
 
 <script>
@@ -140,4 +177,31 @@ export default {
     },
 };
 </script>
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.message-page {
+    padding: 10px;
+}
+
+.table-card {
+    border-radius: 10px;
+
+    .price-text {
+        font-weight: 600;
+        color: #ff5722;
+    }
+}
+
+.pagination-wrapper {
+    margin-top: 16px;
+    text-align: right;
+}
+
+.filter-card {
+    margin-bottom: 16px;
+    border-radius: 10px;
+
+    .el-form-item {
+        margin-right: 20px;
+    }
+}
+</style>
