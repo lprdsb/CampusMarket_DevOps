@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mapper.ComplaintMapper">
+    <insert id="insertComplaint" parameterType="cn.pojo.entity.Complaint">
+        INSERT INTO complaint (complainant_id, target_id, order_id, content, status, create_time)
+        VALUES (#{complainantId}, #{targetId}, #{orderId}, #{content}, #{status}, NOW())
+    </insert>
+    <select id="selectByComplainantId" resultType="cn.pojo.entity.Complaint">
+        SELECT * FROM complaint WHERE complainant_id = #{complainantId} ORDER BY create_time DESC
+    </select>
+    <select id="selectAll" resultType="cn.pojo.entity.Complaint">
+        SELECT * FROM complaint ORDER BY create_time DESC
+    </select>
+    <update id="updateStatus">
+        UPDATE complaint SET status=#{status}, handle_time=#{handleTime} WHERE id=#{id}
+    </update>
+</mapper>

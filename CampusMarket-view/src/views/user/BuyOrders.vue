@@ -49,6 +49,13 @@
                             <span @click="refund(orderInfo)" v-else class="edit-button">申请退款</span>
                             <span style="margin-left: 5px;" @click="del(orderInfo)" v-if="orderInfo.tradeStatus"
                                 class="channel-button">删除</span>
+                            <el-button @click="showComplaint = true">投诉</el-button>
+                            <ComplaintForm
+                                :visible.sync="showComplaint"
+                                :targetId="orderInfo.sellerId"
+                                :orderId="orderInfo.id"
+                                :complainantId="userId"
+                            />
                         </span>
 
                     </div>
@@ -58,14 +65,18 @@
     </div>
 </template>
 <script>
+import ComplaintForm from '@/components/ComplaintForm.vue';
 export default {
     name: 'BuyOrders',
+    components: { ComplaintForm },
     data() {
         return {
             ordersList: [],
             ordersQueryDto: {},
             tradeStatusSelectedItem: {},
-            tradeStatusList: [{ tradeStatus: null, name: '全部' }, { tradeStatus: true, name: '已支付' }, { tradeStatus: false, name: '未支付' }]
+            tradeStatusList: [{ tradeStatus: null, name: '全部' }, { tradeStatus: true, name: '已支付' }, { tradeStatus: false, name: '未支付' }],
+            showComplaint: false,
+            userId: '' // 假设用户ID在此获取，实际情况请根据项目调整
         }
     },
     created() {
