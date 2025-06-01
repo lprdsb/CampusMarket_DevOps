@@ -57,28 +57,103 @@
           </span>
           <el-button type="danger" v-if="selectedOrder.tradeStatus" @click="del(selectedOrder)">删除</el-button>
           <!-- <el-button type="danger">下单</el-button> -->
+          <el-button @click="submitComplaint">投诉</el-button>
+          <!-- <ComplaintForm :visible.sync="showComplaint" :targetId="selectedOrder.sellerId" :orderId="selectedOrder.id"
+            :complainantId="userId" /> -->
         </div>
       </div>
     </div>
+
+
+    <el-dialog :show-close="false" :visible.sync="showComplaint" class="complaint-dialog">
+
+      <div class="complaint-container">
+        <div class="header">
+          <h2>投诉</h2>
+          <!-- <p class="sub-text">请核对商品信息后填写下单详情</p> -->
+        </div>
+
+        <div class="form-section">
+          <el-form label-position="top">
+            <el-form-item label="投诉内容">
+              <el-input type="textarea" :rows="4" v-model="content" placeholder="填写投诉内容" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <span slot="footer" class="footer-actions">
+        <button class="btn btn-primary" @click="submit()">提交</button>
+        <button class="btn btn-secondary" @click="cannelComplaint()">取消</button>
+      </span>
+      <!-- <el-form @submit.native.prevent="submit">
+        <el-form-item label="投诉内容">
+          <el-input type="textarea" v-model="content" required />
+        </el-form-item>
+        <el-button type="primary" @click="submit">提交</el-button>
+        <el-button type="primary" @click="cannelComplaint()">取消</el-button>
+      </el-form> -->
+    </el-dialog>
   </div>
 </template>
 <script>
+import ComplaintForm from '@/components/ComplaintForm.vue';
 export default {
   name: 'BuyOrders',
+  components: { ComplaintForm },
   data() {
     return {
       selectedOrder: null,
       ordersList: [],
       ordersQueryDto: {},
       tradeStatusSelectedItem: {},
-      tradeStatusList: [{ tradeStatus: null, name: '全部' }, { tradeStatus: true, name: '已支付' }, { tradeStatus: false, name: '未支付' }]
+      tradeStatusList: [{ tradeStatus: null, name: '全部' }, { tradeStatus: true, name: '已支付' }, { tradeStatus: false, name: '未支付' }],
+      showComplaint: false,
+      userId: '', // 假设用户ID在此获取，实际情况请根据项目调整,
+      content: ''
     }
   },
   created() {
-    this.fetchOrders();
-    this.tradeStatusSelected(this.tradeStatusList[0]);
+    this.auth();
   },
   methods: {
+
+    cannelComplaint() {
+      this.showComplaint = false;
+    },
+    submitComplaint() {
+      this.showComplaint = true;
+    },
+    auth() {
+      this.$axios.get('/user/auth').then(res => {
+        const { data } = res;
+        if (data.code === 200) {
+          this.selfInfo = data.data;
+          // this.fetchUser();
+          this.userId = this.selfInfo.id;
+          this.fetchOrders();
+          this.tradeStatusSelected(this.tradeStatusList[0]);
+          // console.log(this.userId + "aasdasdasd");
+        }
+      }).catch(error => {
+        this.$notify.error({
+          title: '查询异常',
+          message: error
+        });
+      });
+    },
+    async submit() {
+      console.log(this.selectedOrder);
+      await this.$axios.post('/api/complaint/submit', {
+        complainantId: this.userId,
+        targetId: this.selectedOrder.sellerId,
+        orderId: this.selectedOrder.id,
+        content: this.content
+      });
+      this.$emit('update:visible', false);
+      this.$message.success('投诉已提交');
+      this.cannelComplaint();
+    },
     tradeStatusSelected(tradeStatusItem) {
       this.tradeStatusSelectedItem = tradeStatusItem;
       this.ordersQueryDto.tradeStatus = tradeStatusItem.tradeStatus;
@@ -167,6 +242,7 @@ export default {
      * 购物订单
      */
     fetchOrders() {
+      // console.log(this.userId + "aasdasdasd");
       this.$axios.post('/orders/queryUser', this.ordersQueryDto).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
@@ -198,6 +274,33 @@ export default {
 };
 </script>
 <style scoped lang="scss">
+.complaint-dialog::v-deep(.el-dialog) {
+  border-radius: 16px;
+}
+
+.header {
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1e2f50;
+  }
+
+  .sub-text {
+    font-size: 13px;
+    color: #8a9ab0;
+    margin-top: 4px;
+  }
+}
+
+.complaint-container {
+  padding: 20px;
+  // background-color: #f9fbff;
+  border-radius: 12px;
+}
+
 .orders-page {
   display: flex;
   height: calc(100vh - 40px);
@@ -208,6 +311,84 @@ export default {
   font-size: 20px;
   // padding: 4px 14px;
   border-radius: 6px;
+}
+
+.footer-actions {
+  padding: 10px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+
+  .btn {
+    padding: 14px 14px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgb(0 123 255 / 0.4);
+    transition: all 0.3s ease;
+
+    &.btn-primary {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+        box-shadow: 0 6px 14px rgb(39 174 96 / 0.7);
+      }
+    }
+
+    &.btn-secondary {
+      background: linear-gradient(45deg, #e26139, #df2605);
+      color: white;
+
+      &:hover {
+        background: linear-gradient(45deg, #df2605, #e26139);
+        box-shadow: 0 6px 14px rgb(41 128 185 / 0.7);
+      }
+    }
+
+    &.btn-star {
+      background: #fff;
+      color: #007bff;
+      border: 2px solid #007bff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 16px;
+
+      i {
+        font-size: 20px;
+        color: #ffcc00;
+      }
+
+      &:hover {
+        background: #007bff;
+        color: white;
+
+        i {
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+.form-section {
+  margin-top: 20px;
+
+  ::v-deep(.el-form-item__label) {
+    font-weight: 500;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  ::v-deep(.el-input__inner),
+  ::v-deep(.el-textarea__inner) {
+    border-radius: 8px;
+  }
 }
 
 .orders-left {
