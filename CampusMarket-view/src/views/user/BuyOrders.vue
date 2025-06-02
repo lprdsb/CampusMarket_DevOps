@@ -57,7 +57,6 @@
           </span>
           <el-button type="danger" v-if="selectedOrder.tradeStatus" @click="del(selectedOrder)">删除</el-button>
           <!-- <el-button type="danger">下单</el-button> -->
-          <el-button @click="submitComplaint">投诉</el-button>
           <!-- <ComplaintForm :visible.sync="showComplaint" :targetId="selectedOrder.sellerId" :orderId="selectedOrder.id"
             :complainantId="userId" /> -->
         </div>
@@ -65,35 +64,7 @@
     </div>
 
 
-    <el-dialog :show-close="false" :visible.sync="showComplaint" class="complaint-dialog">
 
-      <div class="complaint-container">
-        <div class="header">
-          <h2>投诉</h2>
-          <!-- <p class="sub-text">请核对商品信息后填写下单详情</p> -->
-        </div>
-
-        <div class="form-section">
-          <el-form label-position="top">
-            <el-form-item label="投诉内容">
-              <el-input type="textarea" :rows="4" v-model="content" placeholder="填写投诉内容" />
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-
-      <span slot="footer" class="footer-actions">
-        <button class="btn btn-primary" @click="submit()">提交</button>
-        <button class="btn btn-secondary" @click="cannelComplaint()">取消</button>
-      </span>
-      <!-- <el-form @submit.native.prevent="submit">
-        <el-form-item label="投诉内容">
-          <el-input type="textarea" v-model="content" required />
-        </el-form-item>
-        <el-button type="primary" @click="submit">提交</el-button>
-        <el-button type="primary" @click="cannelComplaint()">取消</el-button>
-      </el-form> -->
-    </el-dialog>
   </div>
 </template>
 <script>

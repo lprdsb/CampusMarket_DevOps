@@ -15,7 +15,14 @@
     </div>
     <section class="info-section">
       <div class="info-left">
-        <h1 class="product-name">{{ product.name }}</h1>
+        <div class="name-container">
+          <h1 class="product-name">
+            {{ product.name }}
+          </h1>
+          <button @click="saveOperation" class="actions btn btn-star">
+            <i :class="saveFlag ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
+          </button>
+        </div>
         <div class="price-category">
           <span class="price">￥{{ product.price.toFixed(2) }}</span>
           <span class="category">{{ product.categoryName }}</span>
@@ -37,9 +44,8 @@
           <button @click="likeProduct" class="btn btn-primary">我想要</button>
           <button @click="goToChat" class="btn btn-secondary">和买家聊天</button>
           <button @click="buyProduct" class="btn btn-success">立即购买</button>
-          <button @click="saveOperation" class="btn btn-star">
-            <i :class="saveFlag ? 'el-icon-star-on' : 'el-icon-star-off'"></i> {{ saveFlag ? '取消收藏' : '收藏' }}
-          </button>
+          <!-- <p>{{ this.saveFlag }}</p> -->
+          <button @click="submitComplaint" class="btn btn-complaint">投诉</button>
         </div>
         <div v-if="userInfo !== null" class="evaluation-wrapper">
           <Evaluations contentType="PRODUCT" :contentId="productId" />
@@ -83,6 +89,27 @@
       <span slot="footer" class="footer-actions">
         <button class="btn btn-secondary" @click="cannelBuy()">取消</button>
         <button class="btn btn-primary" @click="buyConfirm()">下单</button>
+      </span>
+    </el-dialog>
+    <el-dialog :show-close="false" :visible.sync="showComplaint" class="complaint-dialog">
+
+      <div class="complaint-container">
+        <div class="header">
+          <h2>投诉</h2>
+        </div>
+
+        <div class="form-section">
+          <el-form label-position="top">
+            <el-form-item label="投诉内容">
+              <el-input type="textarea" :rows="4" v-model="content" placeholder="填写投诉内容" />
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+
+      <span slot="footer" class="footer-actions">
+        <button class="btn btn-primary" @click="submit()">提交</button>
+        <button class="btn btn-secondary" @click="cannelComplaint()">取消</button>
       </span>
     </el-dialog>
     <!-- <el-dialog :show-close="false" :visible.sync="dialogProductOperaion" width="62%">
@@ -139,7 +166,9 @@ export default {
       dialogProductOperaion: false,
       buyNumber: 1,
       detail: '',
-      userInfo: null
+      userInfo: null,
+      content: '',
+      showComplaint: false,
     }
   },
   created() {
@@ -151,6 +180,24 @@ export default {
     this.clearBanner(); // 清除定时器
   },
   methods: {
+    cannelComplaint() {
+      this.showComplaint = false;
+    },
+    submitComplaint() {
+      this.showComplaint = true;
+    },
+    async submit() {
+      const userInfo = getUserInfo();
+      // console.log(userInfo);
+      await this.$axios.post('/api/complaint/submit', {
+        complainantId: userInfo.id,
+        productId: this.productId,
+        content: this.content
+      });
+      this.$emit('update:visible', false);
+      this.$message.success('投诉已提交');
+      this.cannelComplaint();
+    },
     // 浏览操作
     viewOperation() {
       const userInfo = getUserInfo();
@@ -393,6 +440,12 @@ export default {
   border-radius: 12px;
 }
 
+.complaint-container {
+  padding: 20px;
+  // background-color: #f9fbff;
+  border-radius: 12px;
+}
+
 .header {
   text-align: center;
 
@@ -557,11 +610,58 @@ export default {
   .info-left {
     flex: 1.2;
 
-    .product-name {
-      font-size: 32px;
-      font-weight: 700;
-      margin-bottom: 16px;
-      color: #007bff;
+    .name-container {
+      gap: 10px;
+      display: flex;
+      flex-direction: row;
+
+      .product-name {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        color: #007bff;
+      }
+
+      .btn {
+        margin-top: 25px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding: 14px 14px;
+        border: none;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgb(0 123 255 / 0.4);
+        transition: all 0.3s ease;
+
+        &.btn-star {
+          background: #fff;
+          color: #007bff;
+          border: 2px solid #007bff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          font-size: 16px;
+          height: 50px;
+
+          i {
+            font-size: 20px;
+            color: #ffcc00;
+          }
+
+          &:hover {
+            background: #007bff;
+            color: white;
+
+            i {
+              color: white;
+            }
+          }
+        }
+      }
     }
 
     .price-category {
@@ -657,6 +757,16 @@ export default {
         box-shadow: 0 4px 10px rgb(0 123 255 / 0.4);
         transition: all 0.3s ease;
 
+        &.btn-complaint {
+          background: linear-gradient(45deg, #e26139, #df2605);
+          color: white;
+
+          &:hover {
+            background: linear-gradient(45deg, #df2605, #e26139);
+            box-shadow: 0 6px 14px rgb(41 128 185 / 0.7);
+          }
+        }
+
         &.btn-primary {
           background: linear-gradient(45deg, #2ecc71, #27ae60);
           color: white;
@@ -686,6 +796,8 @@ export default {
             box-shadow: 0 6px 14px rgb(142 68 173 / 0.7);
           }
         }
+
+
 
         &.btn-star {
           background: #fff;
