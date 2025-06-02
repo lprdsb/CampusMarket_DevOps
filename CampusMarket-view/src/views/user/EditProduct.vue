@@ -1,5 +1,5 @@
 <template>
-    <div class="post-product">
+    <!-- <div class="post-product-wrapper">
         <div>
             <div>
                 <p>商品名</p>
@@ -13,11 +13,6 @@
                 <p>价格</p>
                 <input class="dialog-input" v-model="product.price" placeholder="价格" />
             </div>
-            <!-- <div>
-                <p>是否支持砍价</p>
-                <el-switch v-model="product.isBargain" active-text="支持砍价" inactive-text="不支持砍价">
-                </el-switch>
-            </div> -->
             <div>
                 <span class="post" @click="editProduct">修改商品</span>
             </div>
@@ -51,6 +46,56 @@
             <div>
                 <Editor height="calc(100vh - 400px)" :receiveContent="product.detail" @on-receive="onReceive" />
             </div>
+        </div>
+    </div> -->
+    <div class="post-product-wrapper">
+        <h2 class="title">编辑商品</h2>
+
+        <div class="form-section">
+            <el-card class="card">
+                <p class="label">商品名</p>
+                <el-input v-model="product.name" placeholder="请输入商品名" clearable />
+
+                <p class="label">新旧程度</p>
+                <el-input-number v-model="product.oldLevel" :min="1" :max="10" />
+
+                <p class="label">价格</p>
+                <el-input v-model="product.price" placeholder="请输入价格" prefix-icon="el-icon-money" clearable />
+            </el-card>
+
+            <el-card class="card">
+                <p class="label">产品图</p>
+                <el-upload action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload"
+                    list-type="picture-card" :on-success="handlePictureCardSuccess" :file-list="coverList"
+                    :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="" />
+                </el-dialog>
+            </el-card>
+
+            <el-card class="card">
+                <p class="label">商品类别</p>
+                <div class="category-list">
+                    <span class="category-item" :class="{ selected: categorySelected.id === category.id }"
+                        @click="categoryClick(category)" v-for="(category, index) in categoryList" :key="index">
+                        {{ category.name }}
+                    </span>
+                </div>
+
+                <p class="label">库存</p>
+                <el-input-number v-model="product.inventory" :min="1" :max="10000" />
+            </el-card>
+
+            <el-card class="card">
+                <p class="label">商品详情</p>
+                <Editor height="300px" :receiveContent="product.detail" @on-receive="onReceive" />
+            </el-card>
+        </div>
+
+        <div class="action-bar">
+            <el-button type="primary" size="large" @click="editProduct">修改商品</el-button>
         </div>
     </div>
 </template>
@@ -178,6 +223,20 @@ export default {
             });
         },
         /**
+         * 新旧程度选择事件
+         */
+        // handleChange() {
+        //     console.log("新旧程度：", this.product.oldLevel);
+        //     this.product.oldLevel = this.product.oldLevel;
+        // },
+        /**
+         * 库存设置事件
+         */
+        // handleInventoryChange() {
+        //     console.log("库存：", this.inventory);
+        //     this.product.inventory = this.inventory;
+        // },
+        /**
          * 封面上传成功响应事件
          * @param {*} file 
          * @param {*} fileList 
@@ -202,41 +261,82 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.post {
-    display: inline-block;
-    background-color: rgb(51, 51, 51);
-    margin-block: 30px;
-    width: 100%;
-    text-align: center;
-    padding: 15px;
-    box-sizing: border-box;
-    color: rgb(245, 245, 245);
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-}
+.post-product-wrapper {
+    padding: 30px;
+    max-width: 900px;
+    margin: auto;
+    background: #f9fcff;
+    font-family: 'Helvetica Neue', sans-serif;
 
-.post:hover {
-    background-color: rgb(31, 31, 31);
-}
+    .title {
+        text-align: center;
+        font-size: 26px;
+        color: #3178c6;
+        margin-bottom: 30px;
+    }
 
-.category-item {
-    display: inline-block;
-    padding: 6px 20px;
-    background-color: rgb(246, 246, 246);
-    border-radius: 5px;
-    font-size: 14px;
-    cursor: pointer;
-    margin: 4px;
-}
+    .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
 
-.category-item:hover {
-    background-color: rgb(241, 241, 241);
-}
+    .card {
+        padding: 20px;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
+        border-radius: 12px;
+    }
 
-.post-product {
-    display: flex;
-    justify-content: left;
-    gap: 30px;
+    .label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-top: 10px;
+        margin-bottom: 6px;
+    }
+
+    .category-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .category-item {
+        padding: 6px 16px;
+        background-color: #e4f1ff;
+        border-radius: 20px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: 0.3s all;
+        color: #3178c6;
+        border: 1px solid transparent;
+    }
+
+    .category-item.selected {
+        background-color: #3178c6;
+        color: white;
+        border: 1px solid #1f5fa8;
+    }
+
+    .category-item:hover {
+        background-color: #d0eaff;
+    }
+
+    .action-bar {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .el-button {
+        padding: 14px 40px;
+        font-size: 16px;
+        background-color: #3178c6;
+        border-color: #3178c6;
+
+        &:hover {
+            background-color: #2563b9;
+            border-color: #2563b9;
+        }
+    }
 }
 </style>
