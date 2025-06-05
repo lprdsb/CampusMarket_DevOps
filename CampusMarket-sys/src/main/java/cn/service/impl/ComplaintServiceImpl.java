@@ -67,7 +67,21 @@ public class ComplaintServiceImpl implements ComplaintService {
     }
 
     @Override
-    public void handleComplaint(Integer id, String status) {
+    public void handleComplaint(Integer id, String status, Integer complainantId, Integer targetId) {
+        Integer userId = LocalThreadHolder.getUserId();
+        User user = new User();
+        user.setId(userId);
+        User operator = userMapper.getByActive(user);
+        Message message = new Message();
+        message.setUserId(targetId);
+        message.setIsRead(false);
+        message.setCreateTime(LocalDateTime.now());
+        message.setContent("管理员【" + operator.getUserName() + "】设置了对你的投诉id为【"
+                + id + "】的投诉，投诉状态为【" + status +
+                "】!");
+        messageMapper.save(message);
+        message.setUserId(complainantId);
+        messageMapper.save(message);
         complaintMapper.updateStatus(id, status, new Date());
     }
 }

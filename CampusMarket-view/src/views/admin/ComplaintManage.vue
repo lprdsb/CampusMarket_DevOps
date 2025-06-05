@@ -19,15 +19,23 @@
         <el-table-column prop="content" label="内容" />
         <el-table-column label="状态">
           <template slot-scope="scope">
-            <span class="status-text">{{ scope.row.status }}</span>
+            <span class="status-text">
+              <div v-if="scope.row.status === 'rejected'" class="rejected">
+                已驳回
+              </div>
+              <div v-if="scope.row.status === 'resolved'" class="resolved">
+                已通过
+              </div>
+
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" size="small" style="font-size: large;"
-              @click="handle(scope.row.id, 'resolved')">通过</el-button>
+              @click="handle(scope.row.id, 'resolved', scope.row.complainantId, scope.row.targetId)">通过</el-button>
             <el-button type="text" size="small" style="font-size: large;"
-              @click="handle(scope.row.id, 'rejected')">驳回</el-button>
+              @click="handle(scope.row.id, 'rejected', scope.row.complainantId, scope.row.targetId)">驳回</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -80,8 +88,9 @@ export default {
       this.currentPage = val;
       this.fetchFreshData();
     },
-    handle(id, status) {
-      this.$axios.post('/api/complaint/handle', null, { params: { id, status } }).then(res => {
+    handle(id, status, complainantId, targetId) {
+      // console.log(id, status, complainantId, targetId);
+      this.$axios.post('/api/complaint/handle', null, { params: { id, status, complainantId, targetId } }).then(res => {
         this.fetchFreshData();
         this.$message.success('处理完成');
       }).catch(error => {
@@ -119,7 +128,14 @@ export default {
 
   .status-text {
     font-weight: 600;
-    color: #ff5722;
+
+    .rejected {
+      color: #ff5722;
+    }
+
+    .resolved {
+      color: #0ce730;
+    }
   }
 }
 </style>
