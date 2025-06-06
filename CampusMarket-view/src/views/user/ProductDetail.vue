@@ -1,41 +1,47 @@
 <template>
   <div class="detail-container">
-    <div class="cover-section">
-      <div class="cover-preview">
-        <div class="cover-thumb" v-for="(coverItem, index) in coverList" :key="index"
-          :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
-          <img :src="coverItem" alt="" />
-        </div>
-      </div>
-      <div class="cover-display" v-if="coverItem">
-        <i @click="coverToLeft" class="el-icon-arrow-left"></i>
-        <img :src="coverItem" alt="" />
-        <i @click="coverToRight" class="el-icon-arrow-right"></i>
-      </div>
-    </div>
     <section class="info-section">
-      <div class="info-left">
-        <div class="name-container">
-          <h1 class="product-name">
-            {{ product.name }}
-          </h1>
-          <button @click="saveOperation" class="actions btn btn-star">
-            <i :class="saveFlag ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
-          </button>
+      <div class="info-section-up">
+        <div class="info-left">
+          <div class="name-container">
+            <h1 class="product-name">
+              {{ product.name }}
+            </h1>
+            <button @click="saveOperation" class="actions btn btn-star">
+              <i :class="saveFlag ? 'el-icon-star-on' : 'el-icon-star-off'"></i>
+            </button>
+          </div>
+          <div class="price-category">
+            <span class="price">￥{{ product.price.toFixed(2) }}</span>
+            <span class="category">{{ product.categoryName }}</span>
+          </div>
+          <div class="seller-info" @click="handleRouteSelect('/space?userId=' + product.userId)">
+            <img :src="product.userAvatar" alt="avatar" class="seller-avatar" />
+            <span class="seller-name">{{ product.userName }}</span>
+          </div>
+          <div class="stock-level">
+            <span>{{ product.saveNumber }}人收藏</span>
+            <span>{{ product.viewNumber }}人浏览</span>
+            <!-- <span>{{ product.oldLevel }}成新</span> -->
+            <span>库存: {{ product.inventory }}</span>
+          </div>
+          <h2 class="product-name">
+            商品详情
+          </h2>
+          <span v-html="product.detail"></span>
         </div>
-        <div class="price-category">
-          <span class="price">￥{{ product.price.toFixed(2) }}</span>
-          <span class="category">{{ product.categoryName }}</span>
-        </div>
-        <div class="seller-info" @click="handleRouteSelect('/space?userId=' + product.userId)">
-          <img :src="product.userAvatar" alt="avatar" class="seller-avatar" />
-          <span class="seller-name">{{ product.userName }}</span>
-        </div>
-        <div class="stock-level">
-          <span>{{ product.saveNumber }}人收藏</span>
-          <span>{{ product.viewNumber }}人浏览</span>
-          <span>{{ product.oldLevel }}成新</span>
-          <span>库存: {{ product.inventory }}</span>
+        <div class="cover-section">
+          <div class="cover-display" v-if="coverItem">
+            <i @click="coverToLeft" class="el-icon-arrow-left"></i>
+            <img :src="coverItem" alt="" />
+            <i @click="coverToRight" class="el-icon-arrow-right"></i>
+          </div>
+          <div class="cover-preview">
+            <div class="cover-thumb" v-for="(coverItem, index) in coverList" :key="index"
+              :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
+              <img :src="coverItem" alt="" />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -595,6 +601,7 @@ export default {
   gap: 40px;
   padding: 24px;
   background-color: #EFF6FF;
+  justify-content: center;
 }
 
 .info-section {
@@ -605,7 +612,13 @@ export default {
   border-radius: 20px;
   padding: 32px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  width: 70%;
+  width: 50%;
+
+  .info-section-up {
+    display: flex;
+    flex-direction: row;
+
+  }
 
   .info-left {
     flex: 1.2;
