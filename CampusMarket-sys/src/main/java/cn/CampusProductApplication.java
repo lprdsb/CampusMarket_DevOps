@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @MapperScan("cn.mapper")
 @SpringBootApplication
-public class CampusProductApplication {
+public class
+CampusProductApplication {
     public static void main(String[] args) {
         SpringApplication.run(CampusProductApplication.class, args);
     }
