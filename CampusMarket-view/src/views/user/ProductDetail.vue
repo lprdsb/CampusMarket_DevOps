@@ -82,6 +82,7 @@
         <div class="form-section">
           <el-form label-position="top">
             <el-form-item label="购买数量">
+            </el-form-item>
               <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
               <el-form-item label="支付方式">
                 <el-radio-group v-model="paymentMethod" @change="showPaymentSelection">
