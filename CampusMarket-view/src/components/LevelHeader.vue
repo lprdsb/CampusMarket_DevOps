@@ -19,7 +19,7 @@
                     <i class="el-icon-arrow-down el-icon--right" style="margin-left: 5px;"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item icon="el-icon-user-solid" @click.native="userCenterPanel">个人资料</el-dropdown-item>
+                    <!-- <el-dropdown-item icon="el-icon-user-solid" @click.native="userCenterPanel">个人资料</el-dropdown-item> -->
                     <el-dropdown-item icon="el-icon-s-fold" @click.native="loginOut">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
@@ -53,7 +53,8 @@ export default {
     methods: {
         // 个人中心，传回父组件处理
         userCenterPanel() {
-            this.$emit('eventListener', 'center');
+            // this.$emit('eventListener', 'center');
+            this.$router.push("/myself");
         },
         // 退出登录，传回父组件处理
         loginOut() {

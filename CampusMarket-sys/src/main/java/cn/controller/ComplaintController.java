@@ -34,8 +34,10 @@ public class ComplaintController {
 
     // 管理员处理投诉
     @PostMapping("/handle")
-    public String handle(@RequestParam Integer id, @RequestParam String status) {
-        complaintService.handleComplaint(id, status);
+    public String handle(@RequestParam Integer id, @RequestParam String status, @RequestParam Integer complainantId,
+            @RequestParam Integer targetId) {
+        // System.out.println("asdasdd");
+        complaintService.handleComplaint(id, status, complainantId, targetId);
         return "处理完成";
     }
 }
