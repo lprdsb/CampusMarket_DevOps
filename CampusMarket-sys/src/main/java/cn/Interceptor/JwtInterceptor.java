@@ -31,7 +31,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
 
         String token = request.getHeader("token");
-        Claims claims = JwtUtil.fromToken(token);
+        Claims claims = JwtUtil.parseToken(token);
 
         if (claims == null) {
             writeErrorResponse(response, ApiResult.error("身份认证异常，请先登录"));

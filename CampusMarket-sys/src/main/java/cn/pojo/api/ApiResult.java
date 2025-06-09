@@ -4,24 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 通用响应
+ * 通用API响应对象（保持原始方法签名）
  *
- * @param <T> 泛型
+ * @param <T> 响应数据类型
  */
 @Setter
 @Getter
 public class ApiResult<T> extends Result<T> {
 
-    /**
-     * 响应数据
-     */
     private T data;
-
-    /**
-     * 数据总页，分页使用
-     */
     private Integer total;
 
+    // 构造方法与原始版本保持一致
     public ApiResult(Integer code) {
         super(code, "操作成功");
     }
@@ -35,6 +29,19 @@ public class ApiResult<T> extends Result<T> {
         this.data = data;
     }
 
+    public ApiResult(T data, Integer total) {
+        this.data = data;
+        this.total = total;
+    }
+
+    public ApiResult(Integer code, String msg, T data, Integer total) {
+        super(code, msg);
+        this.data = data;
+        this.total = total;
+    }
+
+    // ================= 与原始完全相同的静态工厂方法 =================
+
     public static <T> Result<T> success() {
         ApiResult<T> result = new ApiResult<>(ResultCode.REQUEST_SUCCESS.getCode());
         result.setData(null);
@@ -47,13 +54,6 @@ public class ApiResult<T> extends Result<T> {
         return result;
     }
 
-    /**
-     * 分页响应，返回数据列表，总记录数
-     *
-     * @param data  数据列表，泛型
-     * @param total 总页
-     * @param <T>   泛型
-     */
     public static <T> Result<T> success(T data, Integer total) {
         ApiResult<T> result = new ApiResult<>(ResultCode.REQUEST_SUCCESS.getCode());
         result.setData(data);
@@ -66,21 +66,25 @@ public class ApiResult<T> extends Result<T> {
     }
 
     public static <T> Result<T> success(String msg, T data) {
-        return new ApiResult<T>(ResultCode.REQUEST_SUCCESS.getCode(), msg, data);
+        return new ApiResult<>(ResultCode.REQUEST_SUCCESS.getCode(), msg, data);
     }
 
     public static <T> Result<T> error(String msg) {
         return new Result<T>(ResultCode.REQUEST_ERROR.getCode(), msg);
     }
 
-    public ApiResult(T data, Integer total) {
-        this.data = data;
-        this.total = total;
+    /**
+     * 错误响应（带数据）
+     */
+    public static <T> ApiResult<T> error(String msg, T data) {
+        return new ApiResult<>(ResultCode.REQUEST_ERROR.getCode(), msg, data);
     }
 
-    public ApiResult(Integer code, String msg, T data, Integer total) {
-        super(code, msg);
-        this.data = data;
-        this.total = total;
+    /**
+     * 智能分页响应（自动计算总页数）
+     */
+    public static <T> ApiResult<T> pageResult(T data, long totalCount, int pageSize) {
+        int totalPages = (int) Math.ceil((double) totalCount / pageSize);
+        return (ApiResult<T>) success(data, totalPages);
     }
 }

@@ -35,7 +35,7 @@ public class ProtectorAspect {
             return ApiResult.error("身份认证失败，请先登录");
         }
 
-        Claims claims = JwtUtil.fromToken(token);
+        Claims claims = JwtUtil.parseToken(token);
         if (claims == null) {
             return ApiResult.error("身份认证失败，请先登录");
         }

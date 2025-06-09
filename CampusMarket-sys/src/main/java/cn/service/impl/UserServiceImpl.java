@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 4. 生成 token
-        String token = JwtUtil.toToken(user.getId(), user.getUserRole());
+        String token = JwtUtil.createToken(user.getId(), user.getUserRole());
 
         // 5. 更新最后登录时间
         userMapper.update(User.builder()
