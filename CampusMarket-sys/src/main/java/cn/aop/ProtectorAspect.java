@@ -25,48 +25,44 @@ import java.util.Objects;
 @Component
 public class ProtectorAspect {
 
-    /**
-     * 环绕通知
-     * 执行前 --- （目标操作） ---执行后
-     * 环绕：两端拦截
-     *
-     * @param proceedingJoinPoint 连接点
-     * @return Object
-     */
     @Around("@annotation(cn.aop.Protector)")
-    public Object auth(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest request = attributes.getRequest();
+    public Object auth(ProceedingJoinPoint joinPoint) throws Throwable {
+        ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attrs.getRequest();
+
         String token = request.getHeader("token");
         if (token == null) {
             return ApiResult.error("身份认证失败，请先登录");
         }
+
         Claims claims = JwtUtil.fromToken(token);
         if (claims == null) {
             return ApiResult.error("身份认证失败，请先登录");
         }
+
         Integer userId = claims.get("id", Integer.class);
         Integer roleId = claims.get("role", Integer.class);
-        // 获取被拦截方法的签名
-        MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
-        // 获取方法上的@Protector注解实例
-        Protector protectorAnnotation = signature.getMethod().getAnnotation(Protector.class);
-        if (protectorAnnotation == null) {
+
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Protector protector = signature.getMethod().getAnnotation(Protector.class);
+        if (protector == null) {
             return ApiResult.error("身份认证失败，请先登录");
         }
-        String role = protectorAnnotation.role();
-        // 验证用户角色
-        if (!"".equals(role)) {
-            if (!Objects.equals(RoleEnum.ROLE(Math.toIntExact(roleId)), role)) {
+
+        String requiredRole = protector.role();
+        if (!requiredRole.isEmpty()) {
+            String userRole = RoleEnum.ROLE(roleId);
+            if (!requiredRole.equals(userRole)) {
                 return ApiResult.error("无操作权限");
             }
         }
-        // 放在 ThreadLocal里面，当前线程都可用
+
         LocalThreadHolder.setUserId(userId, roleId);
-        Object result = proceedingJoinPoint.proceed();
-        // 请求结束，释放资源
-        LocalThreadHolder.clear();
-        return result;
+        try {
+            return joinPoint.proceed();
+        } finally {
+            LocalThreadHolder.clear();
+        }
     }
 
 }

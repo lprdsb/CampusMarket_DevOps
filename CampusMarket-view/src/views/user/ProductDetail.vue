@@ -38,7 +38,7 @@
           </div>
           <div class="cover-preview">
             <div class="cover-thumb" v-for="(coverItem, index) in coverList" :key="index"
-              :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
+                 :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
               <img :src="coverItem" alt="" />
             </div>
           </div>
@@ -82,8 +82,24 @@
         <div class="form-section">
           <el-form label-position="top">
             <el-form-item label="购买数量">
-              <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
             </el-form-item>
+              <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
+              <el-form-item label="支付方式">
+                <el-radio-group v-model="paymentMethod" @change="showPaymentSelection">
+                  <el-radio label="online">
+                    线上支付
+                    <transition name="el-zoom-in-center">
+                      <i v-if="paymentMethod === 'online'" class="el-icon-check check-icon"></i>
+                    </transition>
+                  </el-radio>
+                  <el-radio label="offline">
+                    线下支付
+                    <transition name="el-zoom-in-center">
+                      <i v-if="paymentMethod === 'offline'" class="el-icon-check check-icon"></i>
+                    </transition>
+                  </el-radio>
+                </el-radio-group>
+              </el-form-item>
 
             <el-form-item label="备注信息">
               <el-input type="textarea" :rows="4" v-model="detail" placeholder="填写备注（选填）" />
@@ -175,6 +191,8 @@ export default {
       userInfo: null,
       content: '',
       showComplaint: false,
+      showCheckIcon: false,
+      paymentMethod: '',
     }
   },
   created() {
@@ -186,6 +204,17 @@ export default {
     this.clearBanner(); // 清除定时器
   },
   methods: {
+    showPaymentSelection() {
+      // 等待视图更新后再设置 showCheckIcon
+      this.$nextTick(() => {
+        this.showCheckIcon = true;
+
+        // 3秒后自动隐藏勾选提示
+        setTimeout(() => {
+          this.showCheckIcon = false;
+        }, 5000);
+      });
+    },
     cannelComplaint() {
       this.showComplaint = false;
     },
@@ -1040,5 +1069,57 @@ export default {
     background: #007bff;
     color: white;
   }
+}
+.check-icon {
+  margin-left: 8px;
+  color: #67C23A;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.el-radio {
+  position: relative;
+  padding-right: 25px; // 为勾选图标留出空间
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+// 添加选中状态的动画效果
+@keyframes checkBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.el-icon-check {
+  animation: checkBounce 0.5s ease;
+}
+.check-icon {
+  margin-left: 8px;
+  color: #67C23A;
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.el-radio {
+  position: relative;
+  padding-right: 25px; // 为勾选图标留出空间
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+// 添加选中状态的动画效果
+@keyframes checkBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+}
+
+.el-icon-check {
+  animation: checkBounce 0.5s ease;
 }
 </style>
