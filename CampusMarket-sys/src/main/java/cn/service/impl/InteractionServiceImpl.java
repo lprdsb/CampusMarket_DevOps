@@ -18,21 +18,27 @@ import cn.pojo.vo.ProductVO;
 import cn.pojo.vo.StarVo;
 import cn.service.InteractionService;
 import cn.service.StarService;
-
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * 互动行为业务逻辑接口实现类
- */
 @Service
 public class InteractionServiceImpl implements InteractionService {
+
+    private static final String REPEAT_OPERATION_MSG = "请勿重复操作";
+    private static final String PRODUCT_NOT_FOUND_MSG = "商品信息查询异常";
+    private static final String SELF_OPERATION_MSG = "别自卖自夸!";
+    private static final String SUCCESS_MSG = "卖家已感受到你的热情，快下单吧!";
+    private static final String COLLECT_SUCCESS_MSG = "收藏成功";
+    private static final String CANCEL_COLLECT_MSG = "取消收藏成功";
+    private static final String MESSAGE_TEMPLATE = "用户【%s】对你的【%s】感兴趣!";
+    private static final String NEW_PRODUCT_TEMPLATE = "你关注的用户【%s】发布了新商品【%s】，快去看看吧!";
 
     @Resource
     private InteractionMapper interactionMapper;
@@ -42,251 +48,225 @@ public class InteractionServiceImpl implements InteractionService {
     private MessageMapper messageMapper;
     @Resource
     private UserMapper userMapper;
-
     @Resource
     private StarService starService;
 
-    /**
-     * "我想要"操作
-     *
-     * @param productId 商品ID
-     * @return Result<String> 后台通用返回封装类
-     */
     @Override
     public Result<String> likeProduct(Integer productId) {
-        // 用户不能重复去"想要"商品
-        InteractionQueryDto interactionQueryDto = createInteractionQueryDto(productId, InteractionEnum.LOVE.getType());
-        int count = interactionMapper.queryCount(interactionQueryDto);
-        if (count != 0) {
-            return ApiResult.error("请勿重复操作");
+        // 验证商品是否存在
+        ProductVO product = getProductById(productId);
+        if (product == null) {
+            return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
-        ProductQueryDto productQueryDto = new ProductQueryDto();
-        productQueryDto.setId(productId);
-        List<ProductVO> productVOS = productMapper.query(productQueryDto);
-        // 如果商品信息不存在，直接返回
-        if (productVOS.isEmpty()) {
-            return ApiResult.error("商品信息查询异常");
+
+        // 检查是否重复操作
+        if (isInteractionExist(productId, InteractionEnum.LOVE)) {
+            return ApiResult.error(REPEAT_OPERATION_MSG);
         }
-        ProductVO productVO = productVOS.get(0);
-        // 用户自己感兴趣自己的商品，明显不合理，所以如果商品是自己的商品，不做处理了
-        if (Objects.equals(productVO.getUserId(), LocalThreadHolder.getUserId())) {
-            return ApiResult.error("别自卖自夸!");
+
+        // 检查是否操作自己的商品
+        if (isCurrentUserProduct(product)) {
+            return ApiResult.error(SELF_OPERATION_MSG);
         }
-        // 取得发布者用户ID
-        Integer publisherId = productVO.getUserId();
-        Integer userId = LocalThreadHolder.getUserId();
-        User user = new User();
-        user.setId(userId);
-        User operator = userMapper.getByActive(user);
-        // 查询用户信息
-        Message message = new Message();
-        message.setUserId(publisherId);
-        // 消息设置为未读
-        message.setIsRead(false);
-        message.setCreateTime(LocalDateTime.now());
-        message.setContent("用户【" + operator.getUserName() + "】对你的【" + productVO.getName() + "】感兴趣!");
-        messageMapper.save(message);
-        // 设置上互动信息
-        Interaction interaction = createInteraction(productId, InteractionEnum.LOVE.getType());
-        interactionMapper.save(interaction);
-        return ApiResult.success("卖家已感受到你的热情，快下单吧!");
+
+        // 发送消息给商品发布者
+        sendLikeNotification(product);
+
+        // 保存互动记录
+        saveInteraction(productId, InteractionEnum.LOVE);
+
+        return ApiResult.success(SUCCESS_MSG);
     }
 
     @Override
     public Result<String> newProduct(Integer productId) {
-        // 用户不能重复去"想要"商品
-        ProductQueryDto productQueryDto = new ProductQueryDto();
-        productQueryDto.setId(productId);
-        List<ProductVO> productVOS = productMapper.query(productQueryDto);
-        // 如果商品信息不存在，直接返回
-        if (productVOS.isEmpty()) {
-            return ApiResult.error("商品信息查询异常");
+        // 验证商品是否存在
+        ProductVO product = getProductById(productId);
+        if (product == null) {
+            return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
-        ProductVO productVO = productVOS.get(0);
 
-        Integer userId = LocalThreadHolder.getUserId();
-
-        StarQueryDto starQueryDto = new StarQueryDto();
-        starQueryDto.setUser2Id(userId);
-        List<StarVo> starList = starService.getStarVos(starQueryDto);
-        List<Integer> starIds = starList.stream()
-                .map(StarVo::getUser1Id).collect(Collectors.toList());
-
-        // 查询用户信息
-        for (Integer id : starIds) {
-            Message message = new Message();
-            message.setUserId(id);
-            // 消息设置为未读
-            message.setIsRead(false);
-            message.setCreateTime(LocalDateTime.now());
-            message.setContent("你关注的用户【" + productVO.getUserName() + "】发布了新商品【" + productVO.getName() + "】，快去看看吧!");
-            messageMapper.save(message);
+        // 获取当前用户的粉丝列表
+        List<Integer> followerIds = getCurrentUserFollowers();
+        if (followerIds.isEmpty()) {
+            return ApiResult.success(SUCCESS_MSG);
         }
-        return ApiResult.success("卖家已感受到你的热情，快下单吧!");
+
+        // 发送新商品通知给所有粉丝
+        sendNewProductNotifications(product, followerIds);
+
+        return ApiResult.success(SUCCESS_MSG);
     }
 
-    /**
-     * 新增
-     *
-     * @param interaction 参数
-     * @return Result<String> 后台通用返回封装类
-     */
     @Override
     public Result<String> save(Interaction interaction) {
         interactionMapper.save(interaction);
         return ApiResult.success("互动行为记录成功");
     }
 
-    /**
-     * 删除
-     *
-     * @param ids 待删除ID集合
-     * @return Result<String> 后台通用返回封装类
-     */
     @Override
     public Result<String> batchDelete(List<Integer> ids) {
-        interactionMapper.batchDelete(ids);
+        if (!CollectionUtils.isEmpty(ids)) {
+            interactionMapper.batchDelete(ids);
+        }
         return ApiResult.success("互动行为删除成功");
     }
 
-    /**
-     * 收藏操作 （取消收藏与收藏是一组对立的操作）
-     *
-     * @param productId 商品ID
-     * @return Result<Boolean> 后台通用返回封装类
-     */
     @Override
     public Result<Boolean> saveOperation(Integer productId) {
-        InteractionQueryDto interactionQueryDto = createInteractionQueryDto(productId, InteractionEnum.SAVE.getType());
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        if (interactionList.isEmpty()) { // 对应收藏
-            Interaction interaction = createInteraction(productId, InteractionEnum.SAVE.getType());
-            interactionMapper.save(interaction);
+        boolean isCollected = isInteractionExist(productId, InteractionEnum.SAVE);
+
+        if (isCollected) {
+            cancelCollection(productId);
+            return ApiResult.success(CANCEL_COLLECT_MSG, false);
         } else {
-            // 对应取消收藏
-            List<Integer> interactionIds = interactionList.stream().map(Interaction::getId)
-                    .collect(Collectors.toList());
-            interactionMapper.batchDelete(interactionIds);
+            saveInteraction(productId, InteractionEnum.SAVE);
+            return ApiResult.success(COLLECT_SUCCESS_MSG, true);
         }
-        return ApiResult.success(interactionList.isEmpty() ? "收藏成功" : "取消收藏成功", interactionList.isEmpty());
     }
 
-    /**
-     * 创建互动信息行为查询条件实体
-     *
-     * @param productId 商品ID
-     * @param type      行为类型
-     * @return Interaction
-     */
-    private InteractionQueryDto createInteractionQueryDto(Integer productId, Integer type) {
+    @Override
+    public Result<List<Interaction>> query(InteractionQueryDto queryDto) {
+        int totalCount = interactionMapper.queryCount(queryDto);
+        List<Interaction> interactions = interactionMapper.query(queryDto);
+        return ApiResult.success(interactions, totalCount);
+    }
+
+    @Override
+    public Result<List<ProductVO>> queryUser() {
+        List<Integer> productIds = getInteractionProductIds(InteractionEnum.SAVE);
+        if (productIds.isEmpty()) {
+            return ApiResult.success(Collections.emptyList());
+        }
+        return ApiResult.success(productMapper.queryProductList(productIds));
+    }
+
+    @Override
+    public Result<Void> view(Integer productId) {
+        if (!isInteractionExist(productId, InteractionEnum.VIEW)) {
+            saveInteraction(productId, InteractionEnum.VIEW);
+        }
+        return ApiResult.success();
+    }
+
+    @Override
+    public Result<List<ProductVO>> myView() {
+        List<Integer> productIds = getInteractionProductIds(InteractionEnum.VIEW);
+        if (productIds.isEmpty()) {
+            return ApiResult.success(Collections.emptyList());
+        }
+        return ApiResult.success(productMapper.queryProductList(productIds));
+    }
+
+    @Override
+    public Result<String> batchDeleteInteraction() {
+        List<Integer> ids = getInteractionIds(InteractionEnum.VIEW);
+        if (!ids.isEmpty()) {
+            interactionMapper.batchDelete(ids);
+        }
+        return ApiResult.success();
+    }
+
+    // ================ 私有辅助方法 =================
+
+    private ProductVO getProductById(Integer productId) {
+        ProductQueryDto queryDto = new ProductQueryDto();
+        queryDto.setId(productId);
+        List<ProductVO> products = productMapper.query(queryDto);
+        return CollectionUtils.isEmpty(products) ? null : products.get(0);
+    }
+
+    private boolean isInteractionExist(Integer productId, InteractionEnum type) {
+        InteractionQueryDto queryDto = createInteractionQueryDto(productId, type);
+        return interactionMapper.queryCount(queryDto) > 0;
+    }
+
+    private boolean isCurrentUserProduct(ProductVO product) {
+        return Objects.equals(product.getUserId(), LocalThreadHolder.getUserId());
+    }
+
+    private void sendLikeNotification(ProductVO product) {
+        User currentUser = getCurrentUser();
+        String content = String.format(MESSAGE_TEMPLATE,
+                currentUser.getUserName(), product.getName());
+        createAndSaveMessage(product.getUserId(), content);
+    }
+
+    private void sendNewProductNotifications(ProductVO product, List<Integer> followerIds) {
+        String content = String.format(NEW_PRODUCT_TEMPLATE,
+                product.getUserName(), product.getName());
+
+        followerIds.forEach(followerId ->
+                createAndSaveMessage(followerId, content)
+        );
+    }
+
+    private void createAndSaveMessage(Integer userId, String content) {
+        Message message = new Message();
+        message.setUserId(userId);
+        message.setIsRead(false);
+        message.setCreateTime(LocalDateTime.now());
+        message.setContent(content);
+        messageMapper.save(message);
+    }
+
+    private void saveInteraction(Integer productId, InteractionEnum type) {
+        Interaction interaction = new Interaction();
+        interaction.setUserId(LocalThreadHolder.getUserId());
+        interaction.setType(type.getType());
+        interaction.setProductId(productId);
+        interaction.setCreateTime(LocalDateTime.now());
+        interactionMapper.save(interaction);
+    }
+
+    private void cancelCollection(Integer productId) {
+        InteractionQueryDto queryDto = createInteractionQueryDto(productId, InteractionEnum.SAVE);
+        List<Integer> ids = interactionMapper.query(queryDto).stream()
+                .map(Interaction::getId)
+                .collect(Collectors.toList());
+
+        if (!ids.isEmpty()) {
+            interactionMapper.batchDelete(ids);
+        }
+    }
+
+    private List<Integer> getCurrentUserFollowers() {
+        StarQueryDto starQueryDto = new StarQueryDto();
+        starQueryDto.setUser2Id(LocalThreadHolder.getUserId());
+        return starService.getStarVos(starQueryDto).stream()
+                .map(StarVo::getUser1Id)
+                .collect(Collectors.toList());
+    }
+
+    private List<Integer> getInteractionProductIds(InteractionEnum type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
-        queryDto.setType(type);
+        queryDto.setType(type.getType());
+        return interactionMapper.query(queryDto).stream()
+                .map(Interaction::getProductId)
+                .collect(Collectors.toList());
+    }
+
+    private List<Integer> getInteractionIds(InteractionEnum type) {
+        InteractionQueryDto queryDto = new InteractionQueryDto();
+        queryDto.setUserId(LocalThreadHolder.getUserId());
+        queryDto.setType(type.getType());
+        return interactionMapper.query(queryDto).stream()
+                .map(Interaction::getId)
+                .collect(Collectors.toList());
+    }
+
+    private InteractionQueryDto createInteractionQueryDto(Integer productId, InteractionEnum type) {
+        InteractionQueryDto queryDto = new InteractionQueryDto();
+        queryDto.setUserId(LocalThreadHolder.getUserId());
+        queryDto.setType(type.getType());
         queryDto.setProductId(productId);
         return queryDto;
     }
 
-    /**
-     * 创建互动信息行为实体
-     *
-     * @param productId 商品ID
-     * @param type      行为类型
-     * @return Interaction
-     */
-    private Interaction createInteraction(Integer productId, Integer type) {
-        Interaction interaction = new Interaction();
-        interaction.setUserId(LocalThreadHolder.getUserId());
-        interaction.setType(type);
-        interaction.setProductId(productId);
-        interaction.setCreateTime(LocalDateTime.now());
-        return interaction;
-    }
-
-    /**
-     * 查询
-     *
-     * @param interactionQueryDto 查询参数
-     * @return Result<List < Interaction>> 后台通用返回封装类
-     */
-    @Override
-    public Result<List<Interaction>> query(InteractionQueryDto interactionQueryDto) {
-        int totalCount = interactionMapper.queryCount(interactionQueryDto);
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        return ApiResult.success(interactionList, totalCount);
-    }
-
-    /**
-     * 查询用户自己收藏的商品
-     *
-     * @return Result<List < Interaction>> 响应结果
-     */
-    @Override
-    public Result<List<ProductVO>> queryUser() {
-        InteractionQueryDto interactionQueryDto = new InteractionQueryDto();
-        interactionQueryDto.setUserId(LocalThreadHolder.getUserId());
-        interactionQueryDto.setType(InteractionEnum.SAVE.getType());
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        List<Integer> productIds = interactionList.stream()
-                .map(Interaction::getProductId).collect(Collectors.toList());
-        // 通过商品的ID列表，查询用户收藏的这些商品返回
-        if (productIds.isEmpty()) {
-            return ApiResult.success(new ArrayList<>());
-        }
-        List<ProductVO> productVOS = productMapper.queryProductList(productIds);
-        return ApiResult.success(productVOS);
-    }
-
-    /**
-     * 记录用户对于商品的浏览行为
-     *
-     * @param productId 商品ID
-     * @return Result<Void> 响应结果
-     */
-    @Override
-    public Result<Void> view(Integer productId) {
-        InteractionQueryDto interactionQueryDto = createInteractionQueryDto(productId, InteractionEnum.VIEW.getType());
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        // 没浏览过才需要记录
-        if (interactionList.isEmpty()) {
-            Interaction interaction = createInteraction(productId, InteractionEnum.VIEW.getType());
-            interactionMapper.save(interaction);
-        }
-        return ApiResult.success();
-    }
-
-    /**
-     * 查询用户自己浏览过的商品
-     *
-     * @return Result<List < ProductVO>> 响应结果
-     */
-    @Override
-    public Result<List<ProductVO>> myView() {
-        InteractionQueryDto interactionQueryDto = new InteractionQueryDto();
-        interactionQueryDto.setUserId(LocalThreadHolder.getUserId());
-        interactionQueryDto.setType(InteractionEnum.VIEW.getType());
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        List<Integer> productIds = interactionList.stream()
-                .map(Interaction::getProductId).collect(Collectors.toList());
-        if (productIds.isEmpty()) {
-            return ApiResult.success(new ArrayList<>());
-        }
-        // 通过商品的ID列表，查询用户浏览过的这些商品返回
-        List<ProductVO> productVOS = productMapper.queryProductList(productIds);
-        return ApiResult.success(productVOS);
-    }
-
-    /**
-     * 用户删除自己的浏览记录
-     */
-    @Override
-    public Result<String> batchDeleteInteraction() {
-        InteractionQueryDto interactionQueryDto = new InteractionQueryDto();
-        interactionQueryDto.setUserId(LocalThreadHolder.getUserId());
-        interactionQueryDto.setType(InteractionEnum.VIEW.getType());
-        List<Interaction> interactionList = interactionMapper.query(interactionQueryDto);
-        List<Integer> ids = interactionList.stream()
-                .map(Interaction::getId).collect(Collectors.toList());
-        interactionMapper.batchDelete(ids);
-        return ApiResult.success();
+    private User getCurrentUser() {
+        User user = new User();
+        user.setId(LocalThreadHolder.getUserId());
+        return userMapper.getByActive(user);
     }
 }

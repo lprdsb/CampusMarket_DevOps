@@ -329,7 +329,6 @@ export default {
             message: data.msg,
             type: 'info'
           });
-          this.$router.push('/login');
         }
       }).catch(error => {
         console.log("商品---想要---异常：", error);
