@@ -1,14 +1,26 @@
 package cn.context;
 
-import java.util.HashMap;
-import java.util.Map;
-
-/**
- * 用户身份支持器
- */
 public class LocalThreadHolder {
+    private static final ThreadLocal<UserContext> USER_HOLDER = new ThreadLocal<>();
 
-    private static final ThreadLocal<Map<String, Integer>> USER_HOLDER = new ThreadLocal<>();
+    // 用户上下文值对象
+    private static class UserContext {
+        private final Integer userId;
+        private final Integer userRole;
+
+        public UserContext(Integer userId, Integer userRole) {
+            this.userId = userId;
+            this.userRole = userRole;
+        }
+
+        public Integer getUserId() {
+            return userId;
+        }
+
+        public Integer getUserRole() {
+            return userRole;
+        }
+    }
 
     /**
      * 设置用户信息
@@ -17,36 +29,33 @@ public class LocalThreadHolder {
      * @param userRole 用户角色
      */
     public static void setUserId(Integer userId, Integer userRole) {
-        Map<String, Integer> map = new HashMap<>();
-        map.put("userId", userId);
-        map.put("userRole", userRole);
-        USER_HOLDER.set(map);
+        USER_HOLDER.set(new UserContext(userId, userRole));
     }
 
     /**
      * 取出用户ID
      *
-     * @return Integer
+     * @return 用户ID，未设置时返回null
      */
     public static Integer getUserId() {
-        return USER_HOLDER.get().get("userId");
+        UserContext context = USER_HOLDER.get();
+        return context != null ? context.getUserId() : null;
     }
 
     /**
      * 取出用户角色
      *
-     * @return Integer
+     * @return 用户角色，未设置时返回null
      */
     public static Integer getRoleId() {
-        return USER_HOLDER.get().get("userRole");
+        UserContext context = USER_HOLDER.get();
+        return context != null ? context.getUserRole() : null;
     }
 
     /**
-     * 防止内存溢出，当前线程结束，释放资源
-     *
+     * 清理线程资源
      */
     public static void clear() {
         USER_HOLDER.remove();
     }
-
 }

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * 时间工具类（优化版本）
+ * 时间工具类
  */
 public class DateUtil {
 
