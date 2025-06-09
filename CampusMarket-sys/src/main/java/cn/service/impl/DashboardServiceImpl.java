@@ -39,35 +39,18 @@ public class DashboardServiceImpl implements DashboardService {
     /**
      * 统计系统的基础数据
      *
-     * @return Result<List < ChartVO>>
+     * @return Result<List<ChartVO>> 响应结果
      */
     @Override
     public Result<List<ChartVO>> staticCount() {
+        // 使用统一方法来创建ChartVO列表
         List<ChartVO> chartVOList = new ArrayList<>();
-
-        int userCount = userMapper.queryCount(new UserQueryDto());
-        ChartVO chartVOUser = new ChartVO("用户数", userCount);
-        chartVOList.add(chartVOUser);
-
-        int productCount = productMapper.queryCount(new ProductQueryDto());
-        ChartVO chartVOProduct = new ChartVO("收录商品", productCount);
-        chartVOList.add(chartVOProduct);
-
-        int ordersCount = ordersMapper.queryCount(new OrdersQueryDto());
-        ChartVO chartVOOrders = new ChartVO("订单数", ordersCount);
-        chartVOList.add(chartVOOrders);
-
-        int messageCount = messageMapper.queryCount(new MessageQueryDto());
-        ChartVO chartVOMessage = new ChartVO("消息通知", messageCount);
-        chartVOList.add(chartVOMessage);
-
-        int interactionCount = interactionMapper.queryCount(new InteractionQueryDto());
-        ChartVO chartVOInteraction = new ChartVO("互动数据", interactionCount);
-        chartVOList.add(chartVOInteraction);
-
-        int evaluationsCount = evaluationsMapper.queryCount(new EvaluationsQueryDto());
-        ChartVO chartVOEvaluations = new ChartVO("商品评论", evaluationsCount);
-        chartVOList.add(chartVOEvaluations);
+        chartVOList.add(createChartVO("用户数", userMapper.queryCount(new UserQueryDto())));
+        chartVOList.add(createChartVO("收录商品", productMapper.queryCount(new ProductQueryDto())));
+        chartVOList.add(createChartVO("订单数", ordersMapper.queryCount(new OrdersQueryDto())));
+        chartVOList.add(createChartVO("消息通知", messageMapper.queryCount(new MessageQueryDto())));
+        chartVOList.add(createChartVO("互动数据", interactionMapper.queryCount(new InteractionQueryDto())));
+        chartVOList.add(createChartVO("商品评论", evaluationsMapper.queryCount(new EvaluationsQueryDto())));
 
         return ApiResult.success(chartVOList);
     }
@@ -76,7 +59,7 @@ public class DashboardServiceImpl implements DashboardService {
      * 统计商品的上架情况
      *
      * @param day 往前查的天数
-     * @return Result<List < ChartVO>>
+     * @return Result<List<ChartVO>> 响应结果
      */
     @Override
     public Result<List<ChartVO>> productShelvesInfo(Integer day) {
@@ -85,9 +68,23 @@ public class DashboardServiceImpl implements DashboardService {
         productQueryDto.setStartTime(queryDto.getStartTime());
         productQueryDto.setEndTime(queryDto.getEndTime());
         List<ProductVO> productVOS = productMapper.query(productQueryDto);
+
         List<LocalDateTime> dateTimeList = productVOS.stream()
-                .map(ProductVO::getCreateTime).collect(Collectors.toList());
+                .map(ProductVO::getCreateTime)
+                .collect(Collectors.toList());
+
         List<ChartVO> chartVOS = DateUtil.countDatesWithinRange(day, dateTimeList);
         return ApiResult.success(chartVOS);
+    }
+
+    /**
+     * 创建ChartVO对象，避免重复代码
+     *
+     * @param label 显示的标签
+     * @param count 数据
+     * @return ChartVO
+     */
+    private ChartVO createChartVO(String label, int count) {
+        return new ChartVO(label, count);
     }
 }

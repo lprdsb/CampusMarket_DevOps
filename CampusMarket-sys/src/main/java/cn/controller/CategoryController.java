@@ -3,9 +3,10 @@ package cn.controller;
 import cn.aop.Pager;
 import cn.aop.Protector;
 import cn.pojo.api.Result;
-import cn.pojo.dto.query.extend.CategoryQueryDto;
 import cn.pojo.entity.Category;
+import cn.pojo.dto.query.extend.CategoryQueryDto;
 import cn.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,8 +19,13 @@ import java.util.List;
 @RequestMapping("/category")
 public class CategoryController {
 
-    @Resource
+    @Autowired
     private CategoryService categoryService;
+
+    // 基于注解重构通用方法
+    private Result<String> saveOrUpdate(Category category, boolean isUpdate) {
+        return isUpdate ? categoryService.update(category) : categoryService.save(category);
+    }
 
     /**
      * 新增
@@ -30,7 +36,7 @@ public class CategoryController {
     @PostMapping(value = "/save")
     @ResponseBody
     public Result<String> save(@RequestBody Category category) {
-        return categoryService.save(category);
+        return saveOrUpdate(category, false);
     }
 
     /**
@@ -42,7 +48,7 @@ public class CategoryController {
     @PutMapping(value = "/update")
     @ResponseBody
     public Result<String> update(@RequestBody Category category) {
-        return categoryService.update(category);
+        return saveOrUpdate(category, true);
     }
 
     /**

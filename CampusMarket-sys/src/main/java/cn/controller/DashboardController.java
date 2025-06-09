@@ -21,10 +21,9 @@ public class DashboardController {
     /**
      * 统计系统的基础数据
      *
-     * @return Result<List < ChartVO>>
+     * @return Result<List<ChartVO>> 响应结果
      */
-    @GetMapping(value = "/staticCount")
-    @ResponseBody
+    @GetMapping("/staticCount")
     public Result<List<ChartVO>> staticCount() {
         return dashboardService.staticCount();
     }
@@ -33,12 +32,10 @@ public class DashboardController {
      * 统计商品的上架情况
      *
      * @param day 往前查的天数
-     * @return Result<List < ChartVO>>
+     * @return Result<List<ChartVO>> 响应结果
      */
-    @GetMapping(value = "/productShelvesInfo/{day}")
-    @ResponseBody
+    @GetMapping("/productShelvesInfo/{day}")
     public Result<List<ChartVO>> productShelvesInfo(@PathVariable Integer day) {
         return dashboardService.productShelvesInfo(day);
     }
-
 }
