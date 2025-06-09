@@ -29,7 +29,6 @@ public class OrdersController {
      * @return Result<String> 响应结果
      */
     @PostMapping(value = "/save")
-    @ResponseBody
     public Result<String> save(@RequestBody Orders orders) {
         return ordersService.save(orders);
     }
@@ -41,7 +40,6 @@ public class OrdersController {
      * @return Result<String> 响应结果
      */
     @PutMapping(value = "/update")
-    @ResponseBody
     public Result<String> update(@RequestBody Orders orders) {
         return ordersService.update(orders);
     }
@@ -50,7 +48,6 @@ public class OrdersController {
      * 批量删除
      */
     @PostMapping(value = "/batchDelete")
-    @ResponseBody
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         return ordersService.batchDelete(ids);
     }
@@ -61,8 +58,8 @@ public class OrdersController {
      * @param ordersQueryDto 查询参数
      * @return Result<List < OrdersVO>> 响应结果
      */
+    @Pager
     @PostMapping(value = "/queryUser")
-    @ResponseBody
     public Result<List<OrdersVO>> queryUser(@RequestBody OrdersQueryDto ordersQueryDto) {
         ordersQueryDto.setUserId(LocalThreadHolder.getUserId());
         return ordersService.query(ordersQueryDto);
@@ -74,8 +71,8 @@ public class OrdersController {
      * @param ordersQueryDto 查询参数
      * @return Result<List < OrdersVO>> 响应结果
      */
+    @Pager
     @PostMapping(value = "/queryOrdersList")
-    @ResponseBody
     public Result<List<OrdersVO>> queryOrdersList(@RequestBody OrdersQueryDto ordersQueryDto) {
         return ordersService.queryOrdersList(ordersQueryDto);
     }
@@ -86,10 +83,9 @@ public class OrdersController {
      * @param ordersId 订单ID
      * @return Result<String> 响应结果
      */
-    @PostMapping(value = "/returnMoney/{ordersId}")
-    @ResponseBody
-    public Result<String> returnMoney(@PathVariable Integer ordersId) {
-        return ordersService.returnMoney(ordersId);
+    @PutMapping(value = "/refund/{ordersId}")
+    public Result<String> refund(@PathVariable Integer ordersId) {
+        return ordersService.refund(ordersId);
     }
 
     /**
@@ -100,7 +96,6 @@ public class OrdersController {
      */
     @Pager
     @PostMapping(value = "/query")
-    @ResponseBody
     public Result<List<OrdersVO>> query(@RequestBody OrdersQueryDto ordersQueryDto) {
         return ordersService.query(ordersQueryDto);
     }

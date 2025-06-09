@@ -14,11 +14,6 @@
         </el-input>
       </div>
 
-
-      <!-- <el-input size="small" v-model="ordersQueryDto.code" placeholder="订单号" clearable @clear="handleFilterClear">
-        <el-button slot="append" @click="fetchOrders" icon="el-icon-search"></el-button>
-      </el-input> -->
-
       <div v-if="ordersList.length === 0" class="empty-container">
         <el-empty description="未找到符合条件的订单数据"></el-empty>
       </div>
@@ -54,7 +49,7 @@
           <span v-if="selectedOrder.refundStatus" class="refund-status">
             钱款已经原路返回
           </span>
-          <el-button v-else type="primary" @click="returnMoney(selectedOrder)">
+          <el-button v-else type="primary" @click="refund(selectedOrder)">
             确定退款
           </el-button>
           <!-- <el-button type="danger">下单</el-button> -->
@@ -62,55 +57,6 @@
       </div>
     </div>
   </div>
-  <!-- <div>
-    <div class="condition">
-      <span class="trade">
-        <span :class="{ active: tradeStatusSelectedItem.name === tradeStatus.name }"
-          @click="tradeStatusSelected(tradeStatus)" v-for="(tradeStatus, index) in tradeStatusList" :key="index">{{
-            tradeStatus.name }}</span>
-      </span>
-      <el-input size="small" style="width: 180px;" v-model="ordersQueryDto.code" placeholder="订单号" clearable
-        @clear="handleFilterClear">
-        <el-button slot="append" @click="fetchOrders" icon="el-icon-search"></el-button>
-      </el-input>
-    </div>
-
-    <div v-if="ordersList.length === 0" class="empty-container">
-      <el-empty description="未找到符合条件的订单数据"></el-empty>
-    </div>
-
-    <div v-else class="orders-container">
-      <div class="item-order" v-for="(orderInfo, index) in ordersList" :key="index">
-        <div class="orders-base-info">
-          <div class="code">订单号：{{ orderInfo.code }}</div>
-        </div>
-        <div class="info">
-          <div class="img-wrap">
-            <img :src="orderInfo.cover" alt="" />
-          </div>
-          <div class="info-content">
-            <div class="title-row">
-              <span class="title">{{ orderInfo.productTitle }}</span>
-              <span class="number">x{{ orderInfo.buyNumber }}</span>
-            </div>
-            <div class="detail">备注：{{ orderInfo.detail }}</div>
-            <div class="price-row">
-              <span class="symbol">￥</span>
-              <span class="price">{{ totalPrice(orderInfo) }}</span>
-            </div>
-            <div class="action-row">
-              <span v-if="orderInfo.refundStatus" class="refund-status">
-                钱款已经原路返回
-              </span>
-              <el-button v-else type="primary" size="small" @click="returnMoney(orderInfo)">
-                确定退款
-              </el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </template>
 <script>
 export default {
@@ -176,28 +122,12 @@ export default {
       return parseFloat(totalPrice).toFixed(2);
     },
     refund(orders) {
-      this.$axios.post(`/product/refund/${orders.id}`).then(res => {
+      this.$axios.put(`/product/refund/${orders.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
             duration: 1000,
             title: '退款操作',
-            message: '退款成功',
-            type: 'success'
-          });
-          this.fetchOrders();
-        }
-      }).catch(error => {
-        console.log("退款异常：", error);
-      })
-    },
-    returnMoney(orders) {
-      this.$axios.post(`/orders/returnMoney/${orders.id}`).then(res => {
-        const { data } = res; // 解构
-        if (data.code === 200) {
-          this.$notify({
-            duration: 1000,
-            title: '退款',
             message: '退款成功',
             type: 'success'
           });
@@ -234,8 +164,6 @@ export default {
               refundTime: order.refundTime,
               isRefundConfirm: order.isRefundConfirm,
               createTime: order.createTime,
-              tradeTime: order.tradeTime,
-              refundTime: order.refundTime,
               cover: this.coverParse(order)
             }
           });

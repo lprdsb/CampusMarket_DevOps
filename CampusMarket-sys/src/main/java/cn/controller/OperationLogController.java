@@ -1,46 +1,80 @@
 package cn.controller;
 
+import cn.aop.Log;
 import cn.aop.Pager;
 import cn.aop.Protector;
+import cn.pojo.api.ApiResult;
 import cn.pojo.api.Result;
+import cn.pojo.api.PageResult;
 import cn.pojo.dto.query.extend.OperationLogQueryDto;
 import cn.pojo.vo.OperationLogVO;
 import cn.service.OperationLogService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
-/**
- * 操作日志控制器
- */
 @RestController
 @RequestMapping("/operation-log")
 public class OperationLogController {
+
+    private static final Logger logger = LoggerFactory.getLogger(OperationLogController.class);
 
     @Resource
     private OperationLogService operationLogService;
 
     /**
-     * 批量删除
+     * 批量删除操作日志（保持原函数名）
      */
+    @Log(detail = "批量删除操作日志")
     @Protector(role = "管理员")
     @PostMapping(value = "/batchDelete")
     @ResponseBody
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
-        return operationLogService.batchDelete(ids);
+        try {
+            // 参数验证
+            if (ids == null || ids.isEmpty()) {
+                logger.warn("批量删除操作日志失败: 删除列表为空");
+                return ApiResult.error("删除列表不能为空");
+            }
+
+            // 记录详细日志
+            logger.info("执行操作日志批量删除: 数量={}, ID列表={}", ids.size(), ids);
+
+            // 调用服务层
+            return operationLogService.batchDelete(ids);
+        } catch (Exception e) {
+            logger.error("批量删除操作日志失败: {}", e.getMessage(), e);
+            return ApiResult.error("删除失败，请稍后重试");
+        }
     }
 
     /**
-     * 查询
-     *
-     * @param operationLogQueryDto 查询参数
-     * @return Result<List < OperationLogVO>> 响应结果
+     * 查询操作日志（保持原函数名）
      */
+    @Log(detail = "查询操作日志")
     @Pager
     @PostMapping(value = "/query")
     @ResponseBody
     public Result<List<OperationLogVO>> query(@RequestBody OperationLogQueryDto operationLogQueryDto) {
-        return operationLogService.query(operationLogQueryDto);
+        try {
+            // 参数验证
+            if (operationLogQueryDto == null) {
+                logger.warn("操作日志查询失败: 查询参数为空");
+                return ApiResult.error("查询参数不能为空");
+            }
+
+            // 记录详细日志
+            logger.info("执行操作日志查询: {}", operationLogQueryDto);
+
+            // 调用服务层
+            return operationLogService.query(operationLogQueryDto);
+        } catch (Exception e) {
+            logger.error("操作日志查询失败: {}", e.getMessage(), e);
+            return ApiResult.error("查询失败，请稍后重试");
+        }
     }
 }

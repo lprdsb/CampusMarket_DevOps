@@ -24,6 +24,6 @@ public interface OrdersService {
 
     Result<List<OrdersVO>> queryOrdersList(OrdersQueryDto ordersQueryDto);
 
-    Result<String> returnMoney(Integer ordersId);
+    Result<String> refund(Integer ordersId);
 
 }

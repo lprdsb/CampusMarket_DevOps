@@ -22,7 +22,6 @@ public class Result<T> {
                 ", msg='" + msg + '\'' +
                 '}';
     }
-
     public Integer getCode() {
         return code;
     }
