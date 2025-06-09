@@ -10,12 +10,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class MessageQueryDto extends QueryDto {
-    /**
-     * 用户ID
-     */
+
     private Integer userId;
-    /**
-     * 消息体
-     */
+
     private String content;
 }

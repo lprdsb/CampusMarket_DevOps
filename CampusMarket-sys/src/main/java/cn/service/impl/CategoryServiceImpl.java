@@ -22,37 +22,52 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryMapper categoryMapper;
 
     /**
-     * 新增
+     * 保存或修改
      *
-     * @param category 参数
-     * @return Result<String> 后台通用返回封装类
+     * @param category 商品分类
+     * @param isUpdate 是否是更新操作
+     * @return Result<String> 响应结果
      */
-    @Override
-    public Result<String> save(Category category) {
+    private Result<String> saveOrUpdate(Category category, boolean isUpdate) {
         if (!StringUtils.hasText(category.getName())) {
             return ApiResult.error("商品分类名不能为空");
         }
-        categoryMapper.save(category);
-        return ApiResult.success("商品分类新增成功");
+        if (isUpdate) {
+            categoryMapper.update(category);
+            return ApiResult.success("商品分类修改成功");
+        } else {
+            categoryMapper.save(category);
+            return ApiResult.success("商品分类新增成功");
+        }
+    }
+
+    /**
+     * 新增
+     *
+     * @param category 商品分类
+     * @return Result<String> 响应结果
+     */
+    @Override
+    public Result<String> save(Category category) {
+        return saveOrUpdate(category, false);
     }
 
     /**
      * 修改
      *
-     * @param category 参数
-     * @return Result<String> 后台通用返回封装类
+     * @param category 商品分类
+     * @return Result<String> 响应结果
      */
     @Override
     public Result<String> update(Category category) {
-        categoryMapper.update(category);
-        return ApiResult.success("商品分类修改成功");
+        return saveOrUpdate(category, true);
     }
 
     /**
-     * 删除
+     * 批量删除
      *
-     * @param ids 待删除ID集合
-     * @return Result<String> 后台通用返回封装类
+     * @param ids 待删除的ID列表
+     * @return Result<String> 响应结果
      */
     @Override
     public Result<String> batchDelete(List<Integer> ids) {
@@ -64,7 +79,7 @@ public class CategoryServiceImpl implements CategoryService {
      * 查询
      *
      * @param categoryQueryDto 查询参数
-     * @return Result<List < Category>> 后台通用返回封装类
+     * @return Result<List<Category>> 响应结果
      */
     @Override
     public Result<List<Category>> query(CategoryQueryDto categoryQueryDto) {

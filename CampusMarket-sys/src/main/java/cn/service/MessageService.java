@@ -9,9 +9,7 @@ import cn.pojo.vo.MessageVO;
 
 import java.util.List;
 
-/**
- * 消息的业务逻辑接口
- */
+
 public interface MessageService {
 
     Result<String> save(Message message);

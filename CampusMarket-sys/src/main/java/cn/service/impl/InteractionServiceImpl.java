@@ -53,26 +53,21 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Result<String> likeProduct(Integer productId) {
-        // 验证商品是否存在
         ProductVO product = getProductById(productId);
         if (product == null) {
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
-        // 检查是否重复操作
         if (isInteractionExist(productId, InteractionEnum.LOVE)) {
             return ApiResult.error(REPEAT_OPERATION_MSG);
         }
 
-        // 检查是否操作自己的商品
         if (isCurrentUserProduct(product)) {
             return ApiResult.error(SELF_OPERATION_MSG);
         }
 
-        // 发送消息给商品发布者
         sendLikeNotification(product);
 
-        // 保存互动记录
         saveInteraction(productId, InteractionEnum.LOVE);
 
         return ApiResult.success(SUCCESS_MSG);
@@ -80,19 +75,16 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Result<String> newProduct(Integer productId) {
-        // 验证商品是否存在
         ProductVO product = getProductById(productId);
         if (product == null) {
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
-        // 获取当前用户的粉丝列表
         List<Integer> followerIds = getCurrentUserFollowers();
         if (followerIds.isEmpty()) {
             return ApiResult.success(SUCCESS_MSG);
         }
 
-        // 发送新商品通知给所有粉丝
         sendNewProductNotifications(product, followerIds);
 
         return ApiResult.success(SUCCESS_MSG);
@@ -167,7 +159,6 @@ public class InteractionServiceImpl implements InteractionService {
         return ApiResult.success();
     }
 
-    // ================ 私有辅助方法 =================
 
     private ProductVO getProductById(Integer productId) {
         ProductQueryDto queryDto = new ProductQueryDto();

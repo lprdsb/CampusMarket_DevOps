@@ -7,9 +7,7 @@ import cn.pojo.vo.ProductVO;
 
 import java.util.List;
 
-/**
- * 互动行为的业务逻辑接口
- */
+
 public interface InteractionService {
 
     Result<String> save(Interaction interaction);
