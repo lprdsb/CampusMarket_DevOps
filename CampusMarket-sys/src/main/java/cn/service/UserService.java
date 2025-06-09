@@ -11,9 +11,6 @@ import cn.pojo.vo.UserVO;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 用户服务类
- */
 public interface UserService {
     Result<String> register(UserRegisterDTO userRegisterDTO);
 

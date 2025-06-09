@@ -8,12 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserLoginDTO {
-    /**
-     * 账号
-     */
+
     private String userAccount;
-    /**
-     * 密码
-     */
     private String userPwd;
 }
