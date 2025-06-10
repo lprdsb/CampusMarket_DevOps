@@ -56,14 +56,17 @@ public class LayerInteractionController {
         ProductVO product = getProductById(productId);
 
         if (product == null) {
+            System.out.println("没找到产品");
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
         if (isInteractionExist(productId, InteractionEnum.LOVE)) {
+            System.out.println("交互重复");
             return ApiResult.error(REPEAT_OPERATION_MSG);
         }
 
         if (isCurrentUserProduct(product)) {
+            System.out.println("在操作自己商品");
             return ApiResult.error(SELF_OPERATION_MSG);
         }
         System.out.println("进入返回函数");
@@ -78,6 +81,7 @@ public class LayerInteractionController {
         boolean isCollected = isInteractionExist(productId, InteractionEnum.SAVE);
 
         if (isCollected) {
+            System.out.println("已经收藏");
             cancelCollection(productId);
             return ApiResult.success(CANCEL_COLLECT_MSG, false);
         }

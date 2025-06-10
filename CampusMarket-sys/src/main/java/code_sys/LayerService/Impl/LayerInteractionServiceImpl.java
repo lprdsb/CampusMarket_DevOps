@@ -60,17 +60,23 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<String> likeProduct(Integer productId) {
         ProductVO product = getProductById(productId);
         if (product == null) {
+            System.out.println("没找到产品");
+            System.out.println("返回错误");
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
         if (isInteractionExist(productId, InteractionEnum.LOVE)) {
+            System.out.println("有重复操作");
+            System.out.println("返回错误");
             return ApiResult.error(REPEAT_OPERATION_MSG);
         }
 
         if (isCurrentUserProduct(product)) {
+            System.out.println("操作自己商品");
+            System.out.println("返回错误");
             return ApiResult.error(SELF_OPERATION_MSG);
         }
-
+        System.out.println("正确执行");
         sendLikeNotification(product);
 
         saveInteraction(productId, InteractionEnum.LOVE);
@@ -82,15 +88,20 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<String> newProduct(Integer productId) {
         ProductVO product = getProductById(productId);
         if (product == null) {
+            System.out.println("没找到产品");
+            System.out.println("返回错误");
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
         else {
+            System.out.println("正确执行");
             List<Integer> followerIds = getCurrentUserFollowers();
             if (followerIds.isEmpty()) {
+                System.out.println("无人关注");
                 return ApiResult.success(SUCCESS_MSG);
             }
             else {
+                System.out.println("发送信息");
                 sendNewProductNotifications(product, followerIds);
             }
             return ApiResult.success(SUCCESS_MSG);
@@ -101,9 +112,12 @@ public class LayerInteractionServiceImpl implements InteractionService {
     @Override
     public Result<String> save(Interaction interaction) {
         if(interaction!= null) {
+            System.out.println("正确执行");
             layerInteractionMapper.save(interaction);
             return ApiResult.success("互动行为记录成功");
         }
+        System.out.println("没找到交互");
+        System.out.println("返回错误");
         return ApiResult.success("互动行为记录成功");
     }
 
@@ -111,10 +125,13 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<String> batchDelete(List<Integer> ids) {
         if(ids!=null) {
             if (!CollectionUtils.isEmpty(ids)) {
+                System.out.println("正确执行");
                 layerInteractionMapper.batchDelete(ids);
             }
             return ApiResult.success("互动行为删除成功");
         }
+        System.out.println("没找到交互");
+        System.out.println("返回错误");
         return ApiResult.success("互动行为删除成功");
     }
 
@@ -125,12 +142,17 @@ public class LayerInteractionServiceImpl implements InteractionService {
 
             if (isCollected) {
                 cancelCollection(productId);
+                System.out.println("重复收藏");
+                System.out.println("返回错误");
                 return ApiResult.success(CANCEL_COLLECT_MSG, false);
             } else {
+                System.out.println("正确执行");
                 saveInteraction(productId, InteractionEnum.SAVE);
                 return ApiResult.success(COLLECT_SUCCESS_MSG, true);
             }
         }
+        System.out.println("没找到产品");
+        System.out.println("返回错误");
         return ApiResult.success(CANCEL_COLLECT_MSG, false);
     }
 
@@ -139,8 +161,11 @@ public class LayerInteractionServiceImpl implements InteractionService {
         if(queryDto!=null) {
             int totalCount = layerInteractionMapper.queryCount(queryDto);
             List<Interaction> interactions = layerInteractionMapper.query(queryDto);
+            System.out.println("正确执行");
             return ApiResult.success(interactions, totalCount);
         }
+        System.out.println("没找到查询类");
+        System.out.println("返回错误");
         return ApiResult.success(layerInteractionMapper.query(queryDto), layerInteractionMapper.queryCount(queryDto));
     }
 
@@ -148,19 +173,25 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<List<ProductVO>> queryUser() {
         List<Integer> productIds = getInteractionProductIds(InteractionEnum.SAVE);
         if (productIds.isEmpty()) {
+            System.out.println("正确执行");
             return ApiResult.success(Collections.emptyList());
         }
+        System.out.println("没找到查询产品");
+        System.out.println("返回错误");
         return ApiResult.success(layerProductMapper.queryProductList(productIds));
     }
 
     @Override
     public Result<Void> view(Integer productId) {
         if(productId!=null) {
+            System.out.println("正确执行");
             if (!isInteractionExist(productId, InteractionEnum.VIEW)) {
                 saveInteraction(productId, InteractionEnum.VIEW);
             }
             return ApiResult.success();
         }
+        System.out.println("没找到产品");
+        System.out.println("返回错误");
         return ApiResult.success();
     }
 
@@ -168,8 +199,11 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<List<ProductVO>> myView() {
         List<Integer> productIds = getInteractionProductIds(InteractionEnum.VIEW);
         if (productIds.isEmpty()) {
+            System.out.println("正确执行");
             return ApiResult.success(Collections.emptyList());
         }
+        System.out.println("没找到产品");
+        System.out.println("返回错误");
         return ApiResult.success(layerProductMapper.queryProductList(productIds));
     }
 
@@ -177,6 +211,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<String> batchDeleteInteraction() {
         List<Integer> ids = getInteractionIds(InteractionEnum.VIEW);
         if (!ids.isEmpty()) {
+            System.out.println("正确执行");
             layerInteractionMapper.batchDelete(ids);
         }
         return ApiResult.success();

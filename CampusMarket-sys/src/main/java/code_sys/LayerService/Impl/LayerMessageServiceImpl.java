@@ -25,26 +25,34 @@ public class LayerMessageServiceImpl implements MessageService {
 
     @Override
     public Result<String> save(Message message) {
+        System.out.println("开始进入mapper函数");
         layerMessageMapper.save(message);
+        System.out.println("准备返回");
         return ApiResult.success(MSG_SAVED);
     }
 
     @Override
     public Result<String> setRead(Integer userId) {
+        System.out.println("开始进入mapper函数");
         layerMessageMapper.setRead(userId);
+        System.out.println("准备返回");
         return ApiResult.success(MSG_READ);
     }
 
     @Override
     public Result<String> batchDelete(List<Integer> ids) {
+        System.out.println("开始进入mapper函数");
         layerMessageMapper.batchDelete(ids);
+        System.out.println("准备返回");
         return ApiResult.success(MSG_DELETED);
     }
 
     @Override
     public Result<List<MessageVO>> query(MessageQueryDto queryDto) {
+        System.out.println("开始进入mapper函数");
         int total = layerMessageMapper.queryCount(queryDto);
         List<MessageVO> messages = layerMessageMapper.query(queryDto);
+        System.out.println("准备返回");
         return ApiResult.success(messages, total);
     }
 }
