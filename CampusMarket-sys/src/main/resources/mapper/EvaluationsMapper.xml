@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.mapper.EvaluationsMapper">
+<mapper namespace="Cn.Mapper.EvaluationsMapper">
 
     <!-- resultMap 用于定义结果集映射 -->
-    <resultMap id="commentParentResultMap" type="cn.pojo.vo.CommentParentVO">
+    <resultMap id="commentParentResultMap" type="Cn.Poto.Vo.CommentParentVO">
         <id property="id" column="id"/>
         <result property="userId" column="user_id"/>
         <result property="userName" column="user_name"/>
@@ -17,7 +17,7 @@
                 jdbcType="TIMESTAMP"/>
         <!-- 使用 collection 标签来映射一对多关系 -->
         <collection property="commentChildVOS"
-                    ofType="cn.pojo.vo.CommentChildVO"
+                    ofType="Cn.Poto.Vo.CommentChildVO"
                     column="id"
                     foreignColumn="id"
                     select="getChildCommentsByParentId"/>
@@ -49,7 +49,7 @@
 
     <!-- 根据父级评论ID查询子级评论 -->
     <select id="getChildCommentsByParentId"
-            resultType="cn.pojo.vo.CommentChildVO"
+            resultType="Cn.Poto.Vo.CommentChildVO"
             parameterType="Integer">
         SELECT e.id           AS id,
                e.content      AS content,
@@ -70,7 +70,7 @@
         ORDER BY id DESC
     </select>
 
-    <select id="query" resultType="cn.pojo.vo.CommentChildVO">
+    <select id="query" resultType="Cn.Poto.Vo.CommentChildVO">
 
         SELECT e.id AS id,
         e.content AS content,

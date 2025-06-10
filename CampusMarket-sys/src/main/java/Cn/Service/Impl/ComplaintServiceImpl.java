@@ -1,0 +1,87 @@
+package Cn.Service.Impl;
+
+import Cn.Context.LocalThreadHolder;
+import Cn.Mapper.ComplaintMapper;
+import Cn.Mapper.MessageMapper;
+import Cn.Mapper.ProductMapper;
+import Cn.Mapper.UserMapper;
+import Cn.Poto.Dto.query.extend.ProductQueryDto;
+import Cn.Poto.Entity.Complaint;
+import Cn.Poto.Entity.Message;
+import Cn.Poto.Entity.User;
+import Cn.Poto.Vo.ProductVO;
+import Cn.Service.ComplaintService;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
+
+@Service
+public class ComplaintServiceImpl implements ComplaintService {
+    @Resource
+    private ComplaintMapper complaintMapper;
+    @Resource
+    private MessageMapper messageMapper;
+    @Resource
+    private ProductMapper productMapper;
+    @Resource
+    private UserMapper userMapper;
+
+    @Override
+    public void submitComplaint(Complaint complaint) {
+        ProductQueryDto productQueryDto = new ProductQueryDto();
+        productQueryDto.setId(complaint.getProductId());
+        List<ProductVO> productVOList = productMapper.query(productQueryDto);
+
+        Integer userId = LocalThreadHolder.getUserId();
+        User user = new User();
+        user.setId(userId);
+        User operator = userMapper.getByActive(user);
+        complaint.setStatus("pending");
+        complaint.setCreateTime(new Date());
+
+        complaint.setTargetId(productVOList.get(0).getUserId());
+        complaintMapper.insertComplaint(complaint);
+
+        Message message = new Message();
+        message.setUserId(productVOList.get(0).getUserId());
+        message.setIsRead(false);
+        message.setCreateTime(LocalDateTime.now());
+        message.setContent("用户【" + operator.getUserName() + "】对【" + productVOList.get(0).getUserName() + "（你）】的【"
+                + productVOList.get(0).getName() + "】投诉，投诉内容为【" + complaint.getContent() + "】!");
+        messageMapper.save(message);
+
+    }
+
+    @Override
+    public List<Complaint> getMyComplaints(Integer complainantId) {
+        return complaintMapper.selectByComplainantId(complainantId);
+    }
+
+    @Override
+    public List<Complaint> getAllComplaints() {
+        return complaintMapper.selectAll();
+    }
+
+    @Override
+    public void handleComplaint(Integer id, String status, Integer complainantId, Integer targetId) {
+        Integer userId = LocalThreadHolder.getUserId();
+        User user = new User();
+        user.setId(userId);
+        User operator = userMapper.getByActive(user);
+        Message message = new Message();
+        message.setUserId(targetId);
+        message.setIsRead(false);
+        message.setCreateTime(LocalDateTime.now());
+        message.setContent("管理员【" + operator.getUserName() + "】设置了对你的投诉id为【"
+                + id + "】的投诉，投诉状态为【" + status +
+                "】!");
+        messageMapper.save(message);
+        message.setUserId(complainantId);
+        messageMapper.save(message);
+        complaintMapper.updateStatus(id, status, new Date());
+    }
+}

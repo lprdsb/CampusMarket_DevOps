@@ -117,7 +117,7 @@
         <configuration>
         <archive>
             <manifest>
-            <mainClass>cn.CampusProductApplication</mainClass>
+            <mainClass>Cn.CampusProductApplication</mainClass>
             </manifest>
         </archive>
         </configuration>
