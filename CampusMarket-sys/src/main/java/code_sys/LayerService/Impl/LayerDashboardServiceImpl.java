@@ -37,22 +37,16 @@ public class LayerDashboardServiceImpl implements DashboardService {
     private LayerEvaluationsMapper layerEvaluationsMapper;
 
     /**
-     * 统计系统的基础数据
+     * 创建ChartVO对象，避免重复代码
      *
-     * @return Result<List<ChartVO>> 响应结果
+     * @param label 显示的标签
+     * @param count 数据
+     * @return ChartVO
      */
-    @Override
-    public Result<List<ChartVO>> staticCount() {
-        // 使用统一方法来创建ChartVO列表
-        List<ChartVO> chartVOList = new ArrayList<>();
-        chartVOList.add(createChartVO("用户数", layerUserMapper.queryCount(new UserQueryDto())));
-        chartVOList.add(createChartVO("收录商品", layerProductMapper.queryCount(new ProductQueryDto())));
-        chartVOList.add(createChartVO("订单数", layerOrdersMapper.queryCount(new OrdersQueryDto())));
-        chartVOList.add(createChartVO("消息通知", layerMessageMapper.queryCount(new MessageQueryDto())));
-        chartVOList.add(createChartVO("互动数据", layerInteractionMapper.queryCount(new InteractionQueryDto())));
-        chartVOList.add(createChartVO("商品评论", layerEvaluationsMapper.queryCount(new EvaluationsQueryDto())));
-
-        return ApiResult.success(chartVOList);
+    private ChartVO createChartVO(String label, int count) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return new ChartVO(label, count);
     }
 
     /**
@@ -78,13 +72,21 @@ public class LayerDashboardServiceImpl implements DashboardService {
     }
 
     /**
-     * 创建ChartVO对象，避免重复代码
+     * 统计系统的基础数据
      *
-     * @param label 显示的标签
-     * @param count 数据
-     * @return ChartVO
+     * @return Result<List<ChartVO>> 响应结果
      */
-    private ChartVO createChartVO(String label, int count) {
-        return new ChartVO(label, count);
+    @Override
+    public Result<List<ChartVO>> staticCount() {
+        // 使用统一方法来创建ChartVO列表
+        List<ChartVO> chartVOList = new ArrayList<>();
+        chartVOList.add(createChartVO("用户数", layerUserMapper.queryCount(new UserQueryDto())));
+        chartVOList.add(createChartVO("收录商品", layerProductMapper.queryCount(new ProductQueryDto())));
+        chartVOList.add(createChartVO("订单数", layerOrdersMapper.queryCount(new OrdersQueryDto())));
+        chartVOList.add(createChartVO("消息通知", layerMessageMapper.queryCount(new MessageQueryDto())));
+        chartVOList.add(createChartVO("互动数据", layerInteractionMapper.queryCount(new InteractionQueryDto())));
+        chartVOList.add(createChartVO("商品评论", layerEvaluationsMapper.queryCount(new EvaluationsQueryDto())));
+
+        return ApiResult.success(chartVOList);
     }
 }

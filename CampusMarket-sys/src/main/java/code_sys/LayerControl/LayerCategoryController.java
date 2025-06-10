@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+import java.lang.System;
 /**
  * 商品类别控制器
  */
@@ -20,45 +20,6 @@ public class LayerCategoryController {
 
     @Autowired
     private CategoryService categoryService;
-
-    // 基于注解重构通用方法
-    private Result<String> saveOrUpdate(Category category, boolean isUpdate) {
-        return isUpdate ? categoryService.update(category) : categoryService.save(category);
-    }
-
-    /**
-     * 新增
-     *
-     * @param category 参数
-     * @return Result<String> 响应结果
-     */
-    @PostMapping(value = "/save")
-    @ResponseBody
-    public Result<String> save(@RequestBody Category category) {
-        return saveOrUpdate(category, false);
-    }
-
-    /**
-     * 修改
-     *
-     * @param category 参数
-     * @return Result<String> 响应结果
-     */
-    @PutMapping(value = "/update")
-    @ResponseBody
-    public Result<String> update(@RequestBody Category category) {
-        return saveOrUpdate(category, true);
-    }
-
-    /**
-     * 批量删除
-     */
-    @Protector(role = "管理员") // 只有管理员能够去进行操作
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
-    public Result<String> batchDelete(@RequestBody List<Integer> ids) {
-        return categoryService.batchDelete(ids);
-    }
 
     /**
      * 查询
@@ -70,6 +31,55 @@ public class LayerCategoryController {
     @PostMapping(value = "/query")
     @ResponseBody
     public Result<List<Category>> query(@RequestBody CategoryQueryDto categoryQueryDto) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
         return categoryService.query(categoryQueryDto);
+    }
+
+    /**
+     * 批量删除
+     */
+    @Protector(role = "管理员") // 只有管理员能够去进行操作
+    @PostMapping(value = "/batchDelete")
+    @ResponseBody
+    public Result<String> batchDelete(@RequestBody List<Integer> ids) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return categoryService.batchDelete(ids);
+    }
+
+    /**
+     * 修改
+     *
+     * @param category 参数
+     * @return Result<String> 响应结果
+     */
+    @PutMapping(value = "/update")
+    @ResponseBody
+    public Result<String> update(@RequestBody Category category) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return saveOrUpdate(category, true);
+    }
+
+    /**
+     * 新增
+     *
+     * @param category 参数
+     * @return Result<String> 响应结果
+     */
+    @PostMapping(value = "/save")
+    @ResponseBody
+    public Result<String> save(@RequestBody Category category) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return saveOrUpdate(category, false);
+    }
+
+    // 基于注解重构通用方法
+    private Result<String> saveOrUpdate(Category category, boolean isUpdate) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return isUpdate ? categoryService.update(category) : categoryService.save(category);
     }
 }

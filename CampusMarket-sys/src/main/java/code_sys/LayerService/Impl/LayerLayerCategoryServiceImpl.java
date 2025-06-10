@@ -22,6 +22,57 @@ public class LayerLayerCategoryServiceImpl implements CategoryService {
     private LayerCategoryMapper layerCategoryMapper;
 
     /**
+     * 查询
+     *
+     * @param categoryQueryDto 查询参数
+     * @return Result<List<Category>> 响应结果
+     */
+    @Override
+    public Result<List<Category>> query(CategoryQueryDto categoryQueryDto) {
+        int totalCount = layerCategoryMapper.queryCount(categoryQueryDto);
+        List<Category> categoryList = layerCategoryMapper.query(categoryQueryDto);
+        return ApiResult.success(categoryList, totalCount);
+    }
+
+    /**
+     * 批量删除
+     *
+     * @param ids 待删除的ID列表
+     * @return Result<String> 响应结果
+     */
+    @Override
+    public Result<String> batchDelete(List<Integer> ids) {
+        layerCategoryMapper.batchDelete(ids);
+        return ApiResult.success("商品分类删除成功");
+    }
+
+    /**
+     * 修改
+     *
+     * @param category 商品分类
+     * @return Result<String> 响应结果
+     */
+    @Override
+    public Result<String> update(Category category) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return saveOrUpdate(category, true);
+    }
+
+    /**
+     * 新增
+     *
+     * @param category 商品分类
+     * @return Result<String> 响应结果
+     */
+    @Override
+    public Result<String> save(Category category) {
+        System.out.println("进入接口");
+        System.out.println("进入返回函数");
+        return saveOrUpdate(category, false);
+    }
+
+    /**
      * 保存或修改
      *
      * @param category 商品分类
@@ -39,52 +90,5 @@ public class LayerLayerCategoryServiceImpl implements CategoryService {
             layerCategoryMapper.save(category);
             return ApiResult.success("商品分类新增成功");
         }
-    }
-
-    /**
-     * 新增
-     *
-     * @param category 商品分类
-     * @return Result<String> 响应结果
-     */
-    @Override
-    public Result<String> save(Category category) {
-        return saveOrUpdate(category, false);
-    }
-
-    /**
-     * 修改
-     *
-     * @param category 商品分类
-     * @return Result<String> 响应结果
-     */
-    @Override
-    public Result<String> update(Category category) {
-        return saveOrUpdate(category, true);
-    }
-
-    /**
-     * 批量删除
-     *
-     * @param ids 待删除的ID列表
-     * @return Result<String> 响应结果
-     */
-    @Override
-    public Result<String> batchDelete(List<Integer> ids) {
-        layerCategoryMapper.batchDelete(ids);
-        return ApiResult.success("商品分类删除成功");
-    }
-
-    /**
-     * 查询
-     *
-     * @param categoryQueryDto 查询参数
-     * @return Result<List<Category>> 响应结果
-     */
-    @Override
-    public Result<List<Category>> query(CategoryQueryDto categoryQueryDto) {
-        int totalCount = layerCategoryMapper.queryCount(categoryQueryDto);
-        List<Category> categoryList = layerCategoryMapper.query(categoryQueryDto);
-        return ApiResult.success(categoryList, totalCount);
     }
 }
