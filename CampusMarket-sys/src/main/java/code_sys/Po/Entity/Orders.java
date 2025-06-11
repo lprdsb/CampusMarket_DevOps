@@ -72,4 +72,108 @@ public class Orders {
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public BigDecimal getBuyPrice() {
+        return buyPrice;
+    }
+
+    public void setBuyPrice(BigDecimal buyPrice) {
+        this.buyPrice = buyPrice;
+    }
+
+    public Integer getBuyNumber() {
+        return buyNumber;
+    }
+
+    public void setBuyNumber(Integer buyNumber) {
+        this.buyNumber = buyNumber;
+    }
+
+    public Boolean getTradeStatus() {
+        return tradeStatus;
+    }
+
+    public void setTradeStatus(Boolean tradeStatus) {
+        this.tradeStatus = tradeStatus;
+    }
+
+    public Boolean getRefundStatus() {
+        return refundStatus;
+    }
+
+    public void setRefundStatus(Boolean refundStatus) {
+        this.refundStatus = refundStatus;
+    }
+
+    public LocalDateTime getRefundTime() {
+        return refundTime;
+    }
+
+    public void setRefundTime(LocalDateTime refundTime) {
+        this.refundTime = refundTime;
+    }
+
+    public LocalDateTime getTradeTime() {
+        return tradeTime;
+    }
+
+    public void setTradeTime(LocalDateTime tradeTime) {
+        this.tradeTime = tradeTime;
+    }
+
+    public Boolean getRefundConfirm() {
+        return isRefundConfirm;
+    }
+
+    public void setRefundConfirm(Boolean refundConfirm) {
+        isRefundConfirm = refundConfirm;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 }

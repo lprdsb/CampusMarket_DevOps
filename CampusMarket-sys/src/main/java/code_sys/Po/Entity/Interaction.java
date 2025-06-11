@@ -37,4 +37,44 @@ public class Interaction {
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
+
+    public Integer getId() {
+        return this.id;
+    }
+
+    public Integer getUserId() {
+        return this.userId;
+    }
+
+    public Integer getProductId() {
+        return this.productId;
+    }
+
+    public Integer getType() {
+        return this.type;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return this.createTime;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 }

@@ -58,4 +58,76 @@ public class Evaluations {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public Integer getCommenterId() {
+        return commenterId;
+    }
+
+    public Integer getReplierId() {
+        return replierId;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Integer getContentId() {
+        return contentId;
+    }
+
+    public String getUpvoteList() {
+        return upvoteList;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    // ==================== Setter Methods ====================
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setCommenterId(Integer commenterId) {
+        this.commenterId = commenterId;
+    }
+
+    public void setReplierId(Integer replierId) {
+        this.replierId = replierId;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setContentId(Integer contentId) {
+        this.contentId = contentId;
+    }
+
+    public void setUpvoteList(String upvoteList) {
+        this.upvoteList = upvoteList;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 }

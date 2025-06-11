@@ -16,4 +16,35 @@ public class InteractionQueryDto extends QueryDto {
     private Integer productId;
 
     private Integer type;
+
+    // Getter Methods
+    public Integer getUserId() {
+        return userId;
+    }
+
+
+    public Integer getProductId() {
+        return productId;
+    }
+
+
+    public Integer getType() {
+        return type;
+    }
+
+
+    // Setter Methods
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+
+    public void setProductId(Integer productId) {
+        this.productId = productId;
+    }
+
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }

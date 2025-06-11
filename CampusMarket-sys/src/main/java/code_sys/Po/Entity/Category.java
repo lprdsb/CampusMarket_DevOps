@@ -25,4 +25,16 @@ public class Category {
      * 是否启用
      */
     private Boolean isUse;
+
+    public Integer getId(){
+        return id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public Boolean getIsUse(){
+        return  isUse;
+    }
 }

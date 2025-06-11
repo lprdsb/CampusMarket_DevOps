@@ -33,4 +33,45 @@ public class QueryDto {
      * 结束时间
      */
     private LocalDateTime endTime;
+
+    public Integer getId() {
+        return id;
+
+    }
+
+    public Integer getCurrent() {
+        return current;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setCurrent(Integer current) {
+        this.current = current;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
 }

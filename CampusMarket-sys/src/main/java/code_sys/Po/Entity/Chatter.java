@@ -41,4 +41,54 @@ public class Chatter {
      */
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime createTime;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public Integer getSenderId() {
+        return senderId;
+    }
+
+    public Integer getReceiverId() {
+        return receiverId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    // 注意：Boolean类型字段的特殊命名处理
+    public Boolean getRead() {
+        return isRead;
+    }
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+    // ==================== Setter Methods ====================
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setSenderId(Integer senderId) {
+        this.senderId = senderId;
+    }
+
+    public void setReceiverId(Integer receiverId) {
+        this.receiverId = receiverId;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setRead(Boolean read) {
+        isRead = read;
+    }
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
 }
