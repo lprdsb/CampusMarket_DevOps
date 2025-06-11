@@ -28,7 +28,6 @@ public class LayerEvaluationsController {
      */
     @Protector
     @PostMapping(value = "/insert")
-    @ResponseBody
     public Result<Object> insert(@RequestBody Evaluations evaluations) {
         return evaluationsService.insert(evaluations);
     }
@@ -39,8 +38,7 @@ public class LayerEvaluationsController {
      * @return Result<String>
      */
     @Protector
-    @PutMapping(value = "/update")
-    @ResponseBody
+    @PutMapping("/update")
     public Result<Void> update(@RequestBody Evaluations evaluations) {
         return evaluationsService.update(evaluations);
     }
@@ -51,8 +49,7 @@ public class LayerEvaluationsController {
      * @return Result<String>
      */
     @Protector
-    @GetMapping(value = "/list/{contentId}/{contentType}")
-    @ResponseBody
+    @GetMapping("/list/{contentId}/{contentType}")
     public Result<Object> list(@PathVariable Integer contentId,
             @PathVariable String contentType) {
         return evaluationsService.list(contentId, contentType);
@@ -64,8 +61,7 @@ public class LayerEvaluationsController {
      * @return Result<String>
      */
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<Object> query(@RequestBody EvaluationsQueryDto evaluationsQueryDto) {
         return evaluationsService.query(evaluationsQueryDto);
     }
@@ -75,8 +71,7 @@ public class LayerEvaluationsController {
      *
      * @return Result<String>
      */
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<Object> batchDelete(@RequestBody List<Integer> ids) {
         return evaluationsService.batchDelete(ids);
     }
@@ -87,8 +82,7 @@ public class LayerEvaluationsController {
      * @return Result<String>
      */
     @Protector
-    @DeleteMapping(value = "/delete/{id}")
-    @ResponseBody
+    @DeleteMapping("/delete/{id}")
     public Result<String> delete(@PathVariable Integer id) {
         return evaluationsService.delete(id);
     }

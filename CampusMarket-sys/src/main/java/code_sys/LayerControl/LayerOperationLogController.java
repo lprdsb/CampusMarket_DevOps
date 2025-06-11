@@ -29,8 +29,7 @@ public class LayerOperationLogController {
      */
     @Log(detail = "批量删除操作日志")
     @Protector(role = "管理员")
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         try {
             // 参数验证
@@ -55,8 +54,7 @@ public class LayerOperationLogController {
      */
     @Log(detail = "查询操作日志")
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<OperationLogVO>> query(@RequestBody OperationLogQueryDto operationLogQueryDto) {
         try {
             // 参数验证

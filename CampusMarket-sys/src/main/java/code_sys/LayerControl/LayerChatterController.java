@@ -26,8 +26,7 @@ public class LayerChatterController {
      * @param chatter 聊天信息
      * @return 保存成功与否
      */
-    @PostMapping(value = "/send")
-    @ResponseBody
+    @PostMapping("/send")
     public Result<String> send(@RequestBody Chatter chatter) {
         return chatterService.save(chatter);
     }
@@ -37,8 +36,7 @@ public class LayerChatterController {
      * @param chatterQueryDto 聊天传递的信息
      * @return 双向的聊天记录
      */
-    @PostMapping(value = "/queryUser")
-    @ResponseBody
+    @PostMapping("/queryUser")
     public Result<List<ChatterVO>> query(@RequestBody ChatterQueryDto chatterQueryDto){
         chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
         return chatterService.query(chatterQueryDto);
@@ -50,8 +48,7 @@ public class LayerChatterController {
      * @param id 用户ID
      * @return Result<UserVO>
      */
-    @GetMapping(value = "/getById/{id}")
-    @ResponseBody
+    @GetMapping("/getById/{id}")
     public Result<UserVO> getById(@PathVariable Integer id) {
         return userService.getById(id);
     }
