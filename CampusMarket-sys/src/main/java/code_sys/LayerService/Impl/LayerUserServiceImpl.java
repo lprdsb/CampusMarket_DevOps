@@ -10,9 +10,9 @@ import code_sys.Po.Dto.update.UserLoginDTO;
 import code_sys.Po.Dto.update.UserPwdUpdateDTO;
 import code_sys.Po.Dto.update.UserRegisterDTO;
 import code_sys.Po.Dto.update.UserUpdateDTO;
-import code_sys.Po.Em.LoginStatusEnum;
-import code_sys.Po.Em.RoleEnum;
-import code_sys.Po.Em.WordStatusEnum;
+import code_sys.Po.Em.AccountAccessStatus;
+import code_sys.Po.Em.SystemRoleType;
+import code_sys.Po.Em.SpeechPermissionStatus;
 import code_sys.Po.Entity.User;
 import code_sys.Po.Vo.UserVO;
 import code_sys.LayerService.UserService;
@@ -58,15 +58,15 @@ public class LayerUserServiceImpl implements UserService {
 
     private User buildUserFromRegisterDTO(UserRegisterDTO dto) {
         return User.builder()
-                .userRole(RoleEnum.USER.getRole())
+                .userRole(SystemRoleType.REGISTERED_USER.getRole())
                 .userName(dto.getUserName())
                 .userAccount(dto.getUserAccount())
                 .userAvatar(dto.getUserAvatar())
                 .userPwd(dto.getUserPwd())
                 .userEmail(dto.getUserEmail())
                 .createTime(LocalDateTime.now())
-                .isLogin(LoginStatusEnum.USE.getFlag())
-                .isWord(WordStatusEnum.USE.getFlag())
+                .isLogin(AccountAccessStatus.ACCESS_GRANTED.getFlag())
+                .isWord(SpeechPermissionStatus.SPEECH_ALLOWED.getFlag())
                 .build();
     }
 

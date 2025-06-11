@@ -14,7 +14,7 @@ import code_sys.Po.Vo.StarVo;
 import code_sys.Po.Dto.query.sons.InteractionQueryDto;
 import code_sys.Po.Dto.query.sons.ProductQueryDto;
 import code_sys.Po.Dto.query.sons.StarQueryDto;
-import code_sys.Po.Em.InteractionEnum;
+import code_sys.Po.Em.InteractionType;
 
 import javax.annotation.Resource;
 import java.util.Collections;
@@ -65,7 +65,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
-        if (isInteractionExist(productId, InteractionEnum.LOVE)) {
+        if (isInteractionExist(productId, InteractionType.LOVE)) {
             System.out.println("有重复操作");
             System.out.println("返回错误");
             return ApiResult.error(REPEAT_OPERATION_MSG);
@@ -79,7 +79,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
         System.out.println("正确执行");
         sendLikeNotification(product);
 
-        saveInteraction(productId, InteractionEnum.LOVE);
+        saveInteraction(productId, InteractionType.LOVE);
 
         return ApiResult.success(SUCCESS_MSG);
     }
@@ -138,7 +138,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
     @Override
     public Result<Boolean> saveOperation(Integer productId) {
         if(productId != null) {
-            boolean isCollected = isInteractionExist(productId, InteractionEnum.SAVE);
+            boolean isCollected = isInteractionExist(productId, InteractionType.SAVE);
 
             if (isCollected) {
                 cancelCollection(productId);
@@ -147,7 +147,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
                 return ApiResult.success(CANCEL_COLLECT_MSG, false);
             } else {
                 System.out.println("正确执行");
-                saveInteraction(productId, InteractionEnum.SAVE);
+                saveInteraction(productId, InteractionType.SAVE);
                 return ApiResult.success(COLLECT_SUCCESS_MSG, true);
             }
         }
@@ -171,7 +171,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
 
     @Override
     public Result<List<ProductVO>> queryUser() {
-        List<Integer> productIds = getInteractionProductIds(InteractionEnum.SAVE);
+        List<Integer> productIds = getInteractionProductIds(InteractionType.SAVE);
         if (productIds.isEmpty()) {
             System.out.println("正确执行");
             return ApiResult.success(Collections.emptyList());
@@ -185,8 +185,8 @@ public class LayerInteractionServiceImpl implements InteractionService {
     public Result<Void> view(Integer productId) {
         if(productId!=null) {
             System.out.println("正确执行");
-            if (!isInteractionExist(productId, InteractionEnum.VIEW)) {
-                saveInteraction(productId, InteractionEnum.VIEW);
+            if (!isInteractionExist(productId, InteractionType.VIEW)) {
+                saveInteraction(productId, InteractionType.VIEW);
             }
             return ApiResult.success();
         }
@@ -197,7 +197,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
 
     @Override
     public Result<List<ProductVO>> myView() {
-        List<Integer> productIds = getInteractionProductIds(InteractionEnum.VIEW);
+        List<Integer> productIds = getInteractionProductIds(InteractionType.VIEW);
         if (productIds.isEmpty()) {
             System.out.println("正确执行");
             return ApiResult.success(Collections.emptyList());
@@ -209,7 +209,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
 
     @Override
     public Result<String> batchDeleteInteraction() {
-        List<Integer> ids = getInteractionIds(InteractionEnum.VIEW);
+        List<Integer> ids = getInteractionIds(InteractionType.VIEW);
         if (!ids.isEmpty()) {
             System.out.println("正确执行");
             layerInteractionMapper.batchDelete(ids);
@@ -225,7 +225,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
         return CollectionUtils.isEmpty(products) ? null : products.get(0);
     }
 
-    private boolean isInteractionExist(Integer productId, InteractionEnum type) {
+    private boolean isInteractionExist(Integer productId, InteractionType type) {
         InteractionQueryDto queryDto = createInteractionQueryDto(productId, type);
         return layerInteractionMapper.queryCount(queryDto) > 0;
     }
@@ -259,7 +259,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
         layerMessageMapper.save(message);
     }
 
-    private void saveInteraction(Integer productId, InteractionEnum type) {
+    private void saveInteraction(Integer productId, InteractionType type) {
         Interaction interaction = new Interaction();
         interaction.setUserId(LocalThreadHolder.getUserId());
         interaction.setType(type.getType());
@@ -269,7 +269,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
     }
 
     private void cancelCollection(Integer productId) {
-        InteractionQueryDto queryDto = createInteractionQueryDto(productId, InteractionEnum.SAVE);
+        InteractionQueryDto queryDto = createInteractionQueryDto(productId, InteractionType.SAVE);
         List<Integer> ids = layerInteractionMapper.query(queryDto).stream()
                 .map(Interaction::getId)
                 .collect(Collectors.toList());
@@ -287,7 +287,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
                 .collect(Collectors.toList());
     }
 
-    private List<Integer> getInteractionProductIds(InteractionEnum type) {
+    private List<Integer> getInteractionProductIds(InteractionType type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
         queryDto.setType(type.getType());
@@ -296,7 +296,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
                 .collect(Collectors.toList());
     }
 
-    private List<Integer> getInteractionIds(InteractionEnum type) {
+    private List<Integer> getInteractionIds(InteractionType type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
         queryDto.setType(type.getType());
@@ -305,7 +305,7 @@ public class LayerInteractionServiceImpl implements InteractionService {
                 .collect(Collectors.toList());
     }
 
-    private InteractionQueryDto createInteractionQueryDto(Integer productId, InteractionEnum type) {
+    private InteractionQueryDto createInteractionQueryDto(Integer productId, InteractionType type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
         queryDto.setType(type.getType());

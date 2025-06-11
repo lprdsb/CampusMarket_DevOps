@@ -2,7 +2,7 @@ package code_sys.Aop;
 
 import code_sys.Interceptor.LocalThreadHolder;
 import code_sys.Po.Api.ApiResult;
-import code_sys.Po.Em.RoleEnum;
+import code_sys.Po.Em.SystemRoleType;
 import code_sys.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -48,7 +48,7 @@ public class ProtectorAspect {
 
         String requiredRole = protector.role();
         if (!requiredRole.isEmpty()) {
-            String userRole = RoleEnum.ROLE(roleId);
+            String userRole = SystemRoleType.resolveDisplayName(roleId);
             if (!requiredRole.equals(userRole)) {
                 return ApiResult.error("无操作权限");
             }

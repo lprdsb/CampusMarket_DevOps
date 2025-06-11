@@ -16,7 +16,7 @@ import code_sys.Po.Api.ApiResult;
 import code_sys.Po.Api.Result;
 import code_sys.Po.Dto.query.sons.ProductQueryDto;
 import code_sys.Po.Dto.update.OrdersDTO;
-import code_sys.Po.Em.InteractionEnum;
+import code_sys.Po.Em.InteractionType;
 import code_sys.Po.Entity.Interaction;
 import code_sys.Po.Entity.Orders;
 import code_sys.Po.Entity.Product;
@@ -89,9 +89,9 @@ public class LayerProductServiceImpl implements ProductService {
         List<Interaction> interactions = interactionDataAccess.queryByProductIds(itemIds);
         List<ChartVO> stats = new ArrayList<>();
 
-        stats.add(new ChartVO("被浏览", countInteractions(interactions, InteractionEnum.VIEW.getType())));
-        stats.add(new ChartVO("被收藏", countInteractions(interactions, InteractionEnum.SAVE.getType())));
-        stats.add(new ChartVO("被想要", countInteractions(interactions, InteractionEnum.LOVE.getType())));
+        stats.add(new ChartVO("被浏览", countInteractions(interactions, InteractionType.VIEW.getType())));
+        stats.add(new ChartVO("被收藏", countInteractions(interactions, InteractionType.SAVE.getType())));
+        stats.add(new ChartVO("被想要", countInteractions(interactions, InteractionType.LOVE.getType())));
 
         return ApiResult.success(stats);
     }

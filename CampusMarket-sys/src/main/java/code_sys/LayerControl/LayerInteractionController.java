@@ -10,7 +10,7 @@ import code_sys.Po.Api.ApiResult;
 import code_sys.Po.Api.Result;
 import code_sys.Po.Dto.query.sons.InteractionQueryDto;
 import code_sys.Po.Dto.query.sons.ProductQueryDto;
-import code_sys.Po.Em.InteractionEnum;
+import code_sys.Po.Em.InteractionType;
 import code_sys.Po.Entity.Interaction;
 import code_sys.Po.Vo.ProductVO;
 import code_sys.LayerService.InteractionService;
@@ -60,7 +60,7 @@ public class LayerInteractionController {
             return ApiResult.error(PRODUCT_NOT_FOUND_MSG);
         }
 
-        if (isInteractionExist(productId, InteractionEnum.LOVE)) {
+        if (isInteractionExist(productId, InteractionType.LOVE)) {
             System.out.println("交互重复");
             return ApiResult.error(REPEAT_OPERATION_MSG);
         }
@@ -77,7 +77,7 @@ public class LayerInteractionController {
     @PostMapping("/saveOperation/{productId}")
     public Result<Boolean> saveOperation(@PathVariable Integer productId) {
         System.out.println("进入接口");
-        boolean isCollected = isInteractionExist(productId, InteractionEnum.SAVE);
+        boolean isCollected = isInteractionExist(productId, InteractionType.SAVE);
 
         if (isCollected) {
             System.out.println("已经收藏");
@@ -123,7 +123,7 @@ public class LayerInteractionController {
     @PostMapping("/queryUser")
     public Result<List<ProductVO>> queryUser() {
         System.out.println("进入接口");
-        List<Integer> productIds = getInteractionProductIds(InteractionEnum.SAVE);
+        List<Integer> productIds = getInteractionProductIds(InteractionType.SAVE);
         if (productIds.isEmpty()) {
             System.out.println("产品为空");
             return ApiResult.success(Collections.emptyList());
@@ -136,7 +136,7 @@ public class LayerInteractionController {
     @PostMapping("/myView")
     public Result<List<ProductVO>> myView() {
         System.out.println("进入接口");
-        List<Integer> productIds = getInteractionProductIds(InteractionEnum.VIEW);
+        List<Integer> productIds = getInteractionProductIds(InteractionType.VIEW);
         if (productIds.isEmpty()) {
             System.out.println("产品为空");
             return ApiResult.success(Collections.emptyList());
@@ -151,7 +151,7 @@ public class LayerInteractionController {
         return CollectionUtils.isEmpty(products) ? null : products.get(0);
     }
 
-    private boolean isInteractionExist(Integer productId, InteractionEnum type) {
+    private boolean isInteractionExist(Integer productId, InteractionType type) {
         InteractionQueryDto queryDto = createInteractionQueryDto(productId, type);
         return layerInteractionMapper.queryCount(queryDto) > 0;
     }
@@ -161,7 +161,7 @@ public class LayerInteractionController {
     }
 
     private void cancelCollection(Integer productId) {
-        InteractionQueryDto queryDto = createInteractionQueryDto(productId, InteractionEnum.SAVE);
+        InteractionQueryDto queryDto = createInteractionQueryDto(productId, InteractionType.SAVE);
         List<Integer> ids = layerInteractionMapper.query(queryDto).stream()
                 .map(Interaction::getId)
                 .collect(Collectors.toList());
@@ -172,7 +172,7 @@ public class LayerInteractionController {
     }
 
 
-    private List<Integer> getInteractionProductIds(InteractionEnum type) {
+    private List<Integer> getInteractionProductIds(InteractionType type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
         queryDto.setType(type.getType());
@@ -182,7 +182,7 @@ public class LayerInteractionController {
     }
 
 
-    private InteractionQueryDto createInteractionQueryDto(Integer productId, InteractionEnum type) {
+    private InteractionQueryDto createInteractionQueryDto(Integer productId, InteractionType type) {
         InteractionQueryDto queryDto = new InteractionQueryDto();
         queryDto.setUserId(LocalThreadHolder.getUserId());
         queryDto.setType(type.getType());
