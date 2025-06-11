@@ -1,12 +1,13 @@
 package code_sys.LayerService.Impl;
 
-import code_sys.LayerEnvironment.LocalThreadHolder;
+import code_sys.Interceptor.LocalThreadHolder;
 import code_sys.LayerMap.LayerUserMapper;
 import code_sys.Po.Api.ApiResult;
 import code_sys.Po.Api.PageResult;
 import code_sys.Po.Api.Result;
 import code_sys.Po.Dto.query.sons.UserQueryDto;
 import code_sys.Po.Dto.update.UserLoginDTO;
+import code_sys.Po.Dto.update.UserPwdUpdateDTO;
 import code_sys.Po.Dto.update.UserRegisterDTO;
 import code_sys.Po.Dto.update.UserUpdateDTO;
 import code_sys.Po.Em.LoginStatusEnum;
@@ -16,6 +17,7 @@ import code_sys.Po.Entity.User;
 import code_sys.Po.Vo.UserVO;
 import code_sys.LayerService.UserService;
 import code_sys.utils.JwtUtil;
+import com.alibaba.excel.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -162,46 +164,40 @@ public class LayerUserServiceImpl implements UserService {
     }
 
     @Override
-    public Result<String> updatePwd(Map<String, String> map) {
-        String oldPwd = map.get("oldPwd");
-        String newPwd = map.get("newPwd");
-        String confirmPwd = map.get("againPwd");
+    public Result<String> updatePwd(UserPwdUpdateDTO dto) {
+        String oldPwd = dto.getOldPwd();
+        String newPwd = dto.getNewPwd();
+        String confirmPwd = dto.getAgainPwd();
 
-        // 参数校验
-        if (isBlank(oldPwd)) {
-            return ApiResult.error("原始密码不能为空");
-        }
-        if (isBlank(newPwd)) {
-            return ApiResult.error("新密码不能为空");
-        }
-        if (isBlank(confirmPwd)) {
-            return ApiResult.error("请确认新密码");
-        }
-        if (!newPwd.equals(confirmPwd)) {
-            return ApiResult.error("两次输入的新密码不一致");
-        }
+
+        // 参数校验（使用辅助方法精简代码）
+        Result<String> validation = validatePasswordParams(oldPwd, newPwd, confirmPwd);
+        if (validation != null) return validation;
 
         // 获取当前用户信息
         Integer userId = LocalThreadHolder.getUserId();
-        if (userId == null) {
-            return ApiResult.error("用户未登录");
-        }
+        if (userId == null) return ApiResult.error("用户未登录");
 
+        // 查询并验证用户状态
         User user = layerUserMapper.getByActive(User.builder().id(userId).build());
-        if (user == null) {
-            return ApiResult.error("用户不存在或已被禁用");
-        }
+        if (user == null) return ApiResult.error("用户不存在或已被禁用");
 
-        // 校验旧密码
-        if (!Objects.equals(oldPwd, user.getUserPwd())) {
+        // 校验旧密码（安全增强：未来可考虑哈希校验）
+        if (!Objects.equals(oldPwd, user.getUserPwd()))
             return ApiResult.error("原始密码不正确");
-        }
 
         // 更新密码
-        user.setUserPwd(newPwd);
-        layerUserMapper.update(user);
-
+        layerUserMapper.update(User.builder().id(userId).userPwd(newPwd).build());
         return ApiResult.success("密码修改成功");
+    }
+
+    // 参数验证辅助方法
+    private Result<String> validatePasswordParams(String oldPwd, String newPwd, String confirmPwd) {
+        if (StringUtils.isBlank(oldPwd)) return ApiResult.error("原始密码不能为空");
+        if (StringUtils.isBlank(newPwd)) return ApiResult.error("新密码不能为空");
+        if (StringUtils.isBlank(confirmPwd)) return ApiResult.error("请确认新密码");
+        if (!newPwd.equals(confirmPwd)) return ApiResult.error("两次输入的新密码不一致");
+        return null;
     }
 
     private boolean isBlank(String str) {

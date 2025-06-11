@@ -10,18 +10,33 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class InterceptorConfig implements WebMvcConfigurer {
 
     @Value("${my-server.api-context-path}")
-    private String API;
+    private String apiContextPath;
+
+    private static final String[] EXCLUDED_PATHS = {
+            "/user/login",
+            "/user/register",
+            "/file/upload",
+            "/file/getFile"
+    };
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        // 拦截器注册
+        // 构建完整的排除路径数组
+        String[] fullExcludedPaths = buildFullExcludedPaths();
+
         registry.addInterceptor(new JwtInterceptor())
                 .addPathPatterns("/**")
-                // 放行登录、注册请求
-                .excludePathPatterns(
-                        API + "/user/login",
-                        API + "/user/register",
-                        API + "/file/upload",
-                        API + "/file/getFile");
+                .excludePathPatterns(fullExcludedPaths);
+    }
+
+    /**
+     * 构建完整的排除路径数组（添加API上下文路径）
+     */
+    private String[] buildFullExcludedPaths() {
+        String[] result = new String[EXCLUDED_PATHS.length];
+        for (int i = 0; i < EXCLUDED_PATHS.length; i++) {
+            result[i] = apiContextPath + EXCLUDED_PATHS[i];
+        }
+        return result;
     }
 }

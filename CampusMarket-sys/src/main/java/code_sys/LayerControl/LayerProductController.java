@@ -1,5 +1,6 @@
 package code_sys.LayerControl;
 
+import code_sys.Interceptor.LocalThreadHolder;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.List;
@@ -10,7 +11,6 @@ import code_sys.Aop.Log;
 import code_sys.Aop.Pager;
 import code_sys.Po.Api.Result;
 import code_sys.LayerService.ProductService;
-import code_sys.LayerEnvironment.LocalThreadHolder;
 import code_sys.Po.Dto.query.sons.ProductQueryDto;
 import code_sys.Po.Dto.update.OrdersDTO;
 
