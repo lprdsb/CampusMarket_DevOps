@@ -25,28 +25,24 @@ public class LayerStarController {
      *
      * @return Result<List < UserVO>> 响应结果
      */
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<StarVo>> query(@RequestBody StarQueryDto starQueryDto) {
         // System.out.println(starQueryDto);
         return starService.query(starQueryDto);
     }
 
-    @PostMapping(value = "/queryByUser1/{userId}")
-    @ResponseBody
+    @PostMapping("/queryByUser1/{userId}")
     public Result<List<UserVO>> queryByUser1(@PathVariable Integer userId) {
         // System.out.println(userId);
         return starService.queryByUser1(userId);
     }
 
-    @PostMapping(value = "/queryByUser2/{userId}")
-    @ResponseBody
+    @PostMapping("/queryByUser2/{userId}")
     public Result<List<UserVO>> queryByUser2(@PathVariable Integer userId) {
         return starService.queryByUser2(userId);
     }
 
-    @PostMapping(value = "/starOperation/{userId}")
-    @ResponseBody
+    @PostMapping("/starOperation/{userId}")
     public Result<Boolean> starOperation(@PathVariable Integer userId) {
         return starService.starOperation(userId);
     }

@@ -17,15 +17,13 @@ public class LayerChatTableController {
     @Resource
     private ChatterService chatterService;
 
-    @PostMapping(value = "/queryUser")
-    @ResponseBody
+    @PostMapping("/queryUser")
     public Result<List<ChatterVO>> query(@RequestBody ChatterQueryDto chatterQueryDto){
         chatterQueryDto.setSenderId(LocalThreadHolder.getUserId());
         return chatterService.queryTable(chatterQueryDto);
     }
 
-    @PostMapping(value = "/queryCurrentUser")
-    @ResponseBody
+    @PostMapping("/queryCurrentUser")
     public Integer queryCurrentUser(){
         return LocalThreadHolder.getUserId();
     }

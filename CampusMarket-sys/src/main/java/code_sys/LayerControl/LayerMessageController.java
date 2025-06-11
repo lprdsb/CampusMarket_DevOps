@@ -20,8 +20,7 @@ public class LayerMessageController {
     private MessageService messageService;
 
 
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -29,8 +28,7 @@ public class LayerMessageController {
     }
 
 
-    @PostMapping(value = "/setRead")
-    @ResponseBody
+    @PostMapping("/setRead")
     public Result<String> setRead() {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -39,8 +37,7 @@ public class LayerMessageController {
 
 
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<MessageVO>> query(@RequestBody MessageQueryDto messageQueryDto) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -48,8 +45,7 @@ public class LayerMessageController {
     }
 
 
-    @PostMapping(value = "/queryUser")
-    @ResponseBody
+    @PostMapping("/queryUser")
     public Result<List<MessageVO>> queryUser(@RequestBody MessageQueryDto messageQueryDto) {
         System.out.println("进入接口");
         messageQueryDto.setUserId(LocalThreadHolder.getUserId());

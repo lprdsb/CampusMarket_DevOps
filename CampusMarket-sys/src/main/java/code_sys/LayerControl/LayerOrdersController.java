@@ -28,7 +28,7 @@ public class LayerOrdersController {
      * @param orders 参数
      * @return Result<String> 响应结果
      */
-    @PostMapping(value = "/save")
+    @PostMapping("/save")
     public Result<String> save(@RequestBody Orders orders) {
         return ordersService.save(orders);
     }
@@ -39,7 +39,7 @@ public class LayerOrdersController {
      * @param orders 参数
      * @return Result<String> 响应结果
      */
-    @PutMapping(value = "/update")
+    @PutMapping("/update")
     public Result<String> update(@RequestBody Orders orders) {
         return ordersService.update(orders);
     }
@@ -47,7 +47,7 @@ public class LayerOrdersController {
     /**
      * 批量删除
      */
-    @PostMapping(value = "/batchDelete")
+    @PostMapping("/batchDelete")
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         return ordersService.batchDelete(ids);
     }
@@ -59,7 +59,7 @@ public class LayerOrdersController {
      * @return Result<List < OrdersVO>> 响应结果
      */
     @Pager
-    @PostMapping(value = "/queryUser")
+    @PostMapping("/queryUser")
     public Result<List<OrdersVO>> queryUser(@RequestBody OrdersQueryDto ordersQueryDto) {
         ordersQueryDto.setUserId(LocalThreadHolder.getUserId());
         return ordersService.query(ordersQueryDto);
@@ -72,7 +72,7 @@ public class LayerOrdersController {
      * @return Result<List < OrdersVO>> 响应结果
      */
     @Pager
-    @PostMapping(value = "/queryOrdersList")
+    @PostMapping("/queryOrdersList")
     public Result<List<OrdersVO>> queryOrdersList(@RequestBody OrdersQueryDto ordersQueryDto) {
         return ordersService.queryOrdersList(ordersQueryDto);
     }
@@ -83,7 +83,7 @@ public class LayerOrdersController {
      * @param ordersId 订单ID
      * @return Result<String> 响应结果
      */
-    @PutMapping(value = "/refund/{ordersId}")
+    @PutMapping("/refund/{ordersId}")
     public Result<String> refund(@PathVariable Integer ordersId) {
         return ordersService.refund(ordersId);
     }
@@ -95,7 +95,7 @@ public class LayerOrdersController {
      * @return Result<List < OrdersVO>> 响应结果
      */
     @Pager
-    @PostMapping(value = "/query")
+    @PostMapping("/query")
     public Result<List<OrdersVO>> query(@RequestBody OrdersQueryDto ordersQueryDto) {
         return ordersService.query(ordersQueryDto);
     }

@@ -28,8 +28,7 @@ public class LayerCategoryController {
      * @return Result<List < Category>> 响应结果
      */
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<Category>> query(@RequestBody CategoryQueryDto categoryQueryDto) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -40,8 +39,7 @@ public class LayerCategoryController {
      * 批量删除
      */
     @Protector(role = "管理员") // 只有管理员能够去进行操作
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -54,8 +52,7 @@ public class LayerCategoryController {
      * @param category 参数
      * @return Result<String> 响应结果
      */
-    @PutMapping(value = "/update")
-    @ResponseBody
+    @PutMapping("/update")
     public Result<String> update(@RequestBody Category category) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -68,15 +65,13 @@ public class LayerCategoryController {
      * @param category 参数
      * @return Result<String> 响应结果
      */
-    @PostMapping(value = "/save")
-    @ResponseBody
+    @PostMapping("/save")
     public Result<String> save(@RequestBody Category category) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
         return saveOrUpdate(category, false);
     }
 
-    // 基于注解重构通用方法
     private Result<String> saveOrUpdate(Category category, boolean isUpdate) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");

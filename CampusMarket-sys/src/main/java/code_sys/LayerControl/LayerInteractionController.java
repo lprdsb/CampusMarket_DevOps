@@ -49,8 +49,8 @@ public class LayerInteractionController {
     private LayerUserMapper layerUserMapper;
     @Resource
     private StarService starService;
-    @PostMapping(value = "/likeProduct/{productId}")
-    @ResponseBody
+
+    @PostMapping("/likeProduct/{productId}")
     public Result<String> likeProduct(@PathVariable Integer productId) {
         System.out.println("进入接口");
         ProductVO product = getProductById(productId);
@@ -74,8 +74,7 @@ public class LayerInteractionController {
     }
 
 
-    @PostMapping(value = "/saveOperation/{productId}")
-    @ResponseBody
+    @PostMapping("/saveOperation/{productId}")
     public Result<Boolean> saveOperation(@PathVariable Integer productId) {
         System.out.println("进入接口");
         boolean isCollected = isInteractionExist(productId, InteractionEnum.SAVE);
@@ -90,8 +89,7 @@ public class LayerInteractionController {
     }
 
 
-    @PostMapping(value = "/batchDeleteView")
-    @ResponseBody
+    @PostMapping("/batchDeleteView")
     public Result<String> batchDeleteInteraction() {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -99,8 +97,7 @@ public class LayerInteractionController {
     }
 
 
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<String> batchDelete(@RequestBody List<Integer> ids) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
@@ -109,24 +106,21 @@ public class LayerInteractionController {
 
 
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<Interaction>> query(@RequestBody InteractionQueryDto interactionQueryDto) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
         return interactionService.query(interactionQueryDto);
     }
 
-    @PostMapping(value = "/view/{productId}")
-    @ResponseBody
+    @PostMapping("/view/{productId}")
     public Result<Void> view(@PathVariable Integer productId) {
         System.out.println("进入接口");
         System.out.println("进入返回函数");
         return interactionService.view(productId);
     }
 
-    @PostMapping(value = "/queryUser")
-    @ResponseBody
+    @PostMapping("/queryUser")
     public Result<List<ProductVO>> queryUser() {
         System.out.println("进入接口");
         List<Integer> productIds = getInteractionProductIds(InteractionEnum.SAVE);
@@ -139,8 +133,7 @@ public class LayerInteractionController {
     }
 
 
-    @PostMapping(value = "/myView")
-    @ResponseBody
+    @PostMapping("/myView")
     public Result<List<ProductVO>> myView() {
         System.out.println("进入接口");
         List<Integer> productIds = getInteractionProductIds(InteractionEnum.VIEW);

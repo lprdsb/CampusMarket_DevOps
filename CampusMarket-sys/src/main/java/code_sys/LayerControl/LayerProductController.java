@@ -28,21 +28,18 @@ public class LayerProductController {
     // ==================== 商品操作接口 ====================
 
     @Log(detail = "创建新商品")
-    @PostMapping(value = "/save")
-    @ResponseBody
+    @PostMapping("/save")
     public Result<String> addNewProduct(@RequestBody Product newProd) {
         return productManager.save(newProd);
     }
 
     @Log(detail = "变更商品信息")
-    @PutMapping(value = "/update")
-    @ResponseBody
+    @PutMapping("/update")
     public Result<String> modifyProduct(@RequestBody Product existingProd) {
         return productManager.update(existingProd);
     }
 
-    @PostMapping(value = "/batchDelete")
-    @ResponseBody
+    @PostMapping("/batchDelete")
     public Result<String> removeProducts(@RequestBody List<Integer> idList) {
         return productManager.batchDelete(idList);
     }
@@ -50,21 +47,18 @@ public class LayerProductController {
     // ==================== 订单操作接口 ====================
 
     @Log(detail = "用户购买商品")
-    @PostMapping(value = "/buyProduct")
-    @ResponseBody
+    @PostMapping("/buyProduct")
     public Result<String> purchaseItem(@RequestBody OrdersDTO orderData) {
         return productManager.buyProduct(orderData);
     }
 
-    @PostMapping(value = "/placeAnOrder/{ordersId}")
-    @ResponseBody
+    @PostMapping("/placeAnOrder/{ordersId}")
     public Result<String> confirmOrder(@PathVariable Integer ordersId) {
         return productManager.placeAnOrder(ordersId);
     }
 
     @Log(detail = "用户申请退款")
-    @PostMapping(value = "/refund/{ordersId}")
-    @ResponseBody
+    @PostMapping("/refund/{ordersId}")
     public Result<String> requestRefund(@PathVariable Integer ordersId) {
         return productManager.refund(ordersId);
     }
@@ -72,29 +66,25 @@ public class LayerProductController {
     // ==================== 数据查询接口 ====================
 
     @Pager
-    @PostMapping(value = "/query")
-    @ResponseBody
+    @PostMapping("/query")
     public Result<List<ProductVO>> searchProducts(@RequestBody ProductQueryDto searchParams) {
         return productManager.query(searchParams);
     }
 
-    @PostMapping(value = "/queryUser")
-    @ResponseBody
+    @PostMapping("/queryUser")
     public Result<List<ProductVO>> userProductQuery(@RequestBody ProductQueryDto userQuery) {
         userQuery.setUserId(LocalThreadHolder.getUserId());
         return productManager.query(userQuery);
     }
 
-    @GetMapping(value = "/getById/{id}")
-    @ResponseBody
+    @GetMapping("/getById/{id}")
     public Result<List<ProductVO>> fetchById(@PathVariable Integer id) {
         ProductQueryDto param = new ProductQueryDto();
         param.setUserId(id);
         return productManager.query(param);
     }
 
-    @PostMapping(value = "/queryProductInfo")
-    @ResponseBody
+    @PostMapping("/queryProductInfo")
     public Result<List<ChartVO>> retrieveProductStats(@RequestBody ProductQueryDto statParams) {
         return productManager.queryProductInfo(statParams);
     }
@@ -102,7 +92,6 @@ public class LayerProductController {
     // ==================== 个性化接口 ====================
 
     @GetMapping("/recommend")
-    @ResponseBody
     public Result<List<Product>> getSuggestedItems() {
         Integer currentUserId = LocalThreadHolder.getUserId();
         return productManager.getRecommendedProducts(currentUserId);
