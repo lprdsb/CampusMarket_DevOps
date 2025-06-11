@@ -18,4 +18,24 @@ public class OperationLogQueryDto extends QueryDto {
      * 描述
      */
     private String detail;
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+
+    public String getDetail() {
+        return detail;
+    }
+
+
+    // Setter Methods
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+
+    public void setDetail(String detail) {
+        this.detail = detail;
+    }
 }

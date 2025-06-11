@@ -14,4 +14,12 @@ public class OrdersDTO extends Orders {
      * 下单多少件
      */
     private Integer buyNumber;
+
+    public Integer getBuyNumber() {
+        return buyNumber;
+    }
+
+    public void setBuyNumber(Integer buyNumber) {
+        this.buyNumber = buyNumber;
+    }
 }

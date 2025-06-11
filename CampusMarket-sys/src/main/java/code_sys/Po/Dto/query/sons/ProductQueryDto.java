@@ -38,4 +38,62 @@ public class ProductQueryDto extends QueryDto {
      * 推荐条目
      */
     private Integer recommendLimit;
+
+    // Getter Methods
+    public String getName() {
+        return name;
+    }
+
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public Boolean getBargain() {
+        return isBargain;
+    }
+
+    public Integer getPriceMin() {
+        return priceMin;
+    }
+
+    public Integer getPriceMax() {
+        return priceMax;
+    }
+
+    public Integer getRecommendLimit() {
+        return recommendLimit;
+    }
+
+    // Setter Methods
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public void setBargain(Boolean bargain) {
+        isBargain = bargain;
+    }
+
+    public void setPriceMin(Integer priceMin) {
+        this.priceMin = priceMin;
+    }
+
+    public void setPriceMax(Integer priceMax) {
+        this.priceMax = priceMax;
+    }
+
+    public void setRecommendLimit(Integer recommendLimit) {
+        this.recommendLimit = recommendLimit;
+    }
 }

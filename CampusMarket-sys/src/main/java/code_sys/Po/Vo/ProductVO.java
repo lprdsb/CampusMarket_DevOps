@@ -34,4 +34,52 @@ public class ProductVO extends Product {
      * 浏览人数
      */
     private Integer viewNumber;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public Integer getLikeNumber() {
+        return likeNumber;
+    }
+
+    public void setLikeNumber(Integer likeNumber) {
+        this.likeNumber = likeNumber;
+    }
+
+    public Integer getSaveNumber() {
+        return saveNumber;
+    }
+
+    public void setSaveNumber(Integer saveNumber) {
+        this.saveNumber = saveNumber;
+    }
+
+    public Integer getViewNumber() {
+        return viewNumber;
+    }
+
+    public void setViewNumber(Integer viewNumber) {
+        this.viewNumber = viewNumber;
+    }
 }

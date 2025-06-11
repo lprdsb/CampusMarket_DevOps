@@ -15,4 +15,13 @@ public class StarQueryDto extends QueryDto {
      */
     private Integer user1Id;
     private Integer user2Id;
+
+    // Setter Methods
+    public void setUser1Id(Integer user1Id) {
+        this.user1Id = user1Id;
+    }
+
+    public void setUser2Id(Integer user2Id) {
+        this.user2Id = user2Id;
+    }
 }

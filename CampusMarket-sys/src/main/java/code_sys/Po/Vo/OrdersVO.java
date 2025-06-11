@@ -26,4 +26,36 @@ public class OrdersVO extends Orders {
      * 商品图
      */
     private String productCover;
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
+    }
+
+    public String getProductTitle() {
+        return productTitle;
+    }
+
+    public void setProductTitle(String productTitle) {
+        this.productTitle = productTitle;
+    }
+
+    public String getProductCover() {
+        return productCover;
+    }
+
+    public void setProductCover(String productCover) {
+        this.productCover = productCover;
+    }
 }

@@ -17,4 +17,20 @@ public class ChartVO {
      * 数据总数
      */
     private Integer count;
+
+    public String getName() {
+        return name;
+    }
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
 }

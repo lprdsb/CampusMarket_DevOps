@@ -62,4 +62,122 @@ public class CommentParentVO {
      */
     private List<CommentChildVO> commentChildVOS;
 
+    public Integer getId() {
+        return id;
+    }
+
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
+    }
+
+
+    public String getContent() {
+        return content;
+    }
+
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+
+    public Boolean getShowReplyInput() {
+        return showReplyInput;
+    }
+
+
+    public void setShowReplyInput(Boolean showReplyInput) {
+        this.showReplyInput = showReplyInput;
+    }
+
+
+    public Integer getChildTotal() {
+        return childTotal;
+    }
+
+
+    public void setChildTotal(Integer childTotal) {
+        this.childTotal = childTotal;
+    }
+
+
+    public Boolean getUpvoteFlag() {
+        return upvoteFlag;
+    }
+
+
+    public void setUpvoteFlag(Boolean upvoteFlag) {
+        this.upvoteFlag = upvoteFlag;
+    }
+
+
+    public String getUpvoteList() {
+        return upvoteList;
+    }
+
+
+    public void setUpvoteList(String upvoteList) {
+        this.upvoteList = upvoteList;
+    }
+
+
+    public Integer getUpvoteCount() {
+        return upvoteCount;
+    }
+
+
+    public void setUpvoteCount(Integer upvoteCount) {
+        this.upvoteCount = upvoteCount;
+    }
+
+
+    public LocalDateTime getCreateTime() {
+        return createTime;
+    }
+
+
+    public void setCreateTime(LocalDateTime createTime) {
+        this.createTime = createTime;
+    }
+
+
+    public List<CommentChildVO> getCommentChildVOS() {
+        return commentChildVOS;
+    }
+
+
+    public void setCommentChildVOS(List<CommentChildVO> commentChildVOS) {
+        this.commentChildVOS = commentChildVOS;
+    }
 }
