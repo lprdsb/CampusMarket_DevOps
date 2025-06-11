@@ -1,6 +1,5 @@
 package code_sys.Interceptor;
 
-import code_sys.LayerEnvironment.LocalThreadHolder;
 import code_sys.Po.Api.ApiResult;
 import code_sys.Po.Api.Result;
 import code_sys.utils.JwtUtil;

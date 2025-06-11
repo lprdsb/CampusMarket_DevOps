@@ -3,6 +3,7 @@ package code_sys.LayerService;
 import code_sys.Po.Api.Result;
 import code_sys.Po.Dto.query.sons.UserQueryDto;
 import code_sys.Po.Dto.update.UserLoginDTO;
+import code_sys.Po.Dto.update.UserPwdUpdateDTO;
 import code_sys.Po.Dto.update.UserRegisterDTO;
 import code_sys.Po.Dto.update.UserUpdateDTO;
 import code_sys.Po.Entity.User;
@@ -24,7 +25,7 @@ public interface UserService {
 
     Result<String> batchDelete(List<Integer> ids);
 
-    Result<String> updatePwd(Map<String, String> map);
+    public Result<String> updatePwd(UserPwdUpdateDTO dto);
 
     Result<UserVO> getById(Integer id);
 
