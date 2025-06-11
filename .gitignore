@@ -4,3 +4,6 @@ node_modules
 .idea
 .vscode
 *.zip
+.DS_Store
+
+/CampusMarket-frontend/dist/
