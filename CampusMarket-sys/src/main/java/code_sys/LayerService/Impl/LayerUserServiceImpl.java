@@ -137,7 +137,7 @@ public class LayerUserServiceImpl implements UserService {
     public Result<List<User>> query(UserQueryDto userQueryDto) {
         List<User> users = layerUserMapper.query(userQueryDto);
         Integer count = layerUserMapper.queryCount(userQueryDto);
-        return PageResult.success(users, count);
+        return PageResult.of(users, count);
     }
 
     /**

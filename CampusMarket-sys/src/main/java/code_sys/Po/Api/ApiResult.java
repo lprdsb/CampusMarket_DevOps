@@ -40,8 +40,6 @@ public class ApiResult<T> extends Result<T> {
         this.total = total;
     }
 
-    // ================= 与原始完全相同的静态工厂方法 =================
-
     public static <T> Result<T> success() {
         ApiResult<T> result = new ApiResult<>(ResultCode.REQUEST_SUCCESS.getCode());
         result.setData(null);

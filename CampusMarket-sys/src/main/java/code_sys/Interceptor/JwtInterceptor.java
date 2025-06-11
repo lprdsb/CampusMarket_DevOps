@@ -46,8 +46,17 @@ public class JwtInterceptor implements HandlerInterceptor {
     }
 
     private boolean isExcludedUri(String uri) {
-        if (uri.contains("/login") || uri.contains("/error") || uri.contains("/file") || uri.contains("/register")) {
+        if (uri.contains("/login")) {
             return true;
+        }
+        if(uri.contains("/error") ){
+            return true;
+        }
+        if(uri.contains("/file") ){
+            return true;
+        }
+        if( uri.contains("/register")){
+            return  true;
         }
         if (uri.contains("/query") && !uri.contains("/queryUser")
                 && !uri.contains("/queryOrdersList")

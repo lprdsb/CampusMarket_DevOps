@@ -116,7 +116,7 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
     public Result<Object> query(EvaluationsQueryDto evaluationsQueryDto) {
         List<CommentChildVO> list = layerEvaluationsMapper.query(evaluationsQueryDto);
         Integer totalPage = layerEvaluationsMapper.queryCount(evaluationsQueryDto);
-        return PageResult.success(list, totalPage);
+        return PageResult.of(list, totalPage);
     }
 
     /**
