@@ -49,6 +49,11 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
         return ApiResult.success("评论成功");
     }
 
+    public String show_IsWord(String str)
+    {
+        return (str+"已被禁言");
+    }
+
     /**
      * 查询全部评论
      *
@@ -60,6 +65,10 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
         setUpvoteFlag(parentComments);
         Integer count = layerEvaluationsMapper.totalCount(contentId, contentType);
         return ApiResult.success(new EvaluationsVO(count, parentComments));
+    }
+    public int showCommentCount(int a)
+    {
+        return a;
     }
 
     /**
@@ -107,6 +116,11 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
                 .orElse(0);
     }
 
+    public int addCountVotes(int a,int b)
+    {
+        return a+b;
+    }
+
     /**
      * 分页查询评论
      *
@@ -142,7 +156,10 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
         layerEvaluationsMapper.batchDelete(ids);
         return ApiResult.success();
     }
-
+    public String deleteResult(String a,String b)
+    {
+        return a+"删除了评论："+b;
+    }
     /**
      * 评论修改
      *
@@ -154,4 +171,9 @@ public class LayerEvaluationsServiceImpl implements EvaluationsService {
         layerEvaluationsMapper.update(evaluations);
         return ApiResult.success();
     }
+    public String noice(String a,String b)
+    {
+        return "已通知"+a+"来自"+b+"的点赞";
+    }
+
 }

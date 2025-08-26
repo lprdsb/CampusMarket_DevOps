@@ -83,6 +83,10 @@ public class LayerInteractionServiceImpl implements InteractionService {
 
         return ApiResult.success(SUCCESS_MSG);
     }
+    public String likeResult(String a,String b)
+    {
+        return a+"喜欢商品:"+b;
+    }
 
     @Override
     public Result<String> newProduct(Integer productId) {
@@ -120,7 +124,10 @@ public class LayerInteractionServiceImpl implements InteractionService {
         System.out.println("返回错误");
         return ApiResult.success("互动行为记录成功");
     }
-
+    public String saveResult(String a,String b)
+    {
+        return a+"对"+b+"的交互成功";
+    }
     @Override
     public Result<String> batchDelete(List<Integer> ids) {
         if(ids!=null) {
@@ -180,7 +187,10 @@ public class LayerInteractionServiceImpl implements InteractionService {
         System.out.println("返回错误");
         return ApiResult.success(layerProductMapper.queryProductList(productIds));
     }
-
+    public String queryResult(String a)
+    {
+        return "成功查找到:"+a;
+    }
     @Override
     public Result<Void> view(Integer productId) {
         if(productId!=null) {

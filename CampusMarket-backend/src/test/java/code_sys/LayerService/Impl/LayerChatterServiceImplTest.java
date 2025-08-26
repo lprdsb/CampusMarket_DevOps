@@ -14,6 +14,6 @@ public class LayerChatterServiceImplTest {
 
     @Test
     public void test() {
-        System.out.println(tmp.add(1, 2) == 4);
+        System.out.println(tmp.add(1,2) == 3);
     }
 }

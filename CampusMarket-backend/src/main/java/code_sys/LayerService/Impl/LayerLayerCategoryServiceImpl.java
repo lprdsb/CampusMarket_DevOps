@@ -33,7 +33,10 @@ public class LayerLayerCategoryServiceImpl implements CategoryService {
         List<Category> categoryList = layerCategoryMapper.query(categoryQueryDto);
         return ApiResult.success(categoryList, totalCount);
     }
-
+    public String queryResult(String a)
+    {
+        return "成功查找到:"+a;
+    }
     /**
      * 批量删除
      *
@@ -45,7 +48,10 @@ public class LayerLayerCategoryServiceImpl implements CategoryService {
         layerCategoryMapper.batchDelete(ids);
         return ApiResult.success("商品分类删除成功");
     }
-
+    public String deleteResult(String a)
+    {
+        return "成功删除"+a;
+    }
     /**
      * 修改
      *
@@ -90,5 +96,9 @@ public class LayerLayerCategoryServiceImpl implements CategoryService {
             layerCategoryMapper.save(category);
             return ApiResult.success("商品分类新增成功");
         }
+    }
+    public boolean saveOrUpdateResult()
+    {
+        return true;
     }
 }
