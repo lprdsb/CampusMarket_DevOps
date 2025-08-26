@@ -23,6 +23,10 @@ public class LayerMessageServiceImpl implements MessageService {
 
     private final LayerMessageMapper layerMessageMapper;
 
+    public int addd(int x,int y){
+        return x+y;
+    }
+
     @Override
     public Result<String> save(Message message) {
         System.out.println("开始进入mapper函数");
