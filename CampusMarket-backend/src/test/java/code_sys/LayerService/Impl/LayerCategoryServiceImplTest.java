@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LayerLayerCategoryServiceImplTest {
+public class LayerCategoryServiceImplTest {
 
     @Mock
     private LayerCategoryMapper layerCategoryMapper;
@@ -35,7 +35,7 @@ public class LayerLayerCategoryServiceImplTest {
     public void setUp() {
         // 初始化操作可以放在这里
     }
-    
+
     @Test
     public void testBatchDelete_Success() {
         // 准备测试数据
