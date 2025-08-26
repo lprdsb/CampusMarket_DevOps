@@ -15,21 +15,27 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+// import org.junit.test;
+
 @Service
 public class LayerChatterServiceImpl implements ChatterService {
     @Resource
     private LayerChatterMapper layerChatterMapper;
 
     @Override
-    public Result<String> save(Chatter chatter){
+    public Result<String> save(Chatter chatter) {
         chatter.setCreateTime(LocalDateTime.now());
         chatter.setSenderId(LocalThreadHolder.getUserId());
         layerChatterMapper.save(chatter);
         return ApiResult.success("聊天信息发送成功");
     }
 
+    public int add(int x, int y) {
+        return x + y;
+    }
+
     @Override
-    public Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto){
+    public Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto) {
         // 第一次查询：原始参数
         List<ChatterVO> firstList = layerChatterMapper.query(chatterQueryDto);
 
@@ -55,7 +61,7 @@ public class LayerChatterServiceImpl implements ChatterService {
     }
 
     @Override
-    public Result<List<ChatterVO>> queryTable(ChatterQueryDto chatterQueryDto){
+    public Result<List<ChatterVO>> queryTable(ChatterQueryDto chatterQueryDto) {
         return ApiResult.success(layerChatterMapper.queryTable(chatterQueryDto));
     }
 }
