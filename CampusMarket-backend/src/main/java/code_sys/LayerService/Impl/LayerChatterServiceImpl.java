@@ -30,6 +30,10 @@ public class LayerChatterServiceImpl implements ChatterService {
         return ApiResult.success("聊天信息发送成功");
     }
 
+    public int add(int x, int y) {
+        return x + y;
+    }
+
     @Override
     public Result<List<ChatterVO>> query(ChatterQueryDto chatterQueryDto) {
         // 第一次查询：原始参数
