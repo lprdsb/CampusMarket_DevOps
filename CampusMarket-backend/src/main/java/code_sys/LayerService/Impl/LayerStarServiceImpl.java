@@ -46,6 +46,27 @@ public class LayerStarServiceImpl implements StarService {
         return ApiResult.success(userVOS);
     }
 
+    public int re45(Integer type) {
+        if(type == 0) {
+            return 18;
+        }
+        return -1;
+    }
+
+    public int flatline(Integer type) {
+        if(type == 0) {
+            return 21;
+        }
+        return -1;
+    }
+
+    public int hemlok(Integer type) {
+        if(type == 0) {
+            return 24;
+        }
+        return -1;
+    }
+
     @Override
     public Result<List<UserVO>> queryByUser2(Integer userId) {
         // return ApiResult.success(new ArrayList<>());
