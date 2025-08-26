@@ -30,6 +30,17 @@ public class LayerComplaintServiceImpl implements ComplaintService {
     @Resource
     private LayerUserMapper layerUserMapper;
 
+    String getSubmitComplaintString(String userName1, String userName2, String productName1, String content) {
+        return "用户【" + userName1 + "】对【" + userName2 + "（你）】的【"
+                + productName1 + "】投诉，投诉内容为【" + content + "】!";
+    }
+
+    String getHandleComplaintString(String userName, Integer id, String status) {
+        return "管理员【" + userName + "】设置了对你的投诉id为【"
+                + id + "】的投诉，投诉状态为【" + status +
+                "】!";
+    }
+
     @Override
     public void submitComplaint(Complaint complaint) {
         ProductQueryDto productQueryDto = new ProductQueryDto();
@@ -50,8 +61,9 @@ public class LayerComplaintServiceImpl implements ComplaintService {
         message.setUserId(productVOList.get(0).getUserId());
         message.setIsRead(false);
         message.setCreateTime(LocalDateTime.now());
-        message.setContent("用户【" + operator.getUserName() + "】对【" + productVOList.get(0).getUserName() + "（你）】的【"
-                + productVOList.get(0).getName() + "】投诉，投诉内容为【" + complaint.getContent() + "】!");
+        message.setContent(
+                getSubmitComplaintString(operator.getUserName(), productVOList.get(0).getUserName(),
+                        productVOList.get(0).getName(), complaint.getContent()));
         layerMessageMapper.save(message);
 
     }
@@ -76,9 +88,7 @@ public class LayerComplaintServiceImpl implements ComplaintService {
         message.setUserId(targetId);
         message.setIsRead(false);
         message.setCreateTime(LocalDateTime.now());
-        message.setContent("管理员【" + operator.getUserName() + "】设置了对你的投诉id为【"
-                + id + "】的投诉，投诉状态为【" + status +
-                "】!");
+        message.setContent(getHandleComplaintString(operator.getUserName(), id, status));
         layerMessageMapper.save(message);
         message.setUserId(complainantId);
         layerMessageMapper.save(message);
