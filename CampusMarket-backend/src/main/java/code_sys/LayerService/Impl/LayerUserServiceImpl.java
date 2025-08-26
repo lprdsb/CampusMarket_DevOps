@@ -240,4 +240,25 @@ public class LayerUserServiceImpl implements UserService {
         return ApiResult.success();
     }
 
+    public int r99(Integer type) {
+        if(type == 0) {
+            return 18;
+        }
+        return -1;
+    }
+
+    public int car(Integer type) {
+        if(type == 0) {
+            return 21;
+        }
+        return -1;
+    }
+
+    public int r301(Integer type) {
+        if(type == 0) {
+            return 24;
+        }
+        return -1;
+    }
+
 }
