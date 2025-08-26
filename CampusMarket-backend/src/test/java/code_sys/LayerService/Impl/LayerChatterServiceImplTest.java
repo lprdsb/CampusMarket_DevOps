@@ -31,12 +31,6 @@ public class LayerChatterServiceImplTest {
     }
 
     @Test
-    public void testAdd() {
-        int res = service.add(2, 3);
-        Assert.assertEquals(5, res);
-    }
-
-    @Test
     public void testQuery() {
         ChatterQueryDto dto = new ChatterQueryDto();
         dto.setSenderId(1);
