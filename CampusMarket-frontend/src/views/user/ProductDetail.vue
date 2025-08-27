@@ -464,7 +464,7 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.order-dialog::v-deep(.el-dialog) {
+.order-dialog::v-deep .el-dialog {
   border-radius: 16px;
 }
 
@@ -549,14 +549,14 @@ export default {
 .form-section {
   margin-top: 20px;
 
-  ::v-deep(.el-form-item__label) {
+  ::v-deep .el-form-item__label {
     font-weight: 500;
     color: #444;
     margin-bottom: 6px;
   }
 
-  ::v-deep(.el-input__inner),
-  ::v-deep(.el-textarea__inner) {
+  ::v-deep .el-input__inner,
+  ::v-deep .el-textarea__inner {
     border-radius: 8px;
   }
 }
