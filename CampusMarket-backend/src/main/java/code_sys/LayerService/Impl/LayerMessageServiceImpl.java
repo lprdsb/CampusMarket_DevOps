@@ -55,7 +55,7 @@ public class LayerMessageServiceImpl implements MessageService {
     public Result<List<MessageVO>> query(MessageQueryDto queryDto) {
         System.out.println("开始进入mapper函数");
         int total = layerMessageMapper.queryCount(queryDto);
-        List<MessageVO> messages = layerMessageMapper.query(queryDto);
+        List<MessageVO> messages = layerMessageMapper.query(queryDto);//
         System.out.println("准备返回");
         return ApiResult.success(messages, total);
     }
