@@ -14,5 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: go file
+      run: cd CampusMarket-backend
     - name: Build the Docker image
-      run: docker build ./CampusMarket-backend --file Dockerfile --tag spring:$(date +%s)
+      run: docker build ./CampusMarket-backend --tag spring:$(date +%s) .
