@@ -75,5 +75,6 @@ jobs:
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.NAME }}
-        key: ${{ secrets.KEY }}
+        password: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
         script: bash run.sh
