@@ -85,7 +85,6 @@ public class LayerDashboardServiceImpl implements DashboardService {
         chartVOList.add(createChartVO("订单数", layerOrdersMapper.queryCount(new OrdersQueryDto())));
         chartVOList.add(createChartVO("消息通知", layerMessageMapper.queryCount(new MessageQueryDto())));
         chartVOList.add(createChartVO("互动数据", layerInteractionMapper.queryCount(new InteractionQueryDto())));
-        chartVOList.add(createChartVO("商品评论", layerEvaluationsMapper.queryCount(new EvaluationsQueryDto())));
 
         return ApiResult.success(chartVOList);
     }
