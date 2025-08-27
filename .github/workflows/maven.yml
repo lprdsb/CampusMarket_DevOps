@@ -43,7 +43,17 @@ jobs:
         cd CampusMarket-backend
         mvn test
         mvn clean package
-
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '14.16.0' # 指定 Node.js 版本
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
     - name: frontend
       run: |
         cd CampusMarket-frontend
