@@ -67,6 +67,9 @@ jobs:
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./CampusMarket-frontend
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+    - name: check
+      run: |
+        echo ${{ secrets.HOST }}
     - name: executing remote ssh commands to develop
       uses: appleboy/ssh-action@master
       with:
