@@ -16,5 +16,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: go file
       run: cd CampusMarket-backend
+    - name: ls
+      run: ls
     - name: Build the Docker image
       run: docker build -t spring:v1 .
