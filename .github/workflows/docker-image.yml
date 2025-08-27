@@ -14,5 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: complie mvn
+      run: mvn clean package
+      working-directory: ./CampusMarket-backend
     - name: Build the Docker image
-      run: docker build -t spring:v1 ./CampusMarket-backend
+      run: docker build -t spring:v1 .
+      working-directory: ./CampusMarket-backend
