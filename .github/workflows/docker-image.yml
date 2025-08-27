@@ -17,4 +17,4 @@ jobs:
     - name: go file
       run: cd CampusMarket-backend
     - name: Build the Docker image
-      run: docker build ./CampusMarket-backend --tag spring:$(date +%s) .
+      run: docker build -t spring:v1 .
