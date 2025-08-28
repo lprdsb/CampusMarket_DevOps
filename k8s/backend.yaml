@@ -38,4 +38,5 @@ spec:
     - protocol: TCP
       port: 11451
       targetPort: 11451  # 与容器端口一致
+      nodePort: 31451
   type: NodePort
