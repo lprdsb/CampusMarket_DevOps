@@ -1,54 +1,41 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment
+  name: my-app-deployment
   labels:
-    app: backend
+    app: my-app
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
-      app: backend
+      app: my-app
   template:
     metadata:
       labels:
-        app: backend
+        app: my-app
     spec:
       containers:
-        - name: backend
+        - name: my-app
           image: eioko/backend:latest  # 替换为你的镜像名称
           ports:
             - containerPort: 11451  # 替换为你的应用端口
           resources:
             requests:
-              memory: "128Mi"
+              memory: "64Mi"
               cpu: "250m"
             limits:
-              memory: "256Mi"
+              memory: "128Mi"
               cpu: "500m"
-          # 添加健康检查 - 根据您的实际应用调整路径
-          livenessProbe:
-            httpGet:
-              path: /health  # 或您的健康检查端点
-              port: 11451
-            initialDelaySeconds: 30
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health  # 或您的健康检查端点
-              port: 11451
-            initialDelaySeconds: 5
-            periodSeconds: 5
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: my-app-service
 spec:
   selector:
-    app: backend
+    app: my-app
   ports:
     - protocol: TCP
       port: 11451
       targetPort: 11451  # 与容器端口一致
-  type: ClusterIP        # 对于本地开发，使用 NodePort 类型便于访问
+  type: NodePort        # 对于本地开发，使用 NodePort 类型便于访问
