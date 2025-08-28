@@ -108,7 +108,7 @@
                 <el-row>
                     <p>用户头像</p>
                     <el-upload class="avatar-uploader"
-                        action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload" :show-file-list="false"
+                        action="http://182.92.140.82:11451/api/campus-product-sys/v1.0/file/upload" :show-file-list="false"
                         :on-success="handleAvatarSuccess">
                         <img v-if="userAvatar" :src="userAvatar" class="dialog-avatar">
                         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -246,7 +246,7 @@
     <div style="padding:16px 20px;">
         <el-row>
             <p>用户头像</p>
-            <el-upload class="avatar-uploader" action="http://localhost:11451/api/campus-product-sys/v1.0/file/upload"
+            <el-upload class="avatar-uploader" action="http://182.92.140.82:11451/api/campus-product-sys/v1.0/file/upload"
                 :show-file-list="false" :on-success="handleAvatarSuccess">
                 <img v-if="userAvatar" :src="userAvatar" class="dialog-avatar">
                 <i v-else class="el-icon-plus avatar-uploader-icon"></i>
