@@ -1,11 +1,11 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-deployment  # 使用一致的命名
+  name: backend-deployment
   labels:
     app: backend
 spec:
-  replicas: 2  # 减少副本数以便调试
+  replicas: 3
   selector:
     matchLabels:
       app: backend
@@ -16,38 +16,30 @@ spec:
     spec:
       containers:
         - name: backend
-          image: eioko/backend:latest
-          imagePullPolicy: Always  # 确保使用最新镜像
+          image: eioko/backend:tag  # 替换为您的后端镜像
           ports:
-            - containerPort: 11451
+            - containerPort: 11451 # 根据您的后端实际端口修改
+          env:
+            - name: NODE_ENV
+              value: "production"
           resources:
             requests:
-              memory: "256Mi"  # 增加内存请求
+              memory: "256Mi"
               cpu: "250m"
             limits:
-              memory: "512Mi"  # 增加内存限制
+              memory: "512Mi"
               cpu: "500m"
-          # 添加健康检查
-          livenessProbe:
-            httpGet:
-              path: /health  # 根据您的应用调整
-              port: 11451
-            initialDelaySeconds: 30  # 给应用更多启动时间
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health  # 根据您的应用调整
-              port: 11451
-            initialDelaySeconds: 15
-            periodSeconds: 5
+      imagePullSecrets:
+        - name: dockerhub-secret  # 如果DockerHub镜像需要认证，请创建此secret
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service  # 与服务名称一致
+  name: backend-service
 spec:
   selector:
-    app: backend  # 与部署标签一致
+    app: backend
   ports:
     - protocol: TCP
       port: 11451
