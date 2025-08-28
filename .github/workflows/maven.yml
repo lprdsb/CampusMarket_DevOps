@@ -71,13 +71,27 @@ jobs:
     needs: build
     runs-on: self-hosted # 使用这个标签，任务就会发配到你的本地Runner执行
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: run docker
+        run: |
+         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+         docker stop backend || true
+         docker rm backend || true
+         docker container run -itd --name backend -p 11451:11451 ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest || true
+  
+  
+         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+         docker stop frontend || true
+         docker rm frontend || true
+         docker container run -itd --name frontend -p 11452:11452 ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest || true
 
-      - name: Deploy Backend Application
-        shell: cmd
-        run: kubectl apply -f "E:\tryGithubActions\CampusMarket_DevOps\k8s\backend.yaml" # 这就是您问的命令
-
-      - name: Deploy to K8s
-        shell: cmd
-        run: kubectl set image deployment/backend-deployment backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+#      - name: Checkout code
+#        uses: actions/checkout@v4
+#
+#
+#      - name: Deploy Backend Application
+#        shell: cmd
+#        run: kubectl apply -f "E:\tryGithubActions\CampusMarket_DevOps\k8s\backend.yaml" # 这就是您问的命令
+#
+#      - name: Deploy to K8s
+#        shell: cmd
+#        run: kubectl set image deployment/backend-deployment backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
