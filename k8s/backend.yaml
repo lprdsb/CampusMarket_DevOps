@@ -16,22 +16,16 @@ spec:
     spec:
       containers:
         - name: backend
-          image: eioko/backend:tag  # 替换为您的后端镜像
+          image: eioko/backend:latest  # 替换为你的镜像名称
           ports:
-            - containerPort: 11451 # 根据您的后端实际端口修改
-          env:
-            - name: NODE_ENV
-              value: "production"
+            - containerPort: 11451  # 替换为你的应用端口
           resources:
             requests:
-              memory: "256Mi"
+              memory: "64Mi"
               cpu: "250m"
             limits:
-              memory: "512Mi"
+              memory: "128Mi"
               cpu: "500m"
-      imagePullSecrets:
-        - name: dockerhub-secret  # 如果DockerHub镜像需要认证，请创建此secret
-
 ---
 apiVersion: v1
 kind: Service
@@ -43,5 +37,5 @@ spec:
   ports:
     - protocol: TCP
       port: 11451
-      targetPort: 11451
-  type: ClusterIP
+      targetPort: 11451  # 与容器端口一致
+  type: NodePort        # 对于本地开发，使用 NodePort 类型便于访问
