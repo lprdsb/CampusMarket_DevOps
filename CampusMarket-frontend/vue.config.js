@@ -10,7 +10,7 @@ module.exports = {
         https: false,
         proxy: {
             '/api': {
-                target: 'http://localhost:11451',
+                target: 'http://localhost:31451',
                 changeOrigin: true, // 如果目标服务器是一个 HTTPS 服务器，则需要设置为 true
                 pathRewrite: { '^/api': '' }, // 将 '/api' 前缀重写为空字符串，以便后端服务接收到正确的路径
             },
