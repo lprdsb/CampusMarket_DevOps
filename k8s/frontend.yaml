@@ -1,56 +1,43 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend-deployment
+  name: backend-deployment  # 使用一致的命名
   labels:
-    app: frontend
+    app: backend
 spec:
-  replicas: 2
+  replicas: 2  # 减少副本数以便调试
   selector:
     matchLabels:
-      app: frontend
+      app: backend
   template:
     metadata:
       labels:
-        app: frontend
+        app: backend
     spec:
       containers:
-        - name: frontend
-          image: eioko/frontend:latest  # 替换为你的前端镜像
+        - name: backend
+          image: eioko/backend:latest
+          imagePullPolicy: Always  # 确保使用最新镜像
           ports:
-            - containerPort: 11452  # 常见前端端口，根据实际应用调整
+            - containerPort: 11451
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "256Mi"  # 增加内存请求
+              cpu: "250m"
             limits:
-              memory: "256Mi"
-              cpu: "200m"
-          env:
-            - name: REACT_APP_API_URL  # 示例环境变量，根据实际需要调整
-              value: "http://backend-service:11451/api"
-          livenessProbe:
-            httpGet:
-              path: /  # 或使用特定的健康检查端点
-              port: 11452
-            initialDelaySeconds: 15
-            periodSeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /
-              port: 11452
-            initialDelaySeconds: 5
-            periodSeconds: 5
+              memory: "512Mi"  # 增加内存限制
+              cpu: "500m"
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: frontend-service
+  name: backend-service  # 与服务名称一致
 spec:
   selector:
-    app: frontend
+    app: backend  # 与部署标签一致
   ports:
     - protocol: TCP
-      port: 11452
-      targetPort: 11452  # 与容器端口一致
-  type: NodePort
+      port: 11451
+      targetPort: 11451
+  type: ClusterIP
