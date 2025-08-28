@@ -71,9 +71,9 @@ jobs:
     needs: build
     runs-on: self-hosted # 使用这个标签，任务就会发配到你的本地Runner执行
     steps:
-      -  name: Checkout code
-         shell: cmd
-         uses: actions/checkout@v4
+      - name: Checkout code
+        shell: cmd
+        uses: actions/checkout@v4
 
       - name: Deploy Backend Application
         shell: cmd
