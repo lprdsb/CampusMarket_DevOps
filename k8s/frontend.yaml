@@ -18,7 +18,7 @@ spec:
         - name: frontend
           image: eioko/frontend:latest  # 替换为你的前端镜像
           ports:
-            - containerPort: 80  # 常见前端端口，根据实际应用调整
+            - containerPort: 11452  # 常见前端端口，根据实际应用调整
           resources:
             requests:
               memory: "128Mi"
@@ -32,13 +32,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /  # 或使用特定的健康检查端点
-              port: 80
+              port: 11452
             initialDelaySeconds: 30
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /
-              port: 80
+              port: 11452
             initialDelaySeconds: 5
             periodSeconds: 5
 ---
@@ -51,6 +51,6 @@ spec:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80  # 与容器端口一致
+      port: 11452
+      targetPort: 11452  # 与容器端口一致
   type: NodePort
