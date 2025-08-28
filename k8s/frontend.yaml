@@ -28,7 +28,7 @@ spec:
               cpu: "200m"
           env:
             - name: REACT_APP_API_URL  # 示例环境变量，根据实际需要调整
-              value: "http://localhost:31451g"
+              value: "http://localhost:31451"
           livenessProbe:
             httpGet:
               path: /  # 或使用特定的健康检查端点
@@ -53,4 +53,5 @@ spec:
     - protocol: TCP
       port: 11452
       targetPort: 11452  # 与容器端口一致
+      nodePort: 31452
   type: NodePort
