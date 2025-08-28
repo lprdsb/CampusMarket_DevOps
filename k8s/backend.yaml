@@ -5,7 +5,7 @@ metadata:
   labels:
     app: backend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -21,11 +21,11 @@ spec:
             - containerPort: 11451  # 替换为你的应用端口
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              memory: "512Mi"
+              cpu: "512m"
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: "512Mi"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
@@ -38,4 +38,4 @@ spec:
     - protocol: TCP
       port: 11451
       targetPort: 11451  # 与容器端口一致
-  type: NodePort        # 对于本地开发，使用 NodePort 类型便于访问
+  type: ClusterIP       # 对于本地开发，使用 NodePort 类型便于访问
