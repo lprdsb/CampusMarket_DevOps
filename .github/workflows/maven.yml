@@ -79,10 +79,11 @@ jobs:
         run: kubectl --kubeconfig="E:\config" apply -f "E:\tryGithubActions\CampusMarket_DevOps\k8s\backend.yaml"
 
       - name: Set up Kubernetes access
+        shell: cmd
         run: |
-          $env:KUBECONFIG = "E:\config"
-          echo "KUBECONFIG set to: $env:KUBECONFIG"
-          
+          set KUBECONFIG=E:\config
+          echo KUBECONFIG set to: %KUBECONFIG%
+
           kubectl config current-context
           kubectl cluster-info
           kubectl get nodes
