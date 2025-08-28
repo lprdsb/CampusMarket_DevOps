@@ -91,5 +91,5 @@ jobs:
       - name: Deploy to K8s
         shell: cmd
         run: |
-          kubectl set image deployment/backend-deployment backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
-          kubectl set image deployment/frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+          kubectl --kubeconfig=E:\config set image deployment/backend-deployment backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+          kubectl --kubeconfig=E:\config set image deployment/frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
