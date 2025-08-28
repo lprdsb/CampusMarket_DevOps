@@ -6,7 +6,7 @@ module.exports = {
     devServer: {
         disableHostCheck: true,
         host: "localhost",
-        port: 11452,
+        port: 31452,
         https: false,
         proxy: {
             '/api': {
