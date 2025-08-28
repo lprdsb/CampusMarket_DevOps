@@ -71,6 +71,10 @@ jobs:
     needs: build
     runs-on: self-hosted # 使用这个标签，任务就会发配到你的本地Runner执行
     steps:
+      - name: Deploy Backend Application
+        shell: cmd
+        run: kubectl apply -f k8s/backend.yaml # 这就是您问的命令
+
       - name: Deploy to K8s
         shell: cmd
-        run: kubectl set image deployment/your-deployment your-container=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+        run: kubectl set image deployment/my-app-deployment my-app=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
