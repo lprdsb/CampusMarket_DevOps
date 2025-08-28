@@ -73,7 +73,7 @@ jobs:
     steps:
       - name: Deploy Backend Application
         shell: cmd
-        run: kubectl apply -f k8s/backend.yaml # 这就是您问的命令
+        run: kubectl apply -f "E:\tryGithubActions\CampusMarket_DevOps\k8s\backend.yaml" # 这就是您问的命令
 
       - name: Deploy to K8s
         shell: cmd
