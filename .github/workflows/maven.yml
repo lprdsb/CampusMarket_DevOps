@@ -76,10 +76,10 @@ jobs:
 
       - name: Deploy Backend Application
         shell: cmd
-        run: kubectl apply -f k8s/backend.yaml
+        run: kubectl apply -f "E:\tryGithubActions\CampusMarket_DevOps\k8s\backend.yaml"
 
       - name: Deploy to K8s
         shell: cmd
         run: |
           kubectl set image deployment/backend-deployment backend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
-          kubectl set image deployment/frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+          kubectl set image deployment/frontend-deployment frontend=${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
