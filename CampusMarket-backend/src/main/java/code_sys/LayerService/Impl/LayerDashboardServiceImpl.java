@@ -57,7 +57,7 @@ public class LayerDashboardServiceImpl implements DashboardService {
      */
     @Override
     public Result<List<ChartVO>> productShelvesInfo(Integer day) {
-        QueryDto queryDto = DateUtil.startAndEndTime(day);
+        QueryDto queryDto = DateUtil.startAndEndTime(day);//
         ProductQueryDto productQueryDto = new ProductQueryDto();
         productQueryDto.setStartTime(queryDto.getStartTime());
         productQueryDto.setEndTime(queryDto.getEndTime());
