@@ -81,8 +81,8 @@ jobs:
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-user:latest ./CampusMarket-backend-user
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-user:latest
 
-            docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./CampusMarket-frontend
-            docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./CampusMarket-frontend
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
 
   deploy-to-local:
     needs: build

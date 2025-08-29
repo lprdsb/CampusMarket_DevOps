@@ -23,8 +23,8 @@ request.interceptors.request.use(config => {
       config.baseURL = "http://localhost:31451/api/campus-product-sys/v1.0";
       break;
   }
-  console.log(type + " asdasd ");
-  console.log(config.baseURL);
+  // console.log(type + " asdasd ");
+  // console.log(config.baseURL);
 
   const token = getToken();
   if (token !== null) {
