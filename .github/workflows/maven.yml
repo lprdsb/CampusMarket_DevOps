@@ -62,8 +62,15 @@ jobs:
       # 4. 构建并推送前后端镜像
       - name: Build and Push Backend Image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest ./CampusMarket-backend
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend:latest
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-interaction:latest ./CampusMarket-backend-interaction
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-interaction:latest
+          
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-product:latest ./CampusMarket-backend-product
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-product:latest
+          
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-user:latest ./CampusMarket-backend-user
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-user:latest
+
           docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest ./CampusMarket-frontend
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/frontend:latest
 
@@ -74,5 +81,7 @@ jobs:
       - name: Deploy Backend Application
         shell: cmd
         run: |
-          kubectl apply -f "F:\Documents\Workspace\ruangong\xiaoxueqi\111\CampusMarket_DevOps\k8s\backend.yaml"
+          kubectl apply -f "F:\Documents\Workspace\ruangong\xiaoxueqi\111\CampusMarket_DevOps\k8s\backend-interaction.yaml"
+          kubectl apply -f "F:\Documents\Workspace\ruangong\xiaoxueqi\111\CampusMarket_DevOps\k8s\backend-product.yaml"
+          kubectl apply -f "F:\Documents\Workspace\ruangong\xiaoxueqi\111\CampusMarket_DevOps\k8s\backend-user.yaml"
           kubectl apply -f "F:\Documents\Workspace\ruangong\xiaoxueqi\111\CampusMarket_DevOps\k8s\frontend.yaml"

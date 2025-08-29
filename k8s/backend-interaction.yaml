@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-interaction-deployment
+  labels:
+    app: backend-interaction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-interaction
+  template:
+    metadata:
+      labels:
+        app: backend-interaction
+    spec:
+      containers:
+        - name: backend-interaction
+          image: lprlpr/backend-interaction:latest  # 替换为你的镜像名称
+          ports:
+            - containerPort: 31451  # 替换为你的应用端口
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "512m"
+            limits:
+              memory: "512Mi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-interaction-service
+spec:
+  selector:
+    app: backend-interaction
+  ports:
+    - protocol: TCP
+      port: 31451
+      targetPort: 31451  # 与容器端口一致
+      nodePort: 31451
+  type: LoadBalancer
