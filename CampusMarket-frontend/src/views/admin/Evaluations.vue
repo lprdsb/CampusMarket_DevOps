@@ -51,10 +51,9 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-pagination style="margin: 10px 0;float: right;" @size-change="handleSizeChange"
-                @current-change="handleCurrentChange" :current-page="currentPage" :page-sizes="[20, 50]"
-                :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper"
-                :total="totalItems"></el-pagination>
+            <el-pagination style="margin: 10px 0;float: right;" @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                :current-page="currentPage" :page-sizes="[20, 50]" :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper" :total="totalItems"></el-pagination>
         </el-row>
     </el-row>
 </template>
@@ -91,7 +90,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/interaction-api/evaluations/batchDelete`, ids);
+                    const response = await this.$axios.post(`/evaluations/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -114,7 +113,7 @@ export default {
         },
         async updateOperation() {
             try {
-                const response = await this.$axios.put('/interaction-api/evaluations/update', this.data);
+                const response = await this.$axios.put('/evaluations/update', this.data);
                 this.$message[response.data.code === 200 ? 'success' : 'error'](response.data.msg);
                 if (response.data.code === 200) {
                     this.closeDialog();
@@ -129,7 +128,7 @@ export default {
         async addOperation() {
             this.data.tag = this.dynamicTags.join(',');
             try {
-                const response = await this.$axios.post('/interaction-api/evaluations/save', this.data);
+                const response = await this.$axios.post('/evaluations/save', this.data);
                 this.$message[response.data.code === 200 ? 'success' : 'error'](response.data.msg);
                 if (response.data.code === 200) {
                     this.closeDialog();
@@ -159,7 +158,7 @@ export default {
                     ...this.evalustionsQueryDto,
                 };
                 // 使用await等待请求完成
-                let response = await this.$axios.post('/interaction-api/evaluations/query', params);
+                let response = await this.$axios.post('/evaluations/query', params);
                 const { data } = response;
                 this.tableData = data.data;
                 this.totalItems = data.total;

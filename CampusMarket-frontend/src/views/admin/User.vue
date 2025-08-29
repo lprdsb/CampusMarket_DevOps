@@ -349,7 +349,7 @@ export default {
                 userRole: this.isAdmin ? 1 : 2,
                 isWord: this.data.isWord
             }
-            this.$axios.put(`/user-api/user/backUpdate`, userUpdateDto).then(res => {
+            this.$axios.put(`/user/backUpdate`, userUpdateDto).then(res => {
                 if (res.data.code === 200) {
                     this.$notify({
                         duration: 1500,
@@ -399,7 +399,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.selectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/user-api/user/batchDelete`, ids);
+                    const response = await this.$axios.post(`/user/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -426,7 +426,7 @@ export default {
             }
             this.data.userAvatar = this.userAvatar;
             try {
-                const response = await this.$axios.put('/user-api/user/backUpdate', this.data);
+                const response = await this.$axios.put('/user/backUpdate', this.data);
                 if (response.data.code === 200) {
                     this.$notify({
                         duration: 1000,
@@ -451,7 +451,7 @@ export default {
             }
             this.data.userAvatar = this.userAvatar;
             try {
-                const response = await this.$axios.post('/user-api/user/insert', this.data);
+                const response = await this.$axios.post('/user/insert', this.data);
                 if (response.data.code === 200) {
                     this.$notify({
                         duration: 1000,
@@ -493,7 +493,7 @@ export default {
                     endTime: endTime,
                     ...this.userQueryDto
                 };
-                const response = await this.$axios.post('/user-api/user/query', params);
+                const response = await this.$axios.post('/user/query', params);
                 const { data } = response;
                 this.tableData = data.data;
                 this.totalItems = data.total;

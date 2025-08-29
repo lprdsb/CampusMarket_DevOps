@@ -79,7 +79,7 @@ export default {
         userName,
         userEmail
       }
-      const { data } = await this.$axios.put('/user-api/user/update', userUpdateDTO);
+      const { data } = await this.$axios.put('/user/update', userUpdateDTO);
       this.$notify({
         position: 'buttom-right',
         duration: 1000,
@@ -107,7 +107,7 @@ export default {
     },
     // Token 检验 ,取得用户信息
     async auth() {
-      const { data } = await this.$axios.get('/user-api/user/auth');
+      const { data } = await this.$axios.get('/user/auth');
       if (data.code !== 200) { // Token校验异常
         this.$router.push('/');
       } else {

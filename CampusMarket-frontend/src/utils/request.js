@@ -7,6 +7,25 @@ const request = axios.create({
 });
 //全局拦截器
 request.interceptors.request.use(config => {
+  let type = config.url.split("/")[1];
+
+  // 根据路由判断,后台地址是哪个
+  switch (type) {
+    case "operation-log":
+    case "user":
+      config.baseURL = "http://localhost:31449/api/campus-product-sys/v1.0";
+      break;
+    case "category":
+    case "product":
+      config.baseURL = "http://localhost:31450/api/campus-product-sys/v1.0";
+      break;
+    default:
+      config.baseURL = "http://localhost:31451/api/campus-product-sys/v1.0";
+      break;
+  }
+  console.log(type + " asdasd ");
+  console.log(config.baseURL);
+
   const token = getToken();
   if (token !== null) {
     config.headers["token"] = token;

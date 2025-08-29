@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-product-deployment
+  name: backend-deployment
   labels:
-    app: backend-product
+    app: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-product
+      app: backend
   template:
     metadata:
       labels:
-        app: backend-product
+        app: backend
     spec:
       containers:
-        - name: backend-product
-          image: lprlpr/backend-product:latest  # 替换为你的镜像名称
+        - name: backend
+          image: lprlpr/backend:latest  # 替换为你的镜像名称
           ports:
-            - containerPort: 31450  # 替换为你的应用端口
+            - containerPort: 31451  # 替换为你的应用端口
           resources:
             requests:
               memory: "512Mi"
@@ -30,13 +30,13 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-product-service
+  name: backend-service
 spec:
   selector:
-    app: backend-product
+    app: backend
   ports:
     - protocol: TCP
-      port: 31450
-      targetPort: 31450  # 与容器端口一致
-      nodePort: 31450
+      port: 31451
+      targetPort: 31451  # 与容器端口一致
+      nodePort: 31451
   type: LoadBalancer

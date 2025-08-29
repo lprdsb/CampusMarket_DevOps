@@ -12,8 +12,11 @@
 
     <!-- 聊天消息区域 -->
     <div class="message-area" ref="messageArea">
-      <div v-for="(chatter, index) in chatters" :key="index"
-        :class="['message-bubble', chatter.sender === 'me' ? 'sent' : 'received']">
+      <div
+        v-for="(chatter, index) in chatters"
+        :key="index"
+        :class="['message-bubble', chatter.sender === 'me' ? 'sent' : 'received']"
+      >
         <div class="message-content">
           <p>{{ chatter.content }}</p>
           <span class="message-time">{{ formatTime(chatter.createTime) }}</span>
@@ -23,8 +26,14 @@
 
     <!-- 消息输入区域 -->
     <div class="input-area">
-      <el-input type="textarea" :rows="3" placeholder="输入消息..." v-model="inputMessage" @keyup.enter.native="sendMessage"
-        resize="none" />
+      <el-input
+        type="textarea"
+        :rows="3"
+        placeholder="输入消息..."
+        v-model="inputMessage"
+        @keyup.enter.native="sendMessage"
+        resize="none"
+      />
       <div class="action-buttons">
         <el-button type="primary" @click="sendMessage">发送</el-button>
         <el-button @click="clearInput">清空</el-button>
@@ -68,7 +77,7 @@ export default {
   methods: {
     // 获取接收者的信息
     async fetchReceiverInfo() {
-      const receiverId = this.$route.query.ReceiverId || '';
+      const receiverId = this.$route.query.ReceiverId||'';
       if (!receiverId) {
         this.$message.error('缺少接收者信息');
         this.$router.back();
@@ -76,7 +85,7 @@ export default {
       }
 
       try {
-        const response = await this.$axios.get(`/interaction-api/chat/getById/${receiverId}`);
+        const response = await this.$axios.get(`/chat/getById/${receiverId}`);
         const user = response.data.data;
 
         this.receiver = {
@@ -95,7 +104,7 @@ export default {
 
     // 加载聊天记录
     async loadChatHistory() {
-      const receiverId = this.$route.query.ReceiverId || '';
+      const receiverId = this.$route.query.ReceiverId||'';
       if (!receiverId) return;
 
       this.loading = true;
@@ -104,7 +113,7 @@ export default {
           senderId: -1,  // 当前用户ID
           receiverId: receiverId,  // 接收者ID
         };
-        const response = await this.$axios.post('/interaction-api/chat/queryUser', chatterQueryDto);
+        const response = await this.$axios.post('/chat/queryUser',chatterQueryDto);
         // 将消息处理成 'chatter' 对象
         if (response.data.data && Array.isArray(response.data.data)) {
           this.chatters = response.data.data.map(chatter => {
@@ -127,10 +136,12 @@ export default {
           });
         }
       }
-      catch (error) {
+      catch (error)
+      {
         console.error('加载聊天记录失败:', error);
       }
-      finally {
+      finally
+      {
         this.loading = false;
       }
     },
@@ -144,7 +155,7 @@ export default {
 
     // 发送消息
     async sendMessage() {
-      const receiverId = this.$route.query.ReceiverId || '';
+      const receiverId = this.$route.query.ReceiverId||'';
       if (!this.inputMessage.trim()) return;
       if (!receiverId) {
         this.$message.error('无法确定接收方');
@@ -154,15 +165,15 @@ export default {
 
       try {
         // 发送聊天消息
-        await this.$axios.post('/interaction-api/chat/send', {
+        await this.$axios.post('/chat/send', {
           receiverId: receiverId,
           content: this.inputMessage,
-          isRead: 1
+          isRead:1
         });
         const newMessage = {
           sender: 'me',
           content: this.inputMessage,
-          receiver: 'receiver'
+          receiver:'receiver'
         };
         this.chatters.push(newMessage);
         this.inputMessage = '';  // 清空输入框
@@ -193,7 +204,7 @@ export default {
       if (time === null) {
         return null;
       }
-      return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      return time.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
     },
 
     // 滚动到底部
@@ -263,10 +274,8 @@ $received-bg: #ffffff;
 
     &:hover,
     &:focus {
-      background-color: rgba(30, 144, 255, 0.15);
-      /* 浅蓝色半透明 */
-      color: #1e90ff;
-      /* 道奇蓝 */
+      background-color: rgba(30, 144, 255, 0.15); /* 浅蓝色半透明 */
+      color: #1e90ff; /* 道奇蓝 */
       border-color: #1e90ff;
     }
   }
@@ -358,8 +367,7 @@ $received-bg: #ffffff;
     text-align: right;
 
     .el-button {
-      min-width: 100px;
-      /* 你觉得合适的宽度 */
+      min-width: 100px; /* 你觉得合适的宽度 */
       padding: 8px 16px;
       margin-left: 10px;
       box-sizing: border-box;

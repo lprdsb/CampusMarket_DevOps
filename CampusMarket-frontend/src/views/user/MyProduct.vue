@@ -66,7 +66,7 @@ export default {
       if (confirmed) {
         try {
           let ids = [product.id]
-          const response = await this.$axios.post(`/product-api/product/batchDelete`, ids);
+          const response = await this.$axios.post(`/product/batchDelete`, ids);
           if (response.data.code === 200) {
             this.$notify({
               duration: 1000,
@@ -105,7 +105,7 @@ export default {
      * 查询用户自己发布的商品信息
      */
     fetchProduct() {
-      this.$axios.post('/product-api/product/queryUser', {}).then(res => {
+      this.$axios.post('/product/queryUser', {}).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.productList = data.data;

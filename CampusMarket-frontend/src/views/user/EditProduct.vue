@@ -174,7 +174,7 @@ export default {
             const coverUrlList = this.coverList.map(entity => entity.url);
             this.product.coverList = coverUrlList.join(',');
             // 商品封面需要处理
-            this.$axios.put('/product-api/product/update', this.product).then(res => {
+            this.$axios.put('/product/update', this.product).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.$notify.success({
@@ -211,7 +211,7 @@ export default {
          * 查询商品类别
          */
         fetchCategoryList() {
-            this.$axios.post('/product-api/category/query', {}).then(res => {
+            this.$axios.post('/category/query', {}).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.categoryList = data.data;

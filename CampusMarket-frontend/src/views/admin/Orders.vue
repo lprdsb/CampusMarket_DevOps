@@ -82,8 +82,7 @@
                     </div>
                     <div>
                         <span class="dialog-hover">退款是否已经审核</span>
-                        <i v-if="!data.isRefundConfirm"
-                            style="margin-right: 5px;font-size: 10px;color: rgb(253, 199, 50);"
+                        <i v-if="!data.isRefundConfirm" style="margin-right: 5px;font-size: 10px;color: rgb(253, 199, 50);"
                             class="el-icon-warning"></i>
                         <i v-else style="margin-right: 5px;color: rgb(253, 199, 50);" class="el-icon-success"></i>
                         <span class="dialog-hover" v-if="!data.isRefundConfirm">未审核</span>
@@ -140,10 +139,10 @@ export default {
             this.ordersQueryDto.tradeStatus = trade.tradeStatus;
             this.fetchFreshData();
         },
-        refundSelected(refund) {
+        refundSelected(refund){
             this.refundSelectedItem = refund;
             this.ordersQueryDto.refundStatus = refund.refundStatus;
-            this.fetchFreshData();
+            this.fetchFreshData(); 
         },
         /**
          * 产品图放大查看
@@ -172,7 +171,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/interaction-api/orders/batchDelete`, ids);
+                    const response = await this.$axios.post(`/orders/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -204,7 +203,7 @@ export default {
             this.ordersQueryDto.size = this.pageSize;
             this.ordersQueryDto.startTime = startTime;
             this.ordersQueryDto.endTime = endTime;
-            this.$axios.post('/interaction-api/orders/query', this.ordersQueryDto).then(res => {
+            this.$axios.post('/orders/query', this.ordersQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.tableData = data.data;

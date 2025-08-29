@@ -29,6 +29,7 @@ public class LayerUserController {
     @Protector
     @GetMapping("/auth")
     public Result<UserVO> auth() {
+        System.out.println("asdasd");
         return userService.auth();
     }
 

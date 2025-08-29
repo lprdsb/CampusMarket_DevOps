@@ -37,7 +37,7 @@ export default {
         },
 
         fetchStar() {
-            this.$axios.post('/interaction-api/star/queryByUser1/' + this.userInfo.id, {}).then(res => {
+            this.$axios.post('/star/queryByUser1/' + this.userInfo.id, {}).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.userList = data.data;
@@ -55,7 +55,7 @@ export default {
                 userName,
                 userEmail
             }
-            const { data } = await this.$axios.put('/user-api/user/update', userUpdateDTO);
+            const { data } = await this.$axios.put('/user/update', userUpdateDTO);
             this.$notify({
                 position: 'buttom-right',
                 duration: 1000,
@@ -84,7 +84,7 @@ export default {
         // Token 检验 ,取得用户信息
         auth() {
 
-            this.$axios.get('/user-api/user/auth').then(res => {
+            this.$axios.get('/user/auth').then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.userInfo = data.data;

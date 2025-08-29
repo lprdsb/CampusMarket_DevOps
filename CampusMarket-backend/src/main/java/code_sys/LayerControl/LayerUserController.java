@@ -23,6 +23,7 @@ public class LayerUserController {
 
     @PostMapping("/login")
     public Result<Object> login(@RequestBody UserLoginDTO userLoginDTO) {
+        System.out.println("asdasd");
         return userService.login(userLoginDTO);
     }
 

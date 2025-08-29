@@ -64,7 +64,7 @@ export default {
   },
   methods: {
     fetchFreshData() {
-      this.$axios.get('/interaction-api/complaint/all').then(res => {
+      this.$axios.get('/api/complaint/all').then(res => {
         this.complaints = res.data;
         // console.log(res.data);
       }).catch(error => {
@@ -90,7 +90,7 @@ export default {
     },
     handle(id, status, complainantId, targetId) {
       // console.log(id, status, complainantId, targetId);
-      this.$axios.post('/interaction-api/complaint/handle', null, { params: { id, status, complainantId, targetId } }).then(res => {
+      this.$axios.post('/api/complaint/handle', null, { params: { id, status, complainantId, targetId } }).then(res => {
         this.fetchFreshData();
         this.$message.success('处理完成');
       }).catch(error => {

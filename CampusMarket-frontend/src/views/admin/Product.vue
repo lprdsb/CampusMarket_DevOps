@@ -124,7 +124,7 @@ export default {
          * 加载商品类别数据
          */
         fetchCategoryList() {
-            this.$axios.post('/product-api/category/query', {}).then(res => {
+            this.$axios.post('/category/query', {}).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.categoryList = data.data;
@@ -163,7 +163,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/product-api/product/batchDelete`, ids);
+                    const response = await this.$axios.post(`/product/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -195,7 +195,7 @@ export default {
             this.productQueryDto.size = this.pageSize;
             this.productQueryDto.startTime = startTime;
             this.productQueryDto.endTime = endTime;
-            this.$axios.post('/product-api/product/query', this.productQueryDto).then(res => {
+            this.$axios.post('/product/query', this.productQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.tableData = data.data;

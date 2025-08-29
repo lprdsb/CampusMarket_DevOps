@@ -38,7 +38,7 @@
           </div>
           <div class="cover-preview">
             <div class="cover-thumb" v-for="(coverItem, index) in coverList" :key="index"
-              :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
+                 :class="{ active: coverIndex === index }" @click="coverSelected(coverItem, index)">
               <img :src="coverItem" alt="" />
             </div>
           </div>
@@ -83,23 +83,23 @@
           <el-form label-position="top">
             <el-form-item label="购买数量">
             </el-form-item>
-            <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
-            <el-form-item label="支付方式">
-              <el-radio-group v-model="paymentMethod" @change="showPaymentSelection">
-                <el-radio label="online">
-                  线上支付
-                  <transition name="el-zoom-in-center">
-                    <i v-if="paymentMethod === 'online'" class="el-icon-check check-icon"></i>
-                  </transition>
-                </el-radio>
-                <el-radio label="offline">
-                  线下支付
-                  <transition name="el-zoom-in-center">
-                    <i v-if="paymentMethod === 'offline'" class="el-icon-check check-icon"></i>
-                  </transition>
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
+              <el-input-number v-model="buyNumber" :min="1" :max="product.inventory" />
+              <el-form-item label="支付方式">
+                <el-radio-group v-model="paymentMethod" @change="showPaymentSelection">
+                  <el-radio label="online">
+                    线上支付
+                    <transition name="el-zoom-in-center">
+                      <i v-if="paymentMethod === 'online'" class="el-icon-check check-icon"></i>
+                    </transition>
+                  </el-radio>
+                  <el-radio label="offline">
+                    线下支付
+                    <transition name="el-zoom-in-center">
+                      <i v-if="paymentMethod === 'offline'" class="el-icon-check check-icon"></i>
+                    </transition>
+                  </el-radio>
+                </el-radio-group>
+              </el-form-item>
 
             <el-form-item label="备注信息">
               <el-input type="textarea" :rows="4" v-model="detail" placeholder="填写备注（选填）" />
@@ -224,7 +224,7 @@ export default {
     async submit() {
       const userInfo = getUserInfo();
       // console.log(userInfo);
-      await this.$axios.post('/interaction-api/complaint/submit', {
+      await this.$axios.post('/api/complaint/submit', {
         complainantId: userInfo.id,
         productId: this.productId,
         content: this.content
@@ -241,7 +241,7 @@ export default {
       }
       this.userInfo = userInfo;
       // 对于用户这是无感的
-      this.$axios.post(`/interaction-api/interaction/view/${this.productId}`).then(res => {
+      this.$axios.post(`/interaction/view/${this.productId}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           console.log("用户浏览已经处理");
@@ -265,7 +265,7 @@ export default {
         buyNumber: this.buyNumber,
         detail: this.detail
       }
-      this.$axios.post(`/product-api/product/buyProduct`, ordersDTO).then(res => {
+      this.$axios.post(`/product/buyProduct`, ordersDTO).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -313,7 +313,7 @@ export default {
       this.dialogProductOperaion = true;
     },
     likeProduct() {
-      this.$axios.post(`/interaction-api/interaction/likeProduct/${this.product.id}`).then(res => {
+      this.$axios.post(`/interaction/likeProduct/${this.product.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -353,7 +353,7 @@ export default {
         productId: this.product.id,
         type: 1 // 1代表的是收藏行为
       };
-      this.$axios.post('/interaction-api/interaction/query', interactionQueryDto).then(res => {
+      this.$axios.post('/interaction/query', interactionQueryDto).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           // 代表没有收藏
@@ -378,7 +378,7 @@ export default {
         this.$router.push('/login');
         return;
       }
-      this.$axios.post(`/interaction-api/interaction/saveOperation/${this.product.id}`).then(res => {
+      this.$axios.post(`/interaction/saveOperation/${this.product.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           // 代表没有收藏
@@ -449,7 +449,7 @@ export default {
       this.startBanner();
     },
     fetchProduct(productId) {
-      this.$axios.post('/product-api/product/query', { id: productId }).then(res => {
+      this.$axios.post('/product/query', { id: productId }).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.product = data.data[0];
@@ -1069,7 +1069,6 @@ export default {
     color: white;
   }
 }
-
 .check-icon {
   margin-left: 8px;
   color: #67C23A;
@@ -1089,21 +1088,13 @@ export default {
 
 // 添加选中状态的动画效果
 @keyframes checkBounce {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.3);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
 }
 
 .el-icon-check {
   animation: checkBounce 0.5s ease;
 }
-
 .check-icon {
   margin-left: 8px;
   color: #67C23A;
@@ -1123,15 +1114,8 @@ export default {
 
 // 添加选中状态的动画效果
 @keyframes checkBounce {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.3);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.3); }
 }
 
 .el-icon-check {

@@ -74,7 +74,7 @@ export default {
          * @param {*} day 日期
          */
         onSelected(day) {
-            this.$axios.get(`/interaction-api/dashboard/productShelvesInfo/${day}`).then(res => {
+            this.$axios.get(`/dashboard/productShelvesInfo/${day}`).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     //[{name: '12-10',count:10},{name: '12-11',count:20}]
@@ -87,7 +87,7 @@ export default {
             })
         },
         fetchStaticCount() {
-            this.$axios.get('/interaction-api/dashboard/staticCount').then(res => {
+            this.$axios.get('/dashboard/staticCount').then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.staticCountList = data.data;
@@ -101,7 +101,7 @@ export default {
                 size: 3,
                 current: 1
             }
-            this.$axios.post('/product-api/product/query', productQueryDto).then(res => {
+            this.$axios.post('/product/query', productQueryDto).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.productList = data.data;

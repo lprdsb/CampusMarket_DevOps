@@ -96,7 +96,7 @@ export default {
       this.showComplaint = true;
     },
     auth() {
-      this.$axios.get('/user-api/user/auth').then(res => {
+      this.$axios.get('/user/auth').then(res => {
         const { data } = res;
         if (data.code === 200) {
           this.selfInfo = data.data;
@@ -115,7 +115,7 @@ export default {
     },
     async submit() {
       console.log(this.selectedOrder);
-      await this.$axios.post('/interaction-api/complaint/submit', {
+      await this.$axios.post('/api/complaint/submit', {
         complainantId: this.userId,
         targetId: this.selectedOrder.sellerId,
         orderId: this.selectedOrder.id,
@@ -146,7 +146,7 @@ export default {
       if (confirmed) {
         try {
           let ids = [orderInfo.id];
-          const response = await this.$axios.post(`/interaction-api/orders/batchDelete`, ids);
+          const response = await this.$axios.post(`/orders/batchDelete`, ids);
           if (response.data.code === 200) {
             this.$notify({
               duration: 1000,
@@ -172,7 +172,7 @@ export default {
       return parseFloat(totalPrice).toFixed(2);
     },
     refund(orders) {
-      this.$axios.post(`/product-api/product/refund/${orders.id}`).then(res => {
+      this.$axios.post(`/product/refund/${orders.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -188,7 +188,7 @@ export default {
       })
     },
     placeAnOrder(orders) {
-      this.$axios.post(`/product-api/product/placeAnOrder/${orders.id}`).then(res => {
+      this.$axios.post(`/product/placeAnOrder/${orders.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -214,7 +214,7 @@ export default {
      */
     fetchOrders() {
       // console.log(this.userId + "aasdasdasd");
-      this.$axios.post('/interaction-api/orders/queryUser', this.ordersQueryDto).then(res => {
+      this.$axios.post('/orders/queryUser', this.ordersQueryDto).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.ordersList = data.data.map(order => {

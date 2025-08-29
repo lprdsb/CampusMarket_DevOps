@@ -160,12 +160,12 @@ export default {
             }
             this.productQueryDto.startTime = startTime;
             this.productQueryDto.endTime = endTime;
-            this.$axios.post('/product-api/product/query', this.productQueryDto).then(res => {
+            this.$axios.post('/product/query', this.productQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.productList = data.data;
                 }
-                this.$axios.get('/product-api/product/recommend').then(recommendRes => {
+                this.$axios.get('/product/recommend').then(recommendRes => {
                     const { data } = recommendRes;
                     if (data.code === 200) {
                         this.recommendedProducts = data.data;
@@ -208,7 +208,7 @@ export default {
          * 加载商品类别数据
          */
         fetchCategoryList() {
-            this.$axios.post('/product-api/category/query', {}).then(res => {
+            this.$axios.post('/category/query', {}).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.categoryList = data.data;

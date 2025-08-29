@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     clearView() {
-      this.$axios.post(`/interaction-api/interaction/batchDeleteView`).then(res => {
+      this.$axios.post(`/interaction/batchDeleteView`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -79,7 +79,7 @@ export default {
      * 查询用户自己发布的商品信息
      */
     fetchProduct() {
-      this.$axios.post('/interaction-api/interaction/myView').then(res => {
+      this.$axios.post('/interaction/myView').then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.productList = data.data;

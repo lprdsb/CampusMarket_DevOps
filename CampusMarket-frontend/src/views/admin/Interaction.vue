@@ -65,7 +65,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/interaction-api/interaction/batchDelete`, ids);
+                    const response = await this.$axios.post(`/interaction/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,

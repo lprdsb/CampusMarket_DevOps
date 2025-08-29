@@ -18,7 +18,7 @@ spec:
         - name: backend
           image: lprlpr/backend-user:latest  # 替换为你的镜像名称
           ports:
-            - containerPort: 31451  # 替换为你的应用端口
+            - containerPort: 31449  # 替换为你的应用端口
           resources:
             requests:
               memory: "512Mi"
@@ -36,7 +36,7 @@ spec:
     app: backend-user
   ports:
     - protocol: TCP
-      port: 31451
-      targetPort: 31451  # 与容器端口一致
-      nodePort: 31451
+      port: 31449
+      targetPort: 31449  # 与容器端口一致
+      nodePort: 31449
   type: LoadBalancer
