@@ -39,4 +39,4 @@ spec:
       port: 31451
       targetPort: 31451  # 与容器端口一致
       nodePort: 31451
-  type: NodePort
+  type: LoadBalancer
