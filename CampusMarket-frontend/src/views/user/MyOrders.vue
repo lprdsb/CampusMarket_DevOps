@@ -96,7 +96,7 @@ export default {
       if (confirmed) {
         try {
           let ids = [orderInfo.id];
-          const response = await this.$axios.post(`/orders/batchDelete`, ids);
+          const response = await this.$axios.post(`/interaction-api/orders/batchDelete`, ids);
           if (response.data.code === 200) {
             this.$notify({
               duration: 1000,
@@ -122,7 +122,7 @@ export default {
       return parseFloat(totalPrice).toFixed(2);
     },
     refund(orders) {
-      this.$axios.put(`/product/refund/${orders.id}`).then(res => {
+      this.$axios.put(`/product-api/product/refund/${orders.id}`).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.$notify({
@@ -147,7 +147,7 @@ export default {
      * 购物订单
      */
     fetchOrders() {
-      this.$axios.post('/orders/queryOrdersList', this.ordersQueryDto).then(res => {
+      this.$axios.post('/interaction-api/orders/queryOrdersList', this.ordersQueryDto).then(res => {
         const { data } = res; // 解构
         if (data.code === 200) {
           this.ordersList = data.data.map(order => {

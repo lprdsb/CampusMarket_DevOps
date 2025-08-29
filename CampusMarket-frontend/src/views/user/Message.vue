@@ -1,66 +1,63 @@
 <template>
-    <div class="message-container">
-      <div class="clear-message">
-        <el-tooltip content="标记全部为已读" placement="top">
-          <span @click="messageIsRead" class="clear-btn">
-            <i class="el-icon-s-open"></i>
-          </span>
-        </el-tooltip>
+  <div class="message-container">
+    <div class="clear-message">
+      <el-tooltip content="标记全部为已读" placement="top">
+        <span @click="messageIsRead" class="clear-btn">
+          <i class="el-icon-s-open"></i>
+        </span>
+      </el-tooltip>
+    </div>
+
+    <div class="item" v-for="(message, index) in messageList" :key="index">
+      <div class="bell" :class="{ unread: !message.isRead, read: message.isRead }">
+        <i class="el-icon-message-solid">{{ message.isRead ? '已读' : '未读' }}</i>
       </div>
-  
-      <div class="item" v-for="(message, index) in messageList" :key="index">
-        <div
-          class="bell"
-          :class="{ unread: !message.isRead, read: message.isRead }"
-        >
-          <i class="el-icon-message-solid">{{ message.isRead ? '已读' : '未读' }}</i>
-        </div>
-        <div class="message-content">
-          <div class="content">{{ message.content }}</div>
-          <div class="time">{{ message.createTime }}</div>
-        </div>
+      <div class="message-content">
+        <div class="content">{{ message.content }}</div>
+        <div class="time">{{ message.createTime }}</div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
 <script>
 export default {
-    name: 'Message',
-    data() {
-        return {
-            messageList: []
-        }
-    },
-    created() {
-        this.fetchMessage();
-    },
-    methods: {
-        messageIsRead(){
-            this.$axios.post(`/message/setRead`).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    this.$notify({
-                        duration: 1000,
-                        title: '消息清理成功',
-                        message: data.msg,
-                        type: 'success'
-                    });
-                    this.fetchMessage();
-                }
-            }).catch(error => {
-                console.log("消息已读设置异常：", error);
-            })
-        },
-        fetchMessage() {
-            this.$axios.post(`/message/queryUser`,{}).then(res => {
-                const { data } = res; // 解构
-                if (data.code === 200) {
-                    this.messageList = data.data;
-                }
-            }).catch(error => {
-                console.log("查询消息异常：", error);
-            })
-        },
+  name: 'Message',
+  data() {
+    return {
+      messageList: []
     }
+  },
+  created() {
+    this.fetchMessage();
+  },
+  methods: {
+    messageIsRead() {
+      this.$axios.post(`/interaction-api/message/setRead`).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          this.$notify({
+            duration: 1000,
+            title: '消息清理成功',
+            message: data.msg,
+            type: 'success'
+          });
+          this.fetchMessage();
+        }
+      }).catch(error => {
+        console.log("消息已读设置异常：", error);
+      })
+    },
+    fetchMessage() {
+      this.$axios.post(`/interaction-api/message/queryUser`, {}).then(res => {
+        const { data } = res; // 解构
+        if (data.code === 200) {
+          this.messageList = data.data;
+        }
+      }).catch(error => {
+        console.log("查询消息异常：", error);
+      })
+    },
+  }
 };
 </script>
 <style scoped lang="scss">
@@ -131,6 +128,7 @@ $message-gray: #6780b3;
         background-color: $message-blue;
         color: white;
       }
+
       &.read {
         background-color: #f0f4ff;
         color: $message-dark-blue;

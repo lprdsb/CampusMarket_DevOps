@@ -13,7 +13,8 @@
         <!-- 确认密码 -->
         <div>
             <p>*确认密码</p>
-            <input style="line-height: 40px;" class="dialog-input" type="password" v-model="againPwd" placeholder="请输入" />
+            <input style="line-height: 40px;" class="dialog-input" type="password" v-model="againPwd"
+                placeholder="请输入" />
         </div>
         <div>
             <div style="margin-top: 20px;text-align: center;">
@@ -41,7 +42,7 @@ export default {
                 newPwd: this.$md5(this.$md5(this.newPwd)),
                 againPwd: this.$md5(this.$md5(this.againPwd))
             }
-            const { data } = await this.$axios.put('/user/updatePwd', userUpdatePwdDTO);
+            const { data } = await this.$axios.put('/user-api/user/updatePwd', userUpdatePwdDTO);
             this.$notify({
                 duration: 1000,
                 title: '修改密码',

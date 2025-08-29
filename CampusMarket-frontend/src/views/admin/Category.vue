@@ -152,7 +152,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/category/batchDelete`, ids);
+                    const response = await this.$axios.post(`/product-api/category/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -175,7 +175,7 @@ export default {
         updateOperation() {
             // 写请求定位到【商品类别】的修改接口，这是后端提供的
             // /category/update  --- put
-            this.$axios.put('/category/update', this.data).then(res => {
+            this.$axios.put('/product-api/category/update', this.data).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.$notify.success({
@@ -199,7 +199,7 @@ export default {
         addOperation() {
             // 写请求定位到【商品类别】的新增接口，这是后端提供的
             // /category/save  --- post
-            this.$axios.post('/category/save', this.data).then(res => {
+            this.$axios.post('/product-api/category/save', this.data).then(res => {
                 const { data } = res;
                 if (data.code === 200) {
                     this.$notify.success({
@@ -229,7 +229,7 @@ export default {
         fetchFreshData() {
             this.categoryQueryDto.current = this.currentPage;
             this.categoryQueryDto.size = this.pageSize;
-            this.$axios.post('/category/query', this.categoryQueryDto).then(res => {
+            this.$axios.post('/product-api/category/query', this.categoryQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.tableData = data.data;

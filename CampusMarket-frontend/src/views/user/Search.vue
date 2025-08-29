@@ -61,7 +61,7 @@ export default {
         },
         fetchProduct() {
             this.productQueryDto.name = this.searchKey;
-            this.$axios.post('/product/query', this.productQueryDto).then(res => {
+            this.$axios.post('/product-api/product/query', this.productQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.productList = data.data;

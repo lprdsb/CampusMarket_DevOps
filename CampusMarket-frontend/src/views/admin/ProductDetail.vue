@@ -143,7 +143,7 @@ export default {
             }
             this.userInfo = userInfo;
             // 对于用户这是无感的
-            this.$axios.post(`/interaction/view/${this.productId}`).then(res => {
+            this.$axios.post(`/interaction-api/interaction/view/${this.productId}`).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     console.log("用户浏览已经处理");
@@ -161,7 +161,7 @@ export default {
                 buyNumber: this.buyNumber,
                 detail: this.detail
             }
-            this.$axios.post(`/product/buyProduct`, ordersDTO).then(res => {
+            this.$axios.post(`/product-api/product/buyProduct`, ordersDTO).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.$notify({
@@ -198,7 +198,7 @@ export default {
             this.dialogProductOperaion = true;
         },
         likeProduct() {
-            this.$axios.post(`/interaction/likeProduct/${this.product.id}`).then(res => {
+            this.$axios.post(`/interaction-api/interaction/likeProduct/${this.product.id}`).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.$notify({
@@ -245,7 +245,7 @@ export default {
          * 收藏操作 （收藏跟取消收藏是一组对立的操作）
          */
         saveOperation() {
-            this.$axios.post(`/interaction/saveOperation/${this.product.id}`).then(res => {
+            this.$axios.post(`/interaction-api/interaction/saveOperation/${this.product.id}`).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     // 代表没有收藏
@@ -316,7 +316,7 @@ export default {
             this.startBanner();
         },
         fetchProduct(productId) {
-            this.$axios.post('/product/query', { id: productId }).then(res => {
+            this.$axios.post('/product-api/product/query', { id: productId }).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.product = data.data[0];

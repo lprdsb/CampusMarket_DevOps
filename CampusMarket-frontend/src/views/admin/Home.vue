@@ -104,7 +104,7 @@ export default {
                     userName: this.userInfo.name,
                     userEmail: this.userInfo.email
                 }
-                const resposne = await this.$axios.put(`/user/update`, userUpdateDTO);
+                const resposne = await this.$axios.put(`/user-api/user/update`, userUpdateDTO);
                 const { data } = resposne;
                 if (data.code === 200) {
                     this.dialogOperaion = false;
@@ -195,7 +195,7 @@ export default {
                 const { id, userAvatar: url, userName: name, userRole: role, userEmail: email } = res.data.data;
                 this.userInfo = { id, url, name, role, email };
                 // 根据角色解析路由
-                const rolePath = role === 1 ? '/admin' : '/user';
+                const rolePath = role === 1 ? '/admin' : '/user-api/user';
                 const targetMenu = router.options.routes.find(route => route.path === rolePath);
                 if (targetMenu) {
                     this.routers = targetMenu.children;

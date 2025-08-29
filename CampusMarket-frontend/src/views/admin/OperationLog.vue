@@ -59,7 +59,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/operation-log/batchDelete`, ids);
+                    const response = await this.$axios.post(`/user-api/operation-log/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -82,7 +82,7 @@ export default {
         fetchFreshData() {
             this.operationLogQueryDto.current = this.currentPage;
             this.operationLogQueryDto.size = this.pageSize;
-            this.$axios.post('/operation-log/query', this.operationLogQueryDto).then(res => {
+            this.$axios.post('/user-api/operation-log/query', this.operationLogQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.tableData = data.data;

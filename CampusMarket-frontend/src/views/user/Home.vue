@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     queryProductInfo() {
-      this.$axios.post(`/product/queryProductInfo`, {}).then(res => {
+      this.$axios.post(`/product-api/product/queryProductInfo`, {}).then(res => {
         const { data } = res;
         if (data.code === 200) {
           this.productInfoList = data.data;
@@ -117,7 +117,7 @@ export default {
     },
     // token检验
     auth() {
-      this.$axios.get(`/user/auth`).then(res => {
+      this.$axios.get(`/user-api/user/auth`).then(res => {
         const { data } = res;
         if (data.code === 200) {
           // 存储用户信息

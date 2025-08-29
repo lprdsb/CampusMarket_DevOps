@@ -262,7 +262,7 @@ export default {
                 id: comment.id,
                 upvoteList: upvoteList.length ? upvoteList.join(',') : this.userData.id
             }
-            this.$axios.put(`evaluations/update`, evalustions).then(res => {
+            this.$axios.put(`/interaction-api/evaluations/update`, evalustions).then(res => {
                 if (res.data.code == 200) {
                     comment.upvoteList = upvoteList.join(','); // 更新upvoteList字符串
                     comment.upvoteFlag = !comment.upvoteFlag; // 切换点赞状态标志
@@ -285,7 +285,7 @@ export default {
                 this.$message(`请选中举报项`);
                 return;
             }
-            this.$axios.get(`evaluations-reports/report/${this.comment.id}/${reportItem[0].name}`).then(res => {
+            this.$axios.get(`/interaction-api/evaluations-reports/report/${this.comment.id}/${reportItem[0].name}`).then(res => {
                 this.dialogVisibleReport = false;
                 if (res.data.code == 200) {
                     this.$swal.fire({
@@ -318,7 +318,7 @@ export default {
             itemChild.isSelected = true;
         },
         reportList() {
-            this.$axios.get(`evaluations/reportList`).then(res => {
+            this.$axios.get(`/interaction-api/evaluations/reportList`).then(res => {
                 if (res.data.code == 200) {
                     this.reports = [];
                     res.data.data.forEach(entity => {
@@ -344,7 +344,7 @@ export default {
             this.comment = comment;
         },
         deleteComment(comment) { // 删除评论
-            this.$axios.delete(`evaluations/delete/${comment.id}`).then(res => {
+            this.$axios.delete(`/interaction-api/evaluations/delete/${comment.id}`).then(res => {
                 if (res.data.code == 200) {
                     this.$message.success(res.data.msg);
                     this.loadCommentList();
@@ -380,7 +380,7 @@ export default {
                 content: this.content,
                 contentId: this.contentId,
             }
-            this.$axios.post(`evaluations/insert`, evaluations).then(res => {
+            this.$axios.post(`/interaction-api/evaluations/insert`, evaluations).then(res => {
                 if (res.data.code == 200) {
                     this.content = '';
                     this.$swal.fire({
@@ -433,7 +433,7 @@ export default {
                 contentId: this.contentId,
                 parentId: comment.id
             }
-            this.$axios.post(`evaluations/insert`, evaluationsDTO).then(res => {
+            this.$axios.post(`/interaction-api/evaluations/insert`, evaluationsDTO).then(res => {
                 if (res.data.code == 200) {
                     this.replyContent = '';
                     comment.showReplyInput = false;
@@ -474,7 +474,7 @@ export default {
                 contentId: this.contentId,
                 parentId: comment.parentId
             }
-            this.$axios.post(`evaluations/insert`, evaluationsDTO).then(res => {
+            this.$axios.post(`/interaction-api/evaluations/insert`, evaluationsDTO).then(res => {
                 if (res.data.code == 200) {
                     this.content = '';
                     comment.replyInputStatus = false;
@@ -508,7 +508,7 @@ export default {
         },
         // 加载评论列表
         loadCommentList() {
-            this.$axios.get(`evaluations/list/${this.contentId}/${this.contentType}`).then(res => {
+            this.$axios.get(`/interaction-api/evaluations/list/${this.contentId}/${this.contentType}`).then(res => {
                 if (res.data.code == 200) {
                     this.commentList = res.data.data.data;
                     this.evaluationsCount = res.data.data.evaluationsCount;

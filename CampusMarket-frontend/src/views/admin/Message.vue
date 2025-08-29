@@ -109,7 +109,7 @@ export default {
             if (confirmed) {
                 try {
                     let ids = this.delectedRows.map(entity => entity.id);
-                    const response = await this.$axios.post(`/message/batchDelete`, ids);
+                    const response = await this.$axios.post(`/interaction-api/message/batchDelete`, ids);
                     if (response.data.code === 200) {
                         this.$notify({
                             duration: 1000,
@@ -141,7 +141,7 @@ export default {
             this.messageQueryDto.size = this.pageSize;
             this.messageQueryDto.startTime = startTime;
             this.messageQueryDto.endTime = endTime;
-            this.$axios.post('/message/query', this.messageQueryDto).then(res => {
+            this.$axios.post('/interaction-api/message/query', this.messageQueryDto).then(res => {
                 const { data } = res; // 解构
                 if (data.code === 200) {
                     this.tableData = data.data;
