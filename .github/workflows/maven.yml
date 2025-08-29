@@ -37,9 +37,19 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }} # 在GitHub仓库设置中配置此Secret
-      - name: Build with Maven
+      - name: Build interaction with Maven
         run: |
-          cd CampusMarket-backend
+          cd CampusMarket-backend-interaction
+          mvn test
+          mvn clean package
+      - name: Build user with Maven
+        run: |
+          cd CampusMarket-backend-user
+          mvn test
+          mvn clean package
+      - name: Build product with Maven
+        run: |
+          cd CampusMarket-backend-product
           mvn test
           mvn clean package
       - name: Set up Node.js
